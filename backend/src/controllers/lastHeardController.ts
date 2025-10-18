@@ -6,68 +6,73 @@ import { LastHeardEntry } from '../models/LastHeard';
 const mockData: LastHeardEntry[] = [
   {
     id: 1,
-    callsign: 'EA7KLK',
-    name: 'John Doe',
-    dmr_id: 2147001,
-    target_id: 214,
-    target_name: 'Spain',
-    source: 'BM Master',
+    SourceID: 2147001,
+    DestinationID: 214,
+    SourceCall: 'EA7KLK',
+    SourceName: 'John Doe',
+    DestinationCall: '214',
+    DestinationName: 'Spain',
+    Start: Math.floor(Date.now() / 1000) - 60,
+    Stop: Math.floor(Date.now() / 1000) - 60 + 120,
+    TalkerAlias: 'JD',
     duration: 120,
-    timestamp: new Date(Date.now() - 60000),
-    slot: 2,
-    reflector: 4400,
+    created_at: Math.floor(Date.now() / 1000) - 60,
   },
   {
     id: 2,
-    callsign: 'EA3ABC',
-    name: 'Jane Smith',
-    dmr_id: 2143002,
-    target_id: 214,
-    target_name: 'Spain',
-    source: 'BM Master',
+    SourceID: 2143002,
+    DestinationID: 214,
+    SourceCall: 'EA3ABC',
+    SourceName: 'Jane Smith',
+    DestinationCall: '214',
+    DestinationName: 'Spain',
+    Start: Math.floor(Date.now() / 1000) - 300,
+    Stop: Math.floor(Date.now() / 1000) - 300 + 85,
+    TalkerAlias: 'JS',
     duration: 85,
-    timestamp: new Date(Date.now() - 300000),
-    slot: 1,
-    reflector: 4400,
+    created_at: Math.floor(Date.now() / 1000) - 300,
   },
   {
     id: 3,
-    callsign: 'F1XYZ',
-    name: 'Pierre Martin',
-    dmr_id: 2081234,
-    target_id: 208,
-    target_name: 'France',
-    source: 'BM Master',
+    SourceID: 2081234,
+    DestinationID: 208,
+    SourceCall: 'F1XYZ',
+    SourceName: 'Pierre Martin',
+    DestinationCall: '208',
+    DestinationName: 'France',
+    Start: Math.floor(Date.now() / 1000) - 600,
+    Stop: Math.floor(Date.now() / 1000) - 600 + 150,
+    TalkerAlias: 'PM',
     duration: 150,
-    timestamp: new Date(Date.now() - 600000),
-    slot: 2,
-    reflector: 4400,
+    created_at: Math.floor(Date.now() / 1000) - 600,
   },
   {
     id: 4,
-    callsign: 'G7DEF',
-    name: 'Alice Brown',
-    dmr_id: 2341567,
-    target_id: 234,
-    target_name: 'United Kingdom',
-    source: 'BM Master',
+    SourceID: 2341567,
+    DestinationID: 234,
+    SourceCall: 'G7DEF',
+    SourceName: 'Alice Brown',
+    DestinationCall: '234',
+    DestinationName: 'United Kingdom',
+    Start: Math.floor(Date.now() / 1000) - 900,
+    Stop: Math.floor(Date.now() / 1000) - 900 + 95,
+    TalkerAlias: 'AB',
     duration: 95,
-    timestamp: new Date(Date.now() - 900000),
-    slot: 1,
-    reflector: 4400,
+    created_at: Math.floor(Date.now() / 1000) - 900,
   },
   {
     id: 5,
-    callsign: 'DL9GHI',
-    name: 'Hans Mueller',
-    dmr_id: 2621890,
-    target_id: 262,
-    target_name: 'Germany',
-    source: 'BM Master',
+    SourceID: 2621890,
+    DestinationID: 262,
+    SourceCall: 'DL9GHI',
+    SourceName: 'Hans Mueller',
+    DestinationCall: '262',
+    DestinationName: 'Germany',
+    Start: Math.floor(Date.now() / 1000) - 1200,
+    Stop: Math.floor(Date.now() / 1000) - 1200 + 200,
+    TalkerAlias: 'HM',
     duration: 200,
-    timestamp: new Date(Date.now() - 1200000),
-    slot: 2,
-    reflector: 4400,
+    created_at: Math.floor(Date.now() / 1000) - 1200,
   },
 ];
 
@@ -88,8 +93,8 @@ export const getLastHeard = async (req: Request, res: Response) => {
     }
 
     const result = await pool.query(
-      `SELECT * FROM last_heard 
-       ORDER BY timestamp DESC 
+      `SELECT * FROM lastheard 
+       ORDER BY "Start" DESC 
        LIMIT $1 OFFSET $2`,
       [limit, offset]
     );
@@ -118,7 +123,7 @@ export const getLastHeardById = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     const result = await pool.query(
-      'SELECT * FROM last_heard WHERE id = $1',
+      'SELECT * FROM lastheard WHERE id = $1',
       [id]
     );
 
@@ -145,23 +150,24 @@ export const getLastHeardById = async (req: Request, res: Response) => {
 export const createLastHeard = async (req: Request, res: Response) => {
   try {
     const {
-      callsign,
-      name,
-      dmr_id,
-      target_id,
-      target_name,
-      source,
+      SourceID,
+      DestinationID,
+      SourceCall,
+      SourceName,
+      DestinationCall,
+      DestinationName,
+      Start,
+      Stop,
+      TalkerAlias,
       duration,
-      slot,
-      reflector,
     }: LastHeardEntry = req.body;
 
     const result = await pool.query(
-      `INSERT INTO last_heard 
-       (callsign, name, dmr_id, target_id, target_name, source, duration, slot, reflector, timestamp)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())
+      `INSERT INTO lastheard 
+       ("SourceID", "DestinationID", "SourceCall", "SourceName", "DestinationCall", "DestinationName", "Start", "Stop", "TalkerAlias", duration)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
        RETURNING *`,
-      [callsign, name, dmr_id, target_id, target_name, source, duration, slot, reflector]
+      [SourceID, DestinationID, SourceCall, SourceName, DestinationCall, DestinationName, Start, Stop, TalkerAlias, duration]
     );
 
     res.status(201).json({

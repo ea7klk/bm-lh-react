@@ -1,0 +1,24 @@
+This text will contain the prompts passed to Copilot Agent
+==========================================================================================================
+This is the desired structure of the lastheard table: 
+CREATE TABLE public.lastheard (
+    id integer NOT NULL,
+    "SourceID" integer NOT NULL,
+    "DestinationID" integer NOT NULL,
+    "SourceCall" text NOT NULL,
+    "SourceName" text,
+    "DestinationCall" text,
+    "DestinationName" text,
+    "Start" bigint NOT NULL,
+    "Stop" bigint,
+    "TalkerAlias" text,
+    duration integer,
+    created_at bigint DEFAULT EXTRACT(epoch FROM now())
+);
+
+Adjust the frontend as well 
+
+========================================================================================================
+
+
+

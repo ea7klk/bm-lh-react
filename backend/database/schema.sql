@@ -1,28 +1,30 @@
 -- Create database schema for BM Last Heard
-CREATE TABLE IF NOT EXISTS last_heard (
-    id SERIAL PRIMARY KEY,
-    callsign VARCHAR(20) NOT NULL,
-    name VARCHAR(100),
-    dmr_id BIGINT NOT NULL,
-    target_id BIGINT NOT NULL,
-    target_name VARCHAR(100),
-    source VARCHAR(50) NOT NULL,
-    duration INTEGER NOT NULL,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    slot INTEGER,
-    reflector INTEGER
+CREATE TABLE public.lastheard (
+    id integer NOT NULL,
+    "SourceID" integer NOT NULL,
+    "DestinationID" integer NOT NULL,
+    "SourceCall" text NOT NULL,
+    "SourceName" text,
+    "DestinationCall" text,
+    "DestinationName" text,
+    "Start" bigint NOT NULL,
+    "Stop" bigint,
+    "TalkerAlias" text,
+    duration integer,
+    created_at bigint DEFAULT EXTRACT(epoch FROM now())
 );
 
 -- Create indexes for better query performance
-CREATE INDEX idx_timestamp ON last_heard(timestamp DESC);
-CREATE INDEX idx_callsign ON last_heard(callsign);
-CREATE INDEX idx_dmr_id ON last_heard(dmr_id);
+CREATE INDEX idx_start ON lastheard("Start" DESC);
+CREATE INDEX idx_sourcecall ON lastheard("SourceCall");
+CREATE INDEX idx_sourceid ON lastheard("SourceID");
+CREATE INDEX idx_created_at ON lastheard(created_at DESC);
 
 -- Insert sample data for testing
-INSERT INTO last_heard (callsign, name, dmr_id, target_id, target_name, source, duration, slot, reflector, timestamp)
+INSERT INTO lastheard (id, "SourceID", "DestinationID", "SourceCall", "SourceName", "DestinationCall", "DestinationName", "Start", "Stop", "TalkerAlias", duration)
 VALUES 
-    ('EA7KLK', 'John Doe', 2147001, 214, 'Spain', 'BM Master', 120, 2, 4400, NOW() - INTERVAL '1 minute'),
-    ('EA3ABC', 'Jane Smith', 2143002, 214, 'Spain', 'BM Master', 85, 1, 4400, NOW() - INTERVAL '5 minutes'),
-    ('F1XYZ', 'Pierre Martin', 2081234, 208, 'France', 'BM Master', 150, 2, 4400, NOW() - INTERVAL '10 minutes'),
-    ('G7DEF', 'Alice Brown', 2341567, 234, 'United Kingdom', 'BM Master', 95, 1, 4400, NOW() - INTERVAL '15 minutes'),
-    ('DL9GHI', 'Hans Mueller', 2621890, 262, 'Germany', 'BM Master', 200, 2, 4400, NOW() - INTERVAL '20 minutes');
+    (1, 2147001, 214, 'EA7KLK', 'John Doe', '214', 'Spain', EXTRACT(epoch FROM NOW() - INTERVAL '1 minute'), EXTRACT(epoch FROM NOW() - INTERVAL '1 minute') + 120, 'JD', 120),
+    (2, 2143002, 214, 'EA3ABC', 'Jane Smith', '214', 'Spain', EXTRACT(epoch FROM NOW() - INTERVAL '5 minutes'), EXTRACT(epoch FROM NOW() - INTERVAL '5 minutes') + 85, 'JS', 85),
+    (3, 2081234, 208, 'F1XYZ', 'Pierre Martin', '208', 'France', EXTRACT(epoch FROM NOW() - INTERVAL '10 minutes'), EXTRACT(epoch FROM NOW() - INTERVAL '10 minutes') + 150, 'PM', 150),
+    (4, 2341567, 234, 'G7DEF', 'Alice Brown', '234', 'United Kingdom', EXTRACT(epoch FROM NOW() - INTERVAL '15 minutes'), EXTRACT(epoch FROM NOW() - INTERVAL '15 minutes') + 95, 'AB', 95),
+    (5, 2621890, 262, 'DL9GHI', 'Hans Mueller', '262', 'Germany', EXTRACT(epoch FROM NOW() - INTERVAL '20 minutes'), EXTRACT(epoch FROM NOW() - INTERVAL '20 minutes') + 200, 'HM', 200);

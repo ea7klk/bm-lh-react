@@ -1,15 +1,16 @@
 export interface LastHeardEntry {
   id: number;
-  callsign: string;
-  name?: string;
-  dmr_id: number;
-  target_id: number;
-  target_name?: string;
-  source: string;
-  duration: number;
-  timestamp: string;
-  slot?: number;
-  reflector?: number;
+  SourceID: number;
+  DestinationID: number;
+  SourceCall: string;
+  SourceName?: string;
+  DestinationCall?: string;
+  DestinationName?: string;
+  Start: number; // bigint timestamp
+  Stop?: number; // bigint timestamp
+  TalkerAlias?: string;
+  duration?: number;
+  created_at?: number; // bigint timestamp
 }
 
 export interface ApiResponse<T> {

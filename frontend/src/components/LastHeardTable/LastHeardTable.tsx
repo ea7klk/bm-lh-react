@@ -8,14 +8,15 @@ interface LastHeardTableProps {
 }
 
 const LastHeardTable: React.FC<LastHeardTableProps> = ({ entries, loading }) => {
-  const formatDuration = (seconds: number): string => {
+  const formatDuration = (seconds?: number): string => {
+    if (!seconds) return '-';
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const formatTimestamp = (timestamp: string): string => {
-    const date = new Date(timestamp);
+  const formatTimestamp = (timestamp: number): string => {
+    const date = new Date(timestamp * 1000); // Convert from Unix timestamp
     return date.toLocaleString();
   };
 
@@ -41,29 +42,29 @@ const LastHeardTable: React.FC<LastHeardTableProps> = ({ entries, loading }) => 
       <table className="lastheard-table">
         <thead>
           <tr>
-            <th>Timestamp</th>
-            <th>Callsign</th>
-            <th>Name</th>
-            <th>DMR ID</th>
-            <th>Target</th>
-            <th>Source</th>
+            <th>Start Time</th>
+            <th>Source Call</th>
+            <th>Source Name</th>
+            <th>Source ID</th>
+            <th>Destination</th>
+            <th>Destination Name</th>
             <th>Duration</th>
-            <th>Slot</th>
-            <th>Reflector</th>
+            <th>Talker Alias</th>
+            <th>Stop Time</th>
           </tr>
         </thead>
         <tbody>
           {entries.map((entry) => (
             <tr key={entry.id}>
-              <td>{formatTimestamp(entry.timestamp)}</td>
-              <td className="callsign">{entry.callsign}</td>
-              <td>{entry.name || '-'}</td>
-              <td>{entry.dmr_id}</td>
-              <td>{entry.target_name || entry.target_id}</td>
-              <td>{entry.source}</td>
+              <td>{formatTimestamp(entry.Start)}</td>
+              <td className="callsign">{entry.SourceCall}</td>
+              <td>{entry.SourceName || '-'}</td>
+              <td>{entry.SourceID}</td>
+              <td>{entry.DestinationCall || entry.DestinationID}</td>
+              <td>{entry.DestinationName || '-'}</td>
               <td>{formatDuration(entry.duration)}</td>
-              <td>{entry.slot || '-'}</td>
-              <td>{entry.reflector || '-'}</td>
+              <td>{entry.TalkerAlias || '-'}</td>
+              <td>{entry.Stop ? formatTimestamp(entry.Stop) : '-'}</td>
             </tr>
           ))}
         </tbody>
