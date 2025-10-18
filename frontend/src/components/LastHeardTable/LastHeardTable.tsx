@@ -46,11 +46,12 @@ const LastHeardTable: React.FC<LastHeardTableProps> = ({ entries, loading }) => 
             <th>Source Call</th>
             <th>Source Name</th>
             <th>Source ID</th>
-            <th>Destination</th>
-            <th>Destination Name</th>
+            <th>Talkgroup</th>
+            <th>TG Name</th>
+            <th>Country</th>
+            <th>Continent</th>
             <th>Duration</th>
             <th>Talker Alias</th>
-            <th>Stop Time</th>
           </tr>
         </thead>
         <tbody>
@@ -61,10 +62,11 @@ const LastHeardTable: React.FC<LastHeardTableProps> = ({ entries, loading }) => 
               <td>{entry.SourceName || '-'}</td>
               <td>{entry.SourceID}</td>
               <td>{entry.DestinationCall || entry.DestinationID}</td>
-              <td>{entry.DestinationName || '-'}</td>
+              <td>{entry.talkgroup_name || entry.DestinationName || '-'}</td>
+              <td>{entry.full_country_name || '-'}</td>
+              <td>{entry.continent || '-'}</td>
               <td>{formatDuration(entry.duration)}</td>
               <td>{entry.TalkerAlias || '-'}</td>
-              <td>{entry.Stop ? formatTimestamp(entry.Stop) : '-'}</td>
             </tr>
           ))}
         </tbody>

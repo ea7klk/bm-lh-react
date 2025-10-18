@@ -82,9 +82,21 @@ export const getLastHeard = async (req: Request, res: Response) => {
   try {
     const limit = parseInt(req.query.limit as string) || 50;
     const offset = parseInt(req.query.offset as string) || 0;
+    const timeFilter = req.query.time as string; // in minutes
+    const continent = req.query.continent as string;
+    const country = req.query.country as string;
 
     if (USE_MOCK_DATA) {
-      const data = mockData.slice(offset, offset + limit);
+      let filteredData = [...mockData];
+      
+      // Apply time filter on mock data
+      if (timeFilter) {
+        const minutesAgo = parseInt(timeFilter);
+        const cutoffTime = Math.floor(Date.now() / 1000) - (minutesAgo * 60);
+        filteredData = filteredData.filter(entry => (entry.Start || entry.created_at || 0) >= cutoffTime);
+      }
+      
+      const data = filteredData.slice(offset, offset + limit);
       return res.json({
         success: true,
         data,
@@ -92,17 +104,72 @@ export const getLastHeard = async (req: Request, res: Response) => {
       });
     }
 
-    const result = await pool.query(
-      `SELECT * FROM lastheard 
-       ORDER BY "Start" DESC 
-       LIMIT $1 OFFSET $2`,
-      [limit, offset]
-    );
+    // Build dynamic query with filters
+    let whereConditions: string[] = [];
+    let queryParams: any[] = [];
+    let paramCount = 0;
+
+    // Time filter
+    if (timeFilter) {
+      const minutesAgo = parseInt(timeFilter);
+      if (!isNaN(minutesAgo)) {
+        paramCount++;
+        whereConditions.push(`lh."Start" >= EXTRACT(EPOCH FROM NOW()) - ($${paramCount} * 60)`);
+        queryParams.push(minutesAgo);
+      }
+    }
+
+    // Continent filter
+    if (continent && continent !== 'all') {
+      paramCount++;
+      whereConditions.push(`tg.continent = $${paramCount}`);
+      queryParams.push(continent);
+    }
+
+    // Country filter
+    if (country && country !== 'all') {
+      paramCount++;
+      whereConditions.push(`tg.country = $${paramCount}`);
+      queryParams.push(country);
+    }
+
+    const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+
+    // Add limit and offset to params
+    queryParams.push(limit, offset);
+    const limitParam = paramCount + 1;
+    const offsetParam = paramCount + 2;
+
+    const query = `
+      SELECT lh.*, 
+             tg.continent, 
+             tg.country, 
+             tg.full_country_name,
+             tg.name as talkgroup_name
+      FROM lastheard lh
+      LEFT JOIN talkgroups tg ON lh."DestinationID" = tg.talkgroup_id
+      ${whereClause}
+      ORDER BY lh."Start" DESC 
+      LIMIT $${limitParam} OFFSET $${offsetParam}
+    `;
+
+    const result = await pool.query(query, queryParams);
+
+    // Get total count for pagination
+    const countQuery = `
+      SELECT COUNT(*) as total
+      FROM lastheard lh
+      LEFT JOIN talkgroups tg ON lh."DestinationID" = tg.talkgroup_id
+      ${whereClause}
+    `;
+    
+    const countResult = await pool.query(countQuery, queryParams.slice(0, paramCount));
+    const total = parseInt(countResult.rows[0]?.total || '0');
 
     res.json({
       success: true,
       data: result.rows,
-      total: result.rowCount,
+      total: total,
     });
   } catch (error) {
     console.error('Error fetching last heard:', error);
@@ -179,6 +246,61 @@ export const createLastHeard = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       error: 'Failed to create entry',
+    });
+  }
+};
+
+export const getContinents = async (req: Request, res: Response) => {
+  try {
+    const result = await pool.query(`
+      SELECT DISTINCT continent 
+      FROM talkgroups 
+      WHERE continent IS NOT NULL 
+      ORDER BY continent
+    `);
+    
+    res.json({
+      success: true,
+      data: result.rows.map(row => row.continent),
+    });
+  } catch (error) {
+    console.error('Error fetching continents:', error);
+    res.json({
+      success: true,
+      data: ['Europe', 'North America', 'Asia', 'Oceania', 'Africa', 'South America', 'Global'],
+    });
+  }
+};
+
+export const getCountries = async (req: Request, res: Response) => {
+  try {
+    const { continent } = req.query;
+    
+    let query = `
+      SELECT DISTINCT country, full_country_name 
+      FROM talkgroups 
+      WHERE country IS NOT NULL
+    `;
+    const params: any[] = [];
+    
+    if (continent && continent !== 'all') {
+      query += ` AND continent = $1`;
+      params.push(continent);
+    }
+    
+    query += ` ORDER BY full_country_name`;
+    
+    const result = await pool.query(query, params);
+    
+    res.json({
+      success: true,
+      data: result.rows,
+    });
+  } catch (error) {
+    console.error('Error fetching countries:', error);
+    res.json({
+      success: true,
+      data: [],
     });
   }
 };

@@ -1,20 +1,42 @@
-import { LastHeardEntry, ApiResponse } from '../types';
+import { LastHeardEntry, ApiResponse, Country, FilterOptions } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
 export const lastHeardService = {
-  async getLastHeard(limit: number = 50, offset: number = 0): Promise<LastHeardEntry[]> {
+  async getLastHeard(
+    limit: number = 50, 
+    offset: number = 0, 
+    filters?: FilterOptions
+  ): Promise<{ data: LastHeardEntry[]; total: number }> {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/lastheard?limit=${limit}&offset=${offset}`
-      );
+      const params = new URLSearchParams({
+        limit: limit.toString(),
+        offset: offset.toString(),
+      });
+
+      if (filters?.timeFilter && filters.timeFilter !== 'all') {
+        params.append('time', filters.timeFilter);
+      }
+      
+      if (filters?.continent && filters.continent !== 'all') {
+        params.append('continent', filters.continent);
+      }
+      
+      if (filters?.country && filters.country !== 'all') {
+        params.append('country', filters.country);
+      }
+
+      const response = await fetch(`${API_BASE_URL}/lastheard?${params}`);
       const result: ApiResponse<LastHeardEntry[]> = await response.json();
       
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch data');
       }
       
-      return result.data;
+      return {
+        data: result.data,
+        total: result.total || result.data.length,
+      };
     } catch (error) {
       console.error('Error fetching last heard:', error);
       throw error;
@@ -33,6 +55,43 @@ export const lastHeardService = {
       return result.data;
     } catch (error) {
       console.error('Error fetching entry:', error);
+      throw error;
+    }
+  },
+
+  async getContinents(): Promise<string[]> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/lastheard/continents`);
+      const result: ApiResponse<string[]> = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to fetch continents');
+      }
+      
+      return result.data;
+    } catch (error) {
+      console.error('Error fetching continents:', error);
+      throw error;
+    }
+  },
+
+  async getCountries(continent?: string): Promise<Country[]> {
+    try {
+      const params = new URLSearchParams();
+      if (continent && continent !== 'all') {
+        params.append('continent', continent);
+      }
+
+      const response = await fetch(`${API_BASE_URL}/lastheard/countries?${params}`);
+      const result: ApiResponse<Country[]> = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to fetch countries');
+      }
+      
+      return result.data;
+    } catch (error) {
+      console.error('Error fetching countries:', error);
       throw error;
     }
   },

@@ -990,3 +990,15 @@ module.exports = {
 
 
 =====================================================================================================================================================
+
+
+Add selectors to the application page: 
+- Time selector for last 5 minutes, last 10 minutes, last 15 minutes, last 30 minutes, last hour, last 3 hours, last 6 hours, last 12 hours, last 24 hours, last 3 days, last 5 days and last week
+- Selector for continent
+- selector for country, showing only the countries for the continent selected. 
+
+The table should only display entries matching the selected values
+
+All data should come from the appropriate places in the database. 
+
+=======================================================================================================================================================
