@@ -3,9 +3,11 @@ import { createServer } from 'http';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import lastHeardRoutes from './routes/lastHeardRoutes';
+import talkgroupsRoutes from './routes/talkgroupsRoutes';
 import { startBrandmeisterService, stopBrandmeisterService } from './services/brandmeisterService';
 import { initializeDatabase } from './services/databaseService';
 import { initializeWebSocket } from './services/websocketService';
+import { startScheduler, stopScheduler } from './services/schedulerService';
 
 dotenv.config();
 
@@ -24,6 +26,7 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 app.use('/api/lastheard', lastHeardRoutes);
+app.use('/api/talkgroups', talkgroupsRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: any) => {
@@ -47,18 +50,23 @@ server.listen(PORT, async () => {
   
   // Start Brandmeister websocket service
   startBrandmeisterService();
+  
+  // Start scheduler for talkgroups updates
+  startScheduler();
 });
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('SIGTERM received, shutting down gracefully...');
   stopBrandmeisterService();
+  stopScheduler();
   process.exit(0);
 });
 
 process.on('SIGINT', () => {
   console.log('SIGINT received, shutting down gracefully...');
   stopBrandmeisterService();
+  stopScheduler();
   process.exit(0);
 });
 
