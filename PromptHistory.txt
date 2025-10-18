@@ -1002,3 +1002,7 @@ The table should only display entries matching the selected values
 All data should come from the appropriate places in the database. 
 
 =======================================================================================================================================================
+
+When filters are applied the real-time update no longer works. Make sure that the real-time update of the data works even when filters are applied. 
+
+=======================================================================================================================================================

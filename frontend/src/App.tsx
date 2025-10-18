@@ -19,16 +19,61 @@ function App() {
     country: 'all',
   });
 
+  // Helper function to check if an entry matches current filters
+  const entryMatchesFilters = useCallback((entry: LastHeardEntry, currentFilters: FilterOptions): boolean => {
+    // Check time filter
+    if (currentFilters.timeFilter !== 'all') {
+      const now = Date.now() / 1000; // Current time in seconds
+      const entryTime = entry.Start; // Entry start time in seconds
+      const timeFilterMinutes: { [key: string]: number } = {
+        '5': 5,
+        '10': 10,
+        '15': 15,
+        '30': 30,
+        '60': 60,
+        '180': 180,
+        '360': 360,
+        '720': 720,
+        '1440': 1440,
+        '4320': 4320,
+        '7200': 7200,
+        '10080': 10080,
+      };
+      
+      const filterMinutes = timeFilterMinutes[currentFilters.timeFilter];
+      if (filterMinutes && (now - entryTime) > (filterMinutes * 60)) {
+        return false;
+      }
+    }
+
+    // Check continent filter
+    if (currentFilters.continent !== 'all' && entry.continent !== currentFilters.continent) {
+      return false;
+    }
+
+    // Check country filter
+    if (currentFilters.country !== 'all' && entry.country !== currentFilters.country) {
+      return false;
+    }
+
+    return true;
+  }, []);
+
   const handleNewEntry = useCallback((newEntry: LastHeardEntry) => {
-    // Only add to real-time updates if no filters are applied
-    if (isRealTime && filters.timeFilter === 'all' && filters.continent === 'all' && filters.country === 'all') {
+    if (!isRealTime) return;
+
+    // Check if the new entry matches current filters
+    if (entryMatchesFilters(newEntry, filters)) {
       setEntries(prevEntries => {
         // Add new entry at the beginning and limit to 100 entries
         const updatedEntries = [newEntry, ...prevEntries];
         return updatedEntries.slice(0, 100);
       });
+      
+      // Update total count
+      setTotal(prevTotal => prevTotal + 1);
     }
-  }, [isRealTime, filters]);
+  }, [isRealTime, filters, entryMatchesFilters]);
 
   // Initialize WebSocket for real-time updates
   useWebSocket({
@@ -61,21 +106,18 @@ function App() {
 
   useEffect(() => {
     fetchData();
-    // Auto-refresh every 30 seconds as fallback only when no filters are applied
-    const shouldAutoRefresh = filters.timeFilter === 'all' && filters.continent === 'all' && filters.country === 'all';
-    if (shouldAutoRefresh) {
+    // Auto-refresh every 30 seconds as fallback when real-time is enabled
+    if (isRealTime) {
       const interval = setInterval(() => fetchData(), 30000);
       return () => clearInterval(interval);
     }
-  }, []);
+  }, [isRealTime]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Fetch data when filters change to 'all' (real-time mode)
+  // Fetch data when filters change (to immediately apply new filters)
   useEffect(() => {
-    const isRealTimeMode = filters.timeFilter === 'all' && filters.continent === 'all' && filters.country === 'all';
-    if (isRealTimeMode && isRealTime) {
-      fetchData();
-    }
-  }, [filters, isRealTime]);
+    // Only fetch if not in the initial load (handled by the first useEffect)
+    fetchData();
+  }, [filters]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="App">
