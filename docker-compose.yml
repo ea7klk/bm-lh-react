@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: bm-lh-postgres
+    environment:
+      POSTGRES_DB: bm_lastheard
+      POSTGRES_USER: bmuser
+      POSTGRES_PASSWORD: bmpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - bm-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bmuser -d bm_lastheard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bm-lh-backend
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgresql://bmuser:bmpassword@postgres:5432/bm_lastheard
+      NODE_ENV: production
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - bm-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: bm-lh-frontend
+    environment:
+      REACT_APP_API_URL: http://localhost:3001/api
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - bm-network
+
+volumes:
+  postgres_data:
+
+networks:
+  bm-network:
+    driver: bridge
