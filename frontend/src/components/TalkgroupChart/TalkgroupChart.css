@@ -32,55 +32,46 @@
 .chart-bars {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .bar-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
-.bar-info {
+.bar-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
+  gap: 16px;
 }
 
-.talkgroup-details {
+.talkgroup-info {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  flex: 1;
+  min-width: 200px;
+  flex-shrink: 0;
 }
 
 .talkgroup-name {
   font-weight: 600;
   color: #2c3e50;
   font-size: 14px;
-  max-width: 300px;
+  max-width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.talkgroup-country {
-  font-size: 12px;
+.talkgroup-id {
+  font-size: 11px;
   color: #7f8c8d;
-  margin-top: 2px;
-}
-
-.talkgroup-count {
-  font-weight: bold;
-  color: #3498db;
-  font-size: 16px;
-  margin-left: 12px;
+  margin-top: 1px;
 }
 
 .bar-wrapper {
-  width: 100%;
-  height: 32px;
+  flex: 1;
+  height: 28px;
   background-color: #ecf0f1;
   border-radius: 4px;
   position: relative;
@@ -157,18 +148,22 @@
     font-size: 20px;
   }
   
-  .bar-info {
+  .bar-row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 4px;
+    gap: 8px;
   }
   
-  .talkgroup-count {
-    margin-left: 0;
-    align-self: flex-end;
+  .talkgroup-info {
+    min-width: auto;
+    width: 100%;
   }
   
   .talkgroup-name {
     max-width: 250px;
+  }
+  
+  .bar-wrapper {
+    width: 100%;
   }
 }

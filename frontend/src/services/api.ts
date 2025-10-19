@@ -141,10 +141,10 @@ export const lastHeardService = {
   },
 
   async getTalkgroupStats(
-    filters?: FilterOptions,
-    limit: number = 20
+    filters?: FilterOptions
   ): Promise<TalkgroupStats[]> {
     try {
+      const limit = filters?.maxEntries ? parseInt(filters.maxEntries) : 20;
       const params = new URLSearchParams({
         limit: limit.toString(),
       });

@@ -1025,3 +1025,10 @@ Remove the list of latest QSOs
 Instead, create a bar graph with the most active talkgroups based on count, based on the filters. 
 
 =======================================================================================================================================================
+
+The maximum entries filter is not being applied in the graphics. 
+Make the graphic more compact by putting the talkgroup name to the left of the bar. 
+remove the country name in parentheses, instead add the talkgroup ID (destinationID in the DB).
+Leave the number of transmissions only inside the bar. 
+
+=======================================================================================================================================================

@@ -48,27 +48,24 @@ const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
             
             return (
               <div key={item.talkgroup_id} className="bar-item">
-                <div className="bar-info">
-                  <div className="talkgroup-details">
+                <div className="bar-row">
+                  <div className="talkgroup-info">
                     <span className="talkgroup-name" title={item.name}>
                       {item.name}
                     </span>
-                    {item.full_country_name && (
-                      <span className="talkgroup-country">
-                        ({item.full_country_name})
-                      </span>
-                    )}
+                    <span className="talkgroup-id">
+                      (ID: {item.talkgroup_id})
+                    </span>
                   </div>
-                  <span className="talkgroup-count">{item.count}</span>
-                </div>
-                <div className="bar-wrapper">
-                  <div 
-                    className="bar"
-                    style={{ width: `${Math.max(widthPercent, 2)}%` }}
-                    title={`${item.name}: ${item.count} transmissions`}
-                  >
-                    <div className="bar-label">
-                      {item.count}
+                  <div className="bar-wrapper">
+                    <div 
+                      className="bar"
+                      style={{ width: `${Math.max(widthPercent, 2)}%` }}
+                      title={`${item.name} (ID: ${item.talkgroup_id}): ${item.count} transmissions`}
+                    >
+                      <div className="bar-label">
+                        {item.count}
+                      </div>
                     </div>
                   </div>
                 </div>
