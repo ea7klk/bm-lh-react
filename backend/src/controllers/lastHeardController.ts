@@ -519,18 +519,18 @@ export const getTalkgroupDurationStats = async (req: Request, res: Response) => 
     let queryParams: any[] = [];
     let paramCount = 0;
 
-    // Add condition to only include records with valid duration
-    whereConditions.push(`lh.duration IS NOT NULL AND lh.duration > 0`);
-
-    // Time filter
+    // Time filter is required for the new query structure
+    let timeFilterMinutes = 15; // Default to 15 minutes if not specified
     if (timeFilter) {
       const minutesAgo = parseInt(timeFilter);
       if (!isNaN(minutesAgo)) {
-        paramCount++;
-        whereConditions.push(`lh."Start" >= EXTRACT(EPOCH FROM NOW()) - ($${paramCount} * 60)`);
-        queryParams.push(minutesAgo);
+        timeFilterMinutes = minutesAgo;
       }
     }
+    
+    // Add time filter minutes as first parameter
+    queryParams.push(timeFilterMinutes);
+    paramCount = 1;
 
     // Continent filter
     if (continent && continent !== 'all') {
@@ -553,17 +553,50 @@ export const getTalkgroupDurationStats = async (req: Request, res: Response) => 
     const limitParam = paramCount + 1;
 
     const query = `
+      WITH time_window AS (
+        SELECT $1::integer * 60 as window_seconds,
+               EXTRACT(EPOCH FROM NOW()) as current_time
+      ),
+      filtered_qsos AS (
+        SELECT 
+          lh."DestinationID",
+          COALESCE(tg.name, lh."DestinationName", 'Unknown') as name,
+          tg.continent,
+          tg.country,
+          tg.full_country_name,
+          -- Clip QSO times to the time window boundaries
+          GREATEST(lh."Start", tw.current_time - tw.window_seconds) as start_time,
+          LEAST(lh."Stop", tw.current_time) as end_time
+        FROM lastheard lh
+        LEFT JOIN talkgroups tg ON lh."DestinationID" = tg.talkgroup_id
+        CROSS JOIN time_window tw
+        WHERE lh.duration IS NOT NULL 
+          AND lh.duration > 0 
+          AND lh."Stop" IS NOT NULL
+          AND lh."Start" < tw.current_time
+          AND lh."Stop" > tw.current_time - tw.window_seconds
+          ${whereConditions.length > 0 ? 'AND ' + whereConditions.join(' AND ') : ''}
+      ),
+      talkgroup_durations AS (
+        SELECT 
+          "DestinationID",
+          name,
+          continent,
+          country,
+          full_country_name,
+          SUM(end_time - start_time) as raw_duration
+        FROM filtered_qsos
+        GROUP BY "DestinationID", name, continent, country, full_country_name
+      )
       SELECT 
-        lh."DestinationID" as talkgroup_id,
-        COALESCE(tg.name, lh."DestinationName", 'Unknown') as name,
-        SUM(lh.duration) as total_duration,
-        tg.continent,
-        tg.country,
-        tg.full_country_name
-      FROM lastheard lh
-      LEFT JOIN talkgroups tg ON lh."DestinationID" = tg.talkgroup_id
-      ${whereClause}
-      GROUP BY lh."DestinationID", tg.name, lh."DestinationName", tg.continent, tg.country, tg.full_country_name
+        "DestinationID" as talkgroup_id,
+        name,
+        -- Cap the duration at the time window to prevent impossible values
+        LEAST(raw_duration, (SELECT window_seconds FROM time_window)) as total_duration,
+        continent,
+        country,
+        full_country_name
+      FROM talkgroup_durations
       ORDER BY total_duration DESC
       LIMIT $${limitParam}
     `;
