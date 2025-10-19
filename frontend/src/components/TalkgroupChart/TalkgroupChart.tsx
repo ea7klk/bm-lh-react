@@ -1,6 +1,57 @@
 import React from 'react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
 import { TalkgroupStats } from '../../types';
 import './TalkgroupChart.css';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+// Custom plugin to show values on bars
+const valuesOnBarsPlugin = {
+  id: 'valuesOnBars',
+  afterDatasetsDraw: (chart: any) => {
+    const { ctx, data } = chart;
+    
+    chart.data.datasets.forEach((dataset: any, datasetIndex: number) => {
+      const meta = chart.getDatasetMeta(datasetIndex);
+      
+      meta.data.forEach((bar: any, index: number) => {
+        const value = dataset.data[index];
+        
+        ctx.save();
+        ctx.font = 'bold 12px sans-serif';
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+        ctx.shadowBlur = 2;
+        
+        const x = bar.x - 15; // Position near the right edge of the bar
+        const y = bar.y;
+        
+        ctx.fillText(value.toString(), x, y);
+        ctx.restore();
+      });
+    });
+  }
+};
+
+ChartJS.register(valuesOnBarsPlugin);
 
 interface TalkgroupChartProps {
   data: TalkgroupStats[];
@@ -30,8 +81,107 @@ const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
     );
   }
 
-  // Find the maximum count for scaling
-  const maxCount = Math.max(...data.map(item => item.count));
+  // Prepare data for Chart.js
+  const chartData = {
+    labels: data.map(item => `${item.name} (ID: ${item.talkgroup_id})`),
+    datasets: [
+      {
+        label: 'Transmissions',
+        data: data.map(item => item.count),
+        backgroundColor: 'rgba(52, 152, 219, 0.8)',
+        borderColor: 'rgba(41, 128, 185, 1)',
+        borderWidth: 1,
+        borderRadius: 4,
+        borderSkipped: false,
+      }
+    ]
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: 'y' as const,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        callbacks: {
+          title: (context: any) => {
+            const item = data[context[0].dataIndex];
+            return `${item.name} (ID: ${item.talkgroup_id})`;
+          },
+          label: (context: any) => {
+            return `Transmissions: ${context.parsed.x}`;
+          }
+        }
+      },
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        grid: {
+          display: false,
+        },
+        ticks: {
+          display: false,
+        },
+        border: {
+          display: false,
+        }
+      },
+      y: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: '#2c3e50',
+          font: {
+            size: 12,
+            weight: 'normal' as const,
+          },
+          maxRotation: 0,
+          callback: function(value: any, index: number) {
+            const item = data[index];
+            return item ? `${item.name} (ID: ${item.talkgroup_id})` : '';
+          },
+          padding: 10,
+        },
+        border: {
+          display: false,
+        }
+      }
+    },
+    layout: {
+      padding: {
+        left: 10,
+        right: 30,
+        top: 10,
+        bottom: 10
+      }
+    },
+    elements: {
+      bar: {
+        borderRadius: 4,
+      }
+    },
+    datasets: {
+      bar: {
+        categoryPercentage: 0.9,
+        barPercentage: 0.8,
+      }
+    },
+    interaction: {
+      intersect: false,
+    },
+    animation: {
+      duration: 750,
+      easing: 'easeInOutQuart' as const,
+    }
+  };
+
+  // Calculate height based on number of items
+  const chartHeight = Math.max(300, data.length * 50);
 
   return (
     <div className="talkgroup-chart">
@@ -41,37 +191,10 @@ const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
       </div>
       
       <div className="chart-container">
-        <div className="chart-bars">
-          {data.map((item, index) => {
-            // Calculate bar width as percentage of maximum
-            const widthPercent = (item.count / maxCount) * 100;
-            
-            return (
-              <div key={item.talkgroup_id} className="bar-item">
-                <div className="bar-row">
-                  <div className="talkgroup-info">
-                    <span className="talkgroup-name" title={item.name}>
-                      {item.name}
-                    </span>
-                    <span className="talkgroup-id">
-                      (ID: {item.talkgroup_id})
-                    </span>
-                  </div>
-                  <div className="bar-wrapper">
-                    <div 
-                      className="bar"
-                      style={{ width: `${Math.max(widthPercent, 2)}%` }}
-                      title={`${item.name} (ID: ${item.talkgroup_id}): ${item.count} transmissions`}
-                    >
-                      <div className="bar-label">
-                        {item.count}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="chart-wrapper-full">
+          <div className="chart-bars-container-full" style={{ height: `${chartHeight}px` }}>
+            <Bar data={chartData} options={options} />
+          </div>
         </div>
       </div>
       

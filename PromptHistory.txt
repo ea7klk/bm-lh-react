@@ -18,6 +18,8 @@ CREATE TABLE public.lastheard (
 
 Adjust the frontend as well 
 
+Commit: 07089fb9c572e1a4962a2e90caa965c70caf759d Initial schema for lastheard table
+
 =======================================================================================================================================================
 
 
@@ -124,6 +126,7 @@ module.exports = {
   stopBrandmeisterService,
 };
 
+Commit: 578adff8e01154e8b6ee3cf8db10d217e8a8b523 Get real Lastheard data, remove mock data
 
 =======================================================================================================================================================
 
@@ -988,6 +991,7 @@ module.exports = {
   getTalkgroupsByCountry,
 };
 
+Commit: a4d728a6dfe387bbfd30c6506ac55623a90e8f9f Add Talkgroups table (real commit message is longer)
 
 =======================================================================================================================================================
 
@@ -1001,28 +1005,43 @@ The table should only display entries matching the selected values
 
 All data should come from the appropriate places in the database. 
 
+Commit: b8c458d532036f0e3404fafe1a502560b2695ba5 Add filters for timeframe, continent and country
+
 =======================================================================================================================================================
 
 When filters are applied the real-time update no longer works. Make sure that the real-time update of the data works even when filters are applied. 
+
+Commit: 46d57c110c7455e177020f3d2f6699d02e5e6e0b Some filter fixes
 
 =======================================================================================================================================================
 
 It seems the problem is the streaming data. Instead of using streaming to display the data, modify the web page to poll new data 10 seconds using the filters. 
 Create new backend elements as needed and remember to remove the websocket service in the backend. 
 
+Commit: 88258ca80d84f6b6801a8d415734ff6058555293 
+Use polling instead of puushing to refresh data
+Removed websocket server
+Changed implementation
+
 =======================================================================================================================================================
 
 Add a selector "Maximum entries" at the end of the filters and apply that to the displayed data as well. 
 The possible values should be 10, 20, 30 and 50.
 
+Commit: a23b8cb5d745ab0c92b9fcda02d5b793a3add2db Add maximum entries selector
+
 =======================================================================================================================================================
 
 Remove the "apply filters" button in the frontend. The filters should be applied automatically when selected. Keep the Clear filters button.
+
+Commit: a23b8cb5d745ab0c92b9fcda02d5b793a3add2db TG graphic instead of table.
 
 =======================================================================================================================================================
 
 Remove the list of latest QSOs
 Instead, create a bar graph with the most active talkgroups based on count, based on the filters. 
+
+Commit: 7aca846e28ff26f8b7e410c9b114e47b7cbcd349 TG graphic instead of table.
 
 =======================================================================================================================================================
 
@@ -1030,6 +1049,8 @@ The maximum entries filter is not being applied in the graphics.
 Make the graphic more compact by putting the talkgroup name to the left of the bar. 
 remove the country name in parentheses, instead add the talkgroup ID (destinationID in the DB).
 Leave the number of transmissions only inside the bar. 
+
+Commit: d9707464a0f9987d37f5028c05ea036e5c3b3469 Fixing graphics layout on desktop
 
 =======================================================================================================================================================
 
@@ -1039,5 +1060,19 @@ Prompts after main prompt: (not satisfied with results)
 The drop-down text is still too small on mobile devices. 
 
 I was not refering to the size of the filter fields themselves, but to the text that appears with the different options.
+
+Commit: c6759d6020f4bcb66ad08aa40e1f0fd2f52c38cc Some fixes for dropdowns on mobile devices
+
+=======================================================================================================================================================
+
+Change the bar graph generation to use the library Charts.js. Keep the current design and alignement for the graphs and the labels. 
+
+Prompts after main prompt: (not satisfied with results)
+
+The labels are not aligned with the bars, please fix this
+
+The bars and the labels are aligned at the beginning of the graph but start losing alignement at the end. Please generate the entire graph including the labels and values with the chart.js api. 
+
+Commit: 
 
 =======================================================================================================================================================
