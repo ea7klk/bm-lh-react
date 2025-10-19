@@ -33,4 +33,5 @@ export interface FilterOptions {
   timeFilter: string;
   continent: string;
   country: string;
+  maxEntries: string;
 }

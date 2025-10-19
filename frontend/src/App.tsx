@@ -12,12 +12,13 @@ function App() {
   const [error, setError] = useState<string>('');
   const [isPolling, setIsPolling] = useState<boolean>(true);
   const [total, setTotal] = useState<number>(0);
-  const [lastUpdate, setLastUpdate] = useState<number>(Date.now() / 1000);
+  const [lastUpdate, setLastUpdate] = useState<number>(Math.floor(Date.now() / 1000));
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [filters, setFilters] = useState<FilterOptions>({
     timeFilter: 'all',
     continent: 'all',
     country: 'all',
+    maxEntries: '50',
   });
 
   const fetchData = async (currentFilters?: FilterOptions) => {
@@ -25,10 +26,11 @@ function App() {
       setLoading(true);
       setError('');
       const filtersToUse = currentFilters || filters;
-      const result = await lastHeardService.getLastHeard(50, 0, filtersToUse);
+      const maxEntries = parseInt(filtersToUse.maxEntries) || 50;
+      const result = await lastHeardService.getLastHeard(maxEntries, 0, filtersToUse);
       setEntries(result.data);
       setTotal(result.total);
-      setLastUpdate(Date.now() / 1000);
+      setLastUpdate(Math.floor(Date.now() / 1000));
     } catch (err) {
       setError('Failed to load data. Please check if the backend is running.');
       console.error(err);
@@ -44,10 +46,11 @@ function App() {
       const result = await lastHeardService.pollNewEntries(lastUpdate, filters);
       
       if (result.newEntries > 0) {
+        const maxEntries = parseInt(filters.maxEntries) || 50;
         setEntries(prevEntries => {
-          // Add new entries at the beginning and limit to 100 entries total
+          // Add new entries at the beginning and limit to maxEntries
           const updatedEntries = [...result.data, ...prevEntries];
-          return updatedEntries.slice(0, 100);
+          return updatedEntries.slice(0, maxEntries);
         });
         
         // Update total count
@@ -97,7 +100,7 @@ function App() {
   // Fetch data when filters change and reset lastUpdate timestamp
   useEffect(() => {
     fetchData();
-    setLastUpdate(Date.now() / 1000); // Reset timestamp when filters change
+    setLastUpdate(Math.floor(Date.now() / 1000)); // Reset timestamp when filters change
   }, [filters]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

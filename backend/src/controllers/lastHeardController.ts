@@ -311,6 +311,7 @@ export const pollNewEntries = async (req: Request, res: Response) => {
     const timeFilter = req.query.time as string; // in minutes
     const continent = req.query.continent as string;
     const country = req.query.country as string;
+    const limit = parseInt(req.query.limit as string) || 100;
 
     if (USE_MOCK_DATA) {
       // For mock data, just return empty since we don't have real-time updates
@@ -332,7 +333,7 @@ export const pollNewEntries = async (req: Request, res: Response) => {
       if (!isNaN(lastUpdate)) {
         paramCount++;
         whereConditions.push(`lh.created_at > $${paramCount}`);
-        queryParams.push(lastUpdate);
+        queryParams.push(Math.floor(lastUpdate)); // Convert to integer for bigint compatibility
       }
     }
 
@@ -372,7 +373,7 @@ export const pollNewEntries = async (req: Request, res: Response) => {
       LEFT JOIN talkgroups tg ON lh."DestinationID" = tg.talkgroup_id
       ${whereClause}
       ORDER BY lh."Start" DESC 
-      LIMIT 100
+      LIMIT ${limit}
     `;
 
     const result = await pool.query(query, queryParams);
@@ -381,7 +382,7 @@ export const pollNewEntries = async (req: Request, res: Response) => {
       success: true,
       data: result.rows,
       newEntries: result.rows.length,
-      lastUpdate: Date.now() / 1000, // Current timestamp for next poll
+      lastUpdate: Math.floor(Date.now() / 1000), // Current timestamp for next poll as integer
     });
   } catch (error) {
     console.error('Error polling new entries:', error);

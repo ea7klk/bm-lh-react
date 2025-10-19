@@ -1011,3 +1011,7 @@ It seems the problem is the streaming data. Instead of using streaming to displa
 Create new backend elements as needed and remember to remove the websocket service in the backend. 
 
 =======================================================================================================================================================
+
+Add a selector "Maximum entries" at the end of the filters and apply that to the displayed data as well. 
+The possible values should be 10, 20, 30 and 50.
+=======================================================================================================================================================

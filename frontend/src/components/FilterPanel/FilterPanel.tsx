@@ -25,6 +25,13 @@ const TIME_OPTIONS = [
   { value: '10080', label: 'Last week' },
 ];
 
+const MAX_ENTRIES_OPTIONS = [
+  { value: '10', label: '10 entries' },
+  { value: '20', label: '20 entries' },
+  { value: '30', label: '30 entries' },
+  { value: '50', label: '50 entries' },
+];
+
 const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, onApplyFilters }) => {
   const [continents, setContinents] = useState<string[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
@@ -79,6 +86,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, onA
       timeFilter: 'all',
       continent: 'all',
       country: 'all',
+      maxEntries: '50',
     });
   };
 
@@ -131,6 +139,21 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, onA
               {countries.map((country) => (
                 <option key={country.country} value={country.country}>
                   {country.full_country_name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label htmlFor="max-entries-filter">Maximum Entries:</label>
+            <select
+              id="max-entries-filter"
+              value={filters.maxEntries}
+              onChange={(e) => handleFilterChange('maxEntries', e.target.value)}
+            >
+              {MAX_ENTRIES_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
                 </option>
               ))}
             </select>

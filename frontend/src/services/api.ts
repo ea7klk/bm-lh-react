@@ -9,8 +9,9 @@ export const lastHeardService = {
     filters?: FilterOptions
   ): Promise<{ data: LastHeardEntry[]; total: number }> {
     try {
+      const maxEntries = filters?.maxEntries ? parseInt(filters.maxEntries) : limit;
       const params = new URLSearchParams({
-        limit: limit.toString(),
+        limit: maxEntries.toString(),
         offset: offset.toString(),
       });
 
@@ -62,6 +63,10 @@ export const lastHeardService = {
       
       if (filters?.country && filters.country !== 'all') {
         params.append('country', filters.country);
+      }
+
+      if (filters?.maxEntries) {
+        params.append('limit', filters.maxEntries);
       }
 
       const response = await fetch(`${API_BASE_URL}/lastheard/poll?${params}`);
