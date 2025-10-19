@@ -67,10 +67,6 @@ function App() {
     setFilters(newFilters);
   };
 
-  const handleApplyFilters = () => {
-    fetchData(filters);
-  };
-
   const startPolling = useCallback(() => {
     if (pollingIntervalRef.current) {
       clearInterval(pollingIntervalRef.current);
@@ -127,7 +123,6 @@ function App() {
         <FilterPanel 
           filters={filters}
           onFiltersChange={handleFiltersChange}
-          onApplyFilters={handleApplyFilters}
         />
         
         {error && (

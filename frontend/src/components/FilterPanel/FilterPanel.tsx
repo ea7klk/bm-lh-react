@@ -6,7 +6,6 @@ import './FilterPanel.css';
 interface FilterPanelProps {
   filters: FilterOptions;
   onFiltersChange: (filters: FilterOptions) => void;
-  onApplyFilters: () => void;
 }
 
 const TIME_OPTIONS = [
@@ -32,10 +31,9 @@ const MAX_ENTRIES_OPTIONS = [
   { value: '50', label: '50 entries' },
 ];
 
-const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, onApplyFilters }) => {
+const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) => {
   const [continents, setContinents] = useState<string[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchContinents();
@@ -73,12 +71,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, onA
     }
     
     onFiltersChange(newFilters);
-  };
-
-  const handleApplyFilters = () => {
-    setLoading(true);
-    onApplyFilters();
-    setTimeout(() => setLoading(false), 500); // Add small delay for UX
   };
 
   const handleClearFilters = () => {
@@ -161,13 +153,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, onA
         </div>
 
         <div className="filter-actions">
-          <button 
-            onClick={handleApplyFilters} 
-            disabled={loading}
-            className="apply-button"
-          >
-            {loading ? 'Applying...' : 'Apply Filters'}
-          </button>
           <button 
             onClick={handleClearFilters}
             className="clear-button"
