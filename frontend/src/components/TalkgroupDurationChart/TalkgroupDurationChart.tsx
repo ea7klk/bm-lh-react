@@ -9,8 +9,8 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { TalkgroupStats } from '../../types';
-import './TalkgroupChart.css';
+import { TalkgroupDurationStats } from '../../types';
+import './TalkgroupDurationChart.css';
 
 ChartJS.register(
   CategoryScale,
@@ -21,9 +21,24 @@ ChartJS.register(
   Legend
 );
 
-// Custom plugin to show transmission count values on bars
-const transmissionValuesOnBarsPlugin = {
-  id: 'transmissionValuesOnBars',
+// Helper function to format duration in human readable format
+const formatDuration = (seconds: number): string => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  if (hours > 0) {
+    return `${hours}h ${minutes}m ${secs}s`;
+  } else if (minutes > 0) {
+    return `${minutes}m ${secs}s`;
+  } else {
+    return `${secs}s`;
+  }
+};
+
+// Custom plugin to show duration values on bars
+const durationValuesOnBarsPlugin = {
+  id: 'durationValuesOnBars',
   afterDatasetsDraw: (chart: any) => {
     const { ctx, data } = chart;
     
@@ -44,8 +59,9 @@ const transmissionValuesOnBarsPlugin = {
         const x = bar.x + 10; // Position just after the end of the bar
         const y = bar.y;
         
-        // Display transmission count
-        ctx.fillText(value.toString(), x, y);
+        // Format duration for display
+        const formattedValue = formatDuration(value);
+        ctx.fillText(formattedValue, x, y);
         ctx.restore();
       });
     });
@@ -53,19 +69,19 @@ const transmissionValuesOnBarsPlugin = {
 };
 
 // Register this plugin only when this chart is rendered
-const chartPlugins = [transmissionValuesOnBarsPlugin];
+const chartPlugins = [durationValuesOnBarsPlugin];
 
-interface TalkgroupChartProps {
-  data: TalkgroupStats[];
+interface TalkgroupDurationChartProps {
+  data: TalkgroupDurationStats[];
   loading: boolean;
 }
 
-const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
+const TalkgroupDurationChart: React.FC<TalkgroupDurationChartProps> = ({ data, loading }) => {
   if (loading) {
     return (
-      <div className="talkgroup-chart">
+      <div className="talkgroup-duration-chart">
         <div className="chart-header">
-          <h2>Most Active Talkgroups</h2>
+          <h2>Talkgroups by Total Duration</h2>
         </div>
         <div className="loading-message">Loading chart data...</div>
       </div>
@@ -74,9 +90,9 @@ const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
 
   if (!data || data.length === 0) {
     return (
-      <div className="talkgroup-chart">
+      <div className="talkgroup-duration-chart">
         <div className="chart-header">
-          <h2>Most Active Talkgroups</h2>
+          <h2>Talkgroups by Total Duration</h2>
         </div>
         <div className="no-data-message">No data available for the selected filters.</div>
       </div>
@@ -88,10 +104,10 @@ const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
     labels: data.map(item => `${item.name} (ID: ${item.talkgroup_id})`),
     datasets: [
       {
-        label: 'Transmissions',
-        data: data.map(item => item.count),
-        backgroundColor: 'rgba(52, 152, 219, 0.8)',
-        borderColor: 'rgba(41, 128, 185, 1)',
+        label: 'Total Duration (seconds)',
+        data: data.map(item => item.total_duration),
+        backgroundColor: 'rgba(46, 204, 113, 0.8)',
+        borderColor: 'rgba(39, 174, 96, 1)',
         borderWidth: 1,
         borderRadius: 4,
         borderSkipped: false,
@@ -114,7 +130,8 @@ const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
             return `${item.name} (ID: ${item.talkgroup_id})`;
           },
           label: (context: any) => {
-            return `Transmissions: ${context.parsed.x}`;
+            const seconds = context.parsed.x;
+            return `Total Duration: ${formatDuration(seconds)}`;
           }
         }
       },
@@ -157,7 +174,7 @@ const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
     layout: {
       padding: {
         left: 10,
-        right: 60, // More padding for values positioned after bars
+        right: 80, // More padding for duration text positioned after bars
         top: 10,
         bottom: 10
       }
@@ -186,10 +203,10 @@ const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
   const chartHeight = Math.max(300, data.length * 50);
 
   return (
-    <div className="talkgroup-chart">
+    <div className="talkgroup-duration-chart">
       <div className="chart-header">
-        <h2>Most Active Talkgroups</h2>
-        <p className="chart-subtitle">Number of transmissions by talkgroup</p>
+        <h2>Talkgroups by Total Duration</h2>
+        <p className="chart-subtitle">Total air time by talkgroup</p>
       </div>
       
       <div className="chart-container">
@@ -201,10 +218,10 @@ const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
       </div>
       
       <div className="chart-footer">
-        <small>Showing top {data.length} most active talkgroups</small>
+        <small>Showing top {data.length} talkgroups by duration</small>
       </div>
     </div>
   );
 };
 
-export default TalkgroupChart;
+export default TalkgroupDurationChart;

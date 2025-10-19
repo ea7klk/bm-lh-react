@@ -1073,6 +1073,17 @@ The labels are not aligned with the bars, please fix this
 
 The bars and the labels are aligned at the beginning of the graph but start losing alignement at the end. Please generate the entire graph including the labels and values with the chart.js api. 
 
-Commit: 
+Commit: 02a670ac89c8905a6caf722ad71cde50cad30d19 Use Chart.js library for charts
 
+=======================================================================================================================================================
+
+Add a second chart that shows the sum of duration of QSOs for each talkgroup following the filters selected, following the design of the first chart
+
+Prompts after main prompt: (not satisfied with results)
+
+The duration and the count is shown in the bars in both graphs. Make sure the count is only shown in the "Number of transmissions by talkgroup" chart and the duration only in the "Total air time by talkgroup" chart. Also make the values a dark text to improve readability
+
+Place the values just after the bar in both charts for better readability.
+
+Commit: 
 =======================================================================================================================================================

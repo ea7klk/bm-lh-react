@@ -2,12 +2,14 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
 import Header from './components/Header/Header';
 import TalkgroupChart from './components/TalkgroupChart/TalkgroupChart';
+import TalkgroupDurationChart from './components/TalkgroupDurationChart/TalkgroupDurationChart';
 import FilterPanel from './components/FilterPanel/FilterPanel';
 import { lastHeardService } from './services/api';
-import { TalkgroupStats, FilterOptions } from './types';
+import { TalkgroupStats, TalkgroupDurationStats, FilterOptions } from './types';
 
 function App() {
   const [talkgroupStats, setTalkgroupStats] = useState<TalkgroupStats[]>([]);
+  const [talkgroupDurationStats, setTalkgroupDurationStats] = useState<TalkgroupDurationStats[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [isPolling, setIsPolling] = useState<boolean>(true);
@@ -25,8 +27,15 @@ function App() {
       setLoading(true);
       setError('');
       const filtersToUse = currentFilters || filters;
-      const result = await lastHeardService.getTalkgroupStats(filtersToUse);
-      setTalkgroupStats(result);
+      
+      // Fetch both charts data in parallel
+      const [statsResult, durationResult] = await Promise.all([
+        lastHeardService.getTalkgroupStats(filtersToUse),
+        lastHeardService.getTalkgroupDurationStats(filtersToUse)
+      ]);
+      
+      setTalkgroupStats(statsResult);
+      setTalkgroupDurationStats(durationResult);
       setLastUpdate(Math.floor(Date.now() / 1000));
     } catch (err) {
       setError('Failed to load data. Please check if the backend is running.');
@@ -40,8 +49,14 @@ function App() {
     if (!isPolling) return;
 
     try {
-      const result = await lastHeardService.getTalkgroupStats(filters);
-      setTalkgroupStats(result);
+      // Poll both charts data in parallel
+      const [statsResult, durationResult] = await Promise.all([
+        lastHeardService.getTalkgroupStats(filters),
+        lastHeardService.getTalkgroupDurationStats(filters)
+      ]);
+      
+      setTalkgroupStats(statsResult);
+      setTalkgroupDurationStats(durationResult);
       setLastUpdate(Math.floor(Date.now() / 1000));
     } catch (err) {
       console.error('Error polling talkgroup stats:', err);
@@ -117,7 +132,9 @@ function App() {
             <button onClick={() => fetchData()}>Retry</button>
           </div>
         )}
+        
         <TalkgroupChart data={talkgroupStats} loading={loading} />
+        <TalkgroupDurationChart data={talkgroupDurationStats} loading={loading} />
       </main>
     </div>
   );

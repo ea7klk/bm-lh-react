@@ -44,3 +44,12 @@ export interface TalkgroupStats {
   country?: string;
   full_country_name?: string;
 }
+
+export interface TalkgroupDurationStats {
+  talkgroup_id: number;
+  name: string;
+  total_duration: number;
+  continent?: string;
+  country?: string;
+  full_country_name?: string;
+}

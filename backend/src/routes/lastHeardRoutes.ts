@@ -7,6 +7,7 @@ import {
   getCountries,
   pollNewEntries,
   getTalkgroupStats,
+  getTalkgroupDurationStats,
 } from '../controllers/lastHeardController';
 
 const router = Router();
@@ -15,6 +16,7 @@ const router = Router();
 router.get('/continents', getContinents);
 router.get('/countries', getCountries);
 router.get('/stats/talkgroups', getTalkgroupStats);
+router.get('/stats/talkgroups/duration', getTalkgroupDurationStats);
 router.get('/poll', pollNewEntries);
 router.get('/', getLastHeard);
 router.get('/:id', getLastHeardById);

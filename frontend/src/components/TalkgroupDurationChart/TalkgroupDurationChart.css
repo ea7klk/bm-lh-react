@@ -1,0 +1,87 @@
+/* TalkgroupDurationChart.css */
+
+.talkgroup-duration-chart {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px 0;
+  max-width: 100%;
+}
+
+.chart-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.chart-header h2 {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin: 0 0 5px 0;
+  font-weight: 600;
+}
+
+.chart-subtitle {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin: 0;
+  font-style: italic;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.chart-wrapper-full {
+  width: 100%;
+  position: relative;
+}
+
+.chart-bars-container-full {
+  width: 100%;
+  position: relative;
+}
+
+.loading-message,
+.no-data-message {
+  text-align: center;
+  padding: 40px;
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+.chart-footer {
+  margin-top: 15px;
+  text-align: center;
+  color: #95a5a6;
+  font-size: 0.8rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .talkgroup-duration-chart {
+    padding: 15px;
+    margin: 15px 0;
+  }
+  
+  .chart-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .chart-subtitle {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .talkgroup-duration-chart {
+    padding: 10px;
+    margin: 10px 0;
+  }
+  
+  .chart-header h2 {
+    font-size: 1.3rem;
+  }
+}
