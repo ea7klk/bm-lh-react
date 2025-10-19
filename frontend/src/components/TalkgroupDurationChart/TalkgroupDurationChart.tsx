@@ -106,8 +106,8 @@ const TalkgroupDurationChart: React.FC<TalkgroupDurationChartProps> = ({ data, l
       {
         label: 'Total Duration (seconds)',
         data: data.map(item => item.total_duration),
-        backgroundColor: 'rgba(46, 204, 113, 0.8)',
-        borderColor: 'rgba(39, 174, 96, 1)',
+        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+        borderColor: 'rgba(118, 75, 162, 1)',
         borderWidth: 1,
         borderRadius: 4,
         borderSkipped: false,

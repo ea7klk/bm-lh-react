@@ -90,8 +90,8 @@ const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
       {
         label: 'Transmissions',
         data: data.map(item => item.count),
-        backgroundColor: 'rgba(52, 152, 219, 0.8)',
-        borderColor: 'rgba(41, 128, 185, 1)',
+        backgroundColor: 'rgba(118, 75, 162, 0.8)',
+        borderColor: 'rgba(102, 126, 234, 1)',
         borderWidth: 1,
         borderRadius: 4,
         borderSkipped: false,
