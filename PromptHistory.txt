@@ -1006,3 +1006,8 @@ All data should come from the appropriate places in the database.
 When filters are applied the real-time update no longer works. Make sure that the real-time update of the data works even when filters are applied. 
 
 =======================================================================================================================================================
+
+It seems the problem is the streaming data. Instead of using streaming to display the data, modify the web page to poll new data 10 seconds using the filters. 
+Create new backend elements as needed and remember to remove the websocket service in the backend. 
+
+=======================================================================================================================================================

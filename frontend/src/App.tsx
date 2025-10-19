@@ -1,83 +1,23 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
 import Header from './components/Header/Header';
 import LastHeardTable from './components/LastHeardTable/LastHeardTable';
 import FilterPanel from './components/FilterPanel/FilterPanel';
 import { lastHeardService } from './services/api';
 import { LastHeardEntry, FilterOptions } from './types';
-import { useWebSocket } from './hooks/useWebSocket';
 
 function App() {
   const [entries, setEntries] = useState<LastHeardEntry[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
-  const [isRealTime, setIsRealTime] = useState<boolean>(true);
+  const [isPolling, setIsPolling] = useState<boolean>(true);
   const [total, setTotal] = useState<number>(0);
+  const [lastUpdate, setLastUpdate] = useState<number>(Date.now() / 1000);
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [filters, setFilters] = useState<FilterOptions>({
     timeFilter: 'all',
     continent: 'all',
     country: 'all',
-  });
-
-  // Helper function to check if an entry matches current filters
-  const entryMatchesFilters = useCallback((entry: LastHeardEntry, currentFilters: FilterOptions): boolean => {
-    // Check time filter
-    if (currentFilters.timeFilter !== 'all') {
-      const now = Date.now() / 1000; // Current time in seconds
-      const entryTime = entry.Start; // Entry start time in seconds
-      const timeFilterMinutes: { [key: string]: number } = {
-        '5': 5,
-        '10': 10,
-        '15': 15,
-        '30': 30,
-        '60': 60,
-        '180': 180,
-        '360': 360,
-        '720': 720,
-        '1440': 1440,
-        '4320': 4320,
-        '7200': 7200,
-        '10080': 10080,
-      };
-      
-      const filterMinutes = timeFilterMinutes[currentFilters.timeFilter];
-      if (filterMinutes && (now - entryTime) > (filterMinutes * 60)) {
-        return false;
-      }
-    }
-
-    // Check continent filter
-    if (currentFilters.continent !== 'all' && entry.continent !== currentFilters.continent) {
-      return false;
-    }
-
-    // Check country filter
-    if (currentFilters.country !== 'all' && entry.country !== currentFilters.country) {
-      return false;
-    }
-
-    return true;
-  }, []);
-
-  const handleNewEntry = useCallback((newEntry: LastHeardEntry) => {
-    if (!isRealTime) return;
-
-    // Check if the new entry matches current filters
-    if (entryMatchesFilters(newEntry, filters)) {
-      setEntries(prevEntries => {
-        // Add new entry at the beginning and limit to 100 entries
-        const updatedEntries = [newEntry, ...prevEntries];
-        return updatedEntries.slice(0, 100);
-      });
-      
-      // Update total count
-      setTotal(prevTotal => prevTotal + 1);
-    }
-  }, [isRealTime, filters, entryMatchesFilters]);
-
-  // Initialize WebSocket for real-time updates
-  useWebSocket({
-    onNewEntry: handleNewEntry,
   });
 
   const fetchData = async (currentFilters?: FilterOptions) => {
@@ -88,6 +28,7 @@ function App() {
       const result = await lastHeardService.getLastHeard(50, 0, filtersToUse);
       setEntries(result.data);
       setTotal(result.total);
+      setLastUpdate(Date.now() / 1000);
     } catch (err) {
       setError('Failed to load data. Please check if the backend is running.');
       console.error(err);
@@ -95,6 +36,29 @@ function App() {
       setLoading(false);
     }
   };
+
+  const pollNewEntries = useCallback(async () => {
+    if (!isPolling) return;
+
+    try {
+      const result = await lastHeardService.pollNewEntries(lastUpdate, filters);
+      
+      if (result.newEntries > 0) {
+        setEntries(prevEntries => {
+          // Add new entries at the beginning and limit to 100 entries total
+          const updatedEntries = [...result.data, ...prevEntries];
+          return updatedEntries.slice(0, 100);
+        });
+        
+        // Update total count
+        setTotal(prevTotal => prevTotal + result.newEntries);
+        setLastUpdate(result.lastUpdate);
+      }
+    } catch (err) {
+      console.error('Error polling new entries:', err);
+      // Don't show error for polling failures to avoid UI spam
+    }
+  }, [isPolling, lastUpdate, filters]);
 
   const handleFiltersChange = (newFilters: FilterOptions) => {
     setFilters(newFilters);
@@ -104,19 +68,36 @@ function App() {
     fetchData(filters);
   };
 
-  useEffect(() => {
-    fetchData();
-    // Auto-refresh every 30 seconds as fallback when real-time is enabled
-    if (isRealTime) {
-      const interval = setInterval(() => fetchData(), 30000);
-      return () => clearInterval(interval);
+  const startPolling = useCallback(() => {
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
     }
-  }, [isRealTime]); // eslint-disable-line react-hooks/exhaustive-deps
+    
+    if (isPolling) {
+      pollingIntervalRef.current = setInterval(pollNewEntries, 10000); // Poll every 10 seconds
+    }
+  }, [isPolling, pollNewEntries]);
 
-  // Fetch data when filters change (to immediately apply new filters)
+  // Initial data fetch
   useEffect(() => {
-    // Only fetch if not in the initial load (handled by the first useEffect)
     fetchData();
+  }, []);
+
+  // Start/stop polling based on isPolling state
+  useEffect(() => {
+    startPolling();
+    
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+    };
+  }, [startPolling]);
+
+  // Fetch data when filters change and reset lastUpdate timestamp
+  useEffect(() => {
+    fetchData();
+    setLastUpdate(Date.now() / 1000); // Reset timestamp when filters change
   }, [filters]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -130,10 +111,10 @@ function App() {
           <label className="realtime-toggle">
             <input
               type="checkbox"
-              checked={isRealTime}
-              onChange={(e) => setIsRealTime(e.target.checked)}
+              checked={isPolling}
+              onChange={(e) => setIsPolling(e.target.checked)}
             />
-            Real-time updates
+            Auto-refresh (10s)
           </label>
           <span className="entry-count">
             Showing {entries.length} of {total} entries

@@ -43,6 +43,45 @@ export const lastHeardService = {
     }
   },
 
+  async pollNewEntries(
+    lastUpdate: number,
+    filters?: FilterOptions
+  ): Promise<{ data: LastHeardEntry[]; newEntries: number; lastUpdate: number }> {
+    try {
+      const params = new URLSearchParams({
+        lastUpdate: lastUpdate.toString(),
+      });
+
+      if (filters?.timeFilter && filters.timeFilter !== 'all') {
+        params.append('time', filters.timeFilter);
+      }
+      
+      if (filters?.continent && filters.continent !== 'all') {
+        params.append('continent', filters.continent);
+      }
+      
+      if (filters?.country && filters.country !== 'all') {
+        params.append('country', filters.country);
+      }
+
+      const response = await fetch(`${API_BASE_URL}/lastheard/poll?${params}`);
+      const result: ApiResponse<LastHeardEntry[]> & { newEntries: number; lastUpdate: number } = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to poll new entries');
+      }
+      
+      return {
+        data: result.data,
+        newEntries: result.newEntries,
+        lastUpdate: result.lastUpdate,
+      };
+    } catch (error) {
+      console.error('Error polling new entries:', error);
+      throw error;
+    }
+  },
+
   async getLastHeardById(id: number): Promise<LastHeardEntry> {
     try {
       const response = await fetch(`${API_BASE_URL}/lastheard/${id}`);

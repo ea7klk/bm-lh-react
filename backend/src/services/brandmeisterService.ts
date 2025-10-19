@@ -1,6 +1,5 @@
 import { io, Socket } from 'socket.io-client';
 import pool from '../config/database';
-import { broadcastNewEntry } from './websocketService';
 
 let socket: Socket | null = null;
 
@@ -82,8 +81,7 @@ export function startBrandmeisterService(): void {
           const newEntry = result.rows[0];
           console.log(`Inserted: ${msg.SourceCall.trim()} → ${msg.DestinationName.trim()} (${duration}s)`);
           
-          // Broadcast new entry to connected clients
-          broadcastNewEntry(newEntry);
+          // Data is now stored in database and will be fetched by polling
         } catch (dbError: any) {
           console.error('Database insert error:', dbError.message);
         }

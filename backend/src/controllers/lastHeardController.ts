@@ -304,3 +304,90 @@ export const getCountries = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const pollNewEntries = async (req: Request, res: Response) => {
+  try {
+    const lastUpdateTimestamp = req.query.lastUpdate as string;
+    const timeFilter = req.query.time as string; // in minutes
+    const continent = req.query.continent as string;
+    const country = req.query.country as string;
+
+    if (USE_MOCK_DATA) {
+      // For mock data, just return empty since we don't have real-time updates
+      return res.json({
+        success: true,
+        data: [],
+        newEntries: 0,
+      });
+    }
+
+    // Build dynamic query with filters
+    let whereConditions: string[] = [];
+    let queryParams: any[] = [];
+    let paramCount = 0;
+
+    // Always filter by timestamp if provided
+    if (lastUpdateTimestamp) {
+      const lastUpdate = parseFloat(lastUpdateTimestamp);
+      if (!isNaN(lastUpdate)) {
+        paramCount++;
+        whereConditions.push(`lh.created_at > $${paramCount}`);
+        queryParams.push(lastUpdate);
+      }
+    }
+
+    // Time filter - only include entries within the specified time range
+    if (timeFilter) {
+      const minutesAgo = parseInt(timeFilter);
+      if (!isNaN(minutesAgo)) {
+        paramCount++;
+        whereConditions.push(`lh."Start" >= EXTRACT(EPOCH FROM NOW()) - ($${paramCount} * 60)`);
+        queryParams.push(minutesAgo);
+      }
+    }
+
+    // Continent filter
+    if (continent && continent !== 'all') {
+      paramCount++;
+      whereConditions.push(`tg.continent = $${paramCount}`);
+      queryParams.push(continent);
+    }
+
+    // Country filter
+    if (country && country !== 'all') {
+      paramCount++;
+      whereConditions.push(`tg.country = $${paramCount}`);
+      queryParams.push(country);
+    }
+
+    const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+
+    const query = `
+      SELECT lh.*, 
+             tg.continent, 
+             tg.country, 
+             tg.full_country_name,
+             tg.name as talkgroup_name
+      FROM lastheard lh
+      LEFT JOIN talkgroups tg ON lh."DestinationID" = tg.talkgroup_id
+      ${whereClause}
+      ORDER BY lh."Start" DESC 
+      LIMIT 100
+    `;
+
+    const result = await pool.query(query, queryParams);
+
+    res.json({
+      success: true,
+      data: result.rows,
+      newEntries: result.rows.length,
+      lastUpdate: Date.now() / 1000, // Current timestamp for next poll
+    });
+  } catch (error) {
+    console.error('Error polling new entries:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to poll new entries',
+    });
+  }
+};
