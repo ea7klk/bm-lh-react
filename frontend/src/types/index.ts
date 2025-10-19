@@ -35,3 +35,12 @@ export interface FilterOptions {
   country: string;
   maxEntries: string;
 }
+
+export interface TalkgroupStats {
+  talkgroup_id: number;
+  name: string;
+  count: number;
+  continent?: string;
+  country?: string;
+  full_country_name?: string;
+}

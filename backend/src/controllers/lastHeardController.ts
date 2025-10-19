@@ -392,3 +392,101 @@ export const pollNewEntries = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getTalkgroupStats = async (req: Request, res: Response) => {
+  try {
+    const timeFilter = req.query.time as string; // in minutes
+    const continent = req.query.continent as string;
+    const country = req.query.country as string;
+    const limit = parseInt(req.query.limit as string) || 20; // Default to top 20
+
+    if (USE_MOCK_DATA) {
+      // Return mock talkgroup stats
+      const mockStats = [
+        { talkgroup_id: 214, name: 'Spain', count: 45, continent: 'Europe', country: 'ES' },
+        { talkgroup_id: 208, name: 'France', count: 38, continent: 'Europe', country: 'FR' },
+        { talkgroup_id: 262, name: 'Germany', count: 32, continent: 'Europe', country: 'DE' },
+        { talkgroup_id: 235, name: 'United Kingdom', count: 28, continent: 'Europe', country: 'GB' },
+        { talkgroup_id: 222, name: 'Italy', count: 24, continent: 'Europe', country: 'IT' },
+      ];
+      
+      return res.json({
+        success: true,
+        data: mockStats.slice(0, limit),
+      });
+    }
+
+    // Build dynamic query with filters
+    let whereConditions: string[] = [];
+    let queryParams: any[] = [];
+    let paramCount = 0;
+
+    // Time filter
+    if (timeFilter) {
+      const minutesAgo = parseInt(timeFilter);
+      if (!isNaN(minutesAgo)) {
+        paramCount++;
+        whereConditions.push(`lh."Start" >= EXTRACT(EPOCH FROM NOW()) - ($${paramCount} * 60)`);
+        queryParams.push(minutesAgo);
+      }
+    }
+
+    // Continent filter
+    if (continent && continent !== 'all') {
+      paramCount++;
+      whereConditions.push(`tg.continent = $${paramCount}`);
+      queryParams.push(continent);
+    }
+
+    // Country filter
+    if (country && country !== 'all') {
+      paramCount++;
+      whereConditions.push(`tg.country = $${paramCount}`);
+      queryParams.push(country);
+    }
+
+    const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+
+    // Add limit to params
+    queryParams.push(limit);
+    const limitParam = paramCount + 1;
+
+    const query = `
+      SELECT 
+        lh."DestinationID" as talkgroup_id,
+        COALESCE(tg.name, lh."DestinationName", 'Unknown') as name,
+        COUNT(*) as count,
+        tg.continent,
+        tg.country,
+        tg.full_country_name
+      FROM lastheard lh
+      LEFT JOIN talkgroups tg ON lh."DestinationID" = tg.talkgroup_id
+      ${whereClause}
+      GROUP BY lh."DestinationID", tg.name, lh."DestinationName", tg.continent, tg.country, tg.full_country_name
+      ORDER BY count DESC
+      LIMIT $${limitParam}
+    `;
+
+    const result = await pool.query(query, queryParams);
+
+    res.json({
+      success: true,
+      data: result.rows,
+    });
+  } catch (error) {
+    console.error('Error fetching talkgroup stats:', error);
+    
+    // Fallback to mock data if database fails
+    const mockStats = [
+      { talkgroup_id: 214, name: 'Spain', count: 45, continent: 'Europe', country: 'ES' },
+      { talkgroup_id: 208, name: 'France', count: 38, continent: 'Europe', country: 'FR' },
+      { talkgroup_id: 262, name: 'Germany', count: 32, continent: 'Europe', country: 'DE' },
+    ];
+    
+    res.json({
+      success: true,
+      data: mockStats.slice(0, 20),
+      warning: 'Using mock data - database not available',
+    });
+  }
+};

@@ -1,4 +1,4 @@
-import { LastHeardEntry, ApiResponse, Country, FilterOptions } from '../types';
+import { LastHeardEntry, ApiResponse, Country, FilterOptions, TalkgroupStats } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
@@ -136,6 +136,41 @@ export const lastHeardService = {
       return result.data;
     } catch (error) {
       console.error('Error fetching countries:', error);
+      throw error;
+    }
+  },
+
+  async getTalkgroupStats(
+    filters?: FilterOptions,
+    limit: number = 20
+  ): Promise<TalkgroupStats[]> {
+    try {
+      const params = new URLSearchParams({
+        limit: limit.toString(),
+      });
+
+      if (filters?.timeFilter && filters.timeFilter !== 'all') {
+        params.append('time', filters.timeFilter);
+      }
+      
+      if (filters?.continent && filters.continent !== 'all') {
+        params.append('continent', filters.continent);
+      }
+      
+      if (filters?.country && filters.country !== 'all') {
+        params.append('country', filters.country);
+      }
+
+      const response = await fetch(`${API_BASE_URL}/lastheard/stats/talkgroups?${params}`);
+      const result: ApiResponse<TalkgroupStats[]> = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to fetch talkgroup statistics');
+      }
+      
+      return result.data;
+    } catch (error) {
+      console.error('Error fetching talkgroup stats:', error);
       throw error;
     }
   },

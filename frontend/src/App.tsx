@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
 import Header from './components/Header/Header';
-import LastHeardTable from './components/LastHeardTable/LastHeardTable';
+import TalkgroupChart from './components/TalkgroupChart/TalkgroupChart';
 import FilterPanel from './components/FilterPanel/FilterPanel';
 import { lastHeardService } from './services/api';
-import { LastHeardEntry, FilterOptions } from './types';
+import { TalkgroupStats, FilterOptions } from './types';
 
 function App() {
-  const [entries, setEntries] = useState<LastHeardEntry[]>([]);
+  const [talkgroupStats, setTalkgroupStats] = useState<TalkgroupStats[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [isPolling, setIsPolling] = useState<boolean>(true);
-  const [total, setTotal] = useState<number>(0);
   const [lastUpdate, setLastUpdate] = useState<number>(Math.floor(Date.now() / 1000));
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [filters, setFilters] = useState<FilterOptions>({
@@ -26,10 +25,8 @@ function App() {
       setLoading(true);
       setError('');
       const filtersToUse = currentFilters || filters;
-      const maxEntries = parseInt(filtersToUse.maxEntries) || 50;
-      const result = await lastHeardService.getLastHeard(maxEntries, 0, filtersToUse);
-      setEntries(result.data);
-      setTotal(result.total);
+      const result = await lastHeardService.getTalkgroupStats(filtersToUse);
+      setTalkgroupStats(result);
       setLastUpdate(Math.floor(Date.now() / 1000));
     } catch (err) {
       setError('Failed to load data. Please check if the backend is running.');
@@ -43,25 +40,14 @@ function App() {
     if (!isPolling) return;
 
     try {
-      const result = await lastHeardService.pollNewEntries(lastUpdate, filters);
-      
-      if (result.newEntries > 0) {
-        const maxEntries = parseInt(filters.maxEntries) || 50;
-        setEntries(prevEntries => {
-          // Add new entries at the beginning and limit to maxEntries
-          const updatedEntries = [...result.data, ...prevEntries];
-          return updatedEntries.slice(0, maxEntries);
-        });
-        
-        // Update total count
-        setTotal(prevTotal => prevTotal + result.newEntries);
-        setLastUpdate(result.lastUpdate);
-      }
+      const result = await lastHeardService.getTalkgroupStats(filters);
+      setTalkgroupStats(result);
+      setLastUpdate(Math.floor(Date.now() / 1000));
     } catch (err) {
-      console.error('Error polling new entries:', err);
+      console.error('Error polling talkgroup stats:', err);
       // Don't show error for polling failures to avoid UI spam
     }
-  }, [isPolling, lastUpdate, filters]);
+  }, [isPolling, filters]);
 
   const handleFiltersChange = (newFilters: FilterOptions) => {
     setFilters(newFilters);
@@ -116,7 +102,7 @@ function App() {
             Auto-refresh (10s)
           </label>
           <span className="entry-count">
-            Showing {entries.length} of {total} entries
+            Showing {talkgroupStats.length} talkgroups
           </span>
         </div>
         
@@ -131,7 +117,7 @@ function App() {
             <button onClick={() => fetchData()}>Retry</button>
           </div>
         )}
-        <LastHeardTable entries={entries} loading={loading} />
+        <TalkgroupChart data={talkgroupStats} loading={loading} />
       </main>
     </div>
   );
