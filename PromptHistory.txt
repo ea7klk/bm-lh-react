@@ -1085,5 +1085,14 @@ The duration and the count is shown in the bars in both graphs. Make sure the co
 
 Place the values just after the bar in both charts for better readability.
 
-Commit: 
+Commit: 51fcd1bbff8f1b00875b60b765fc8dad437dba78 Add duration chart and correct some mistakes with values and positioning.
+
 =======================================================================================================================================================
+
+Branch: visual/change-color-scheme
+
+Change the background color to #764ba2 with a gradient. 
+Make the containers for the filters and the charts rounded keeping the  white background. 
+Change the bars in the graphs to a color scheme matching the background. 
+
+Commit: 70a97159195e27d7ff584d8592bdbb260ebfea6e Change color scheme
