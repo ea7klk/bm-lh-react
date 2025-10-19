@@ -41,6 +41,15 @@
   color: #495057;
   font-size: 0.9rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.filter-group select option {
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  min-height: 1.5rem;
 }
 
 .filter-group select:focus {
@@ -105,6 +114,24 @@
     min-width: 100%;
   }
   
+  .filter-group label {
+    font-size: 1.2rem;
+  }
+  
+  .filter-group select {
+    font-size: 1.4rem;
+    padding: 1rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  
+  .filter-group select option {
+    font-size: 1.4rem;
+    padding: 1rem;
+    min-height: 2rem;
+  }
+  
   .filter-actions {
     flex-direction: column;
   }
@@ -112,5 +139,74 @@
   .apply-button,
   .clear-button {
     width: 100%;
+    font-size: 1.2rem;
+    padding: 1rem;
+  }
+}
+
+/* Extra responsive design for very small devices */
+@media (max-width: 480px) {
+  .filter-panel {
+    padding: 0.75rem;
+  }
+  
+  .filter-section h3 {
+    font-size: 1.4rem;
+  }
+  
+  .filter-group label {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .filter-group select {
+    font-size: 1.6rem;
+    padding: 1.2rem;
+    min-height: 56px; /* Ensure minimum touch target size */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  
+  .filter-group select option {
+    font-size: 1.6rem;
+    padding: 1.2rem;
+    min-height: 2.5rem;
+  }
+  
+  .apply-button,
+  .clear-button {
+    font-size: 1.3rem;
+    padding: 1.2rem;
+    min-height: 56px; /* Ensure minimum touch target size */
+  }
+}
+
+/* Additional breakpoint for very large mobile phones */
+@media (max-width: 375px) {
+  .filter-group select {
+    font-size: 1.8rem;
+    padding: 1.4rem;
+    min-height: 60px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  
+  .filter-group select option {
+    font-size: 1.8rem;
+    padding: 1.4rem;
+    min-height: 3rem;
+  }
+  
+  .filter-group label {
+    font-size: 1.4rem;
+  }
+  
+  .apply-button,
+  .clear-button {
+    font-size: 1.4rem;
+    padding: 1.4rem;
+    min-height: 60px;
   }
 }

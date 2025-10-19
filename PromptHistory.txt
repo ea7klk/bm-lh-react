@@ -1032,3 +1032,12 @@ remove the country name in parentheses, instead add the talkgroup ID (destinatio
 Leave the number of transmissions only inside the bar. 
 
 =======================================================================================================================================================
+
+The drop-down text of the filters is very small on mobile devices, but OK on desktop browsers. Fix this. 
+
+Prompts after main prompt: (not satisfied with results)
+The drop-down text is still too small on mobile devices. 
+
+I was not refering to the size of the filter fields themselves, but to the text that appears with the different options.
+
+=======================================================================================================================================================
