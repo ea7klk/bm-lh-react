@@ -6,6 +6,7 @@ import TalkgroupDurationChart from './components/TalkgroupDurationChart/Talkgrou
 import FilterPanel from './components/FilterPanel/FilterPanel';
 import { lastHeardService } from './services/api';
 import { TalkgroupStats, TalkgroupDurationStats, FilterOptions } from './types';
+import { loadFiltersFromStorage, saveFiltersToStorage } from './utils/filterStorage';
 
 function App() {
   const [talkgroupStats, setTalkgroupStats] = useState<TalkgroupStats[]>([]);
@@ -15,11 +16,9 @@ function App() {
   const [isPolling, setIsPolling] = useState<boolean>(true);
   const [lastUpdate, setLastUpdate] = useState<number>(Math.floor(Date.now() / 1000));
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const [filters, setFilters] = useState<FilterOptions>({
-    timeFilter: 'all',
-    continent: 'all',
-    country: 'all',
-    maxEntries: '50',
+  const [filters, setFilters] = useState<FilterOptions>(() => {
+    // Load filters from storage on initial render
+    return loadFiltersFromStorage();
   });
 
   const fetchData = async (currentFilters?: FilterOptions) => {
@@ -66,6 +65,8 @@ function App() {
 
   const handleFiltersChange = (newFilters: FilterOptions) => {
     setFilters(newFilters);
+    // Save filters to storage whenever they change
+    saveFiltersToStorage(newFilters);
   };
 
   const startPolling = useCallback(() => {

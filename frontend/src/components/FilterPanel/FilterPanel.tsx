@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FilterOptions, Country } from '../../types';
 import { lastHeardService } from '../../services/api';
+import { saveFiltersToStorage, areFiltersCustomized } from '../../utils/filterStorage';
 import './FilterPanel.css';
 
 interface FilterPanelProps {
@@ -74,12 +75,15 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
   };
 
   const handleClearFilters = () => {
-    onFiltersChange({
-      timeFilter: 'all',
+    const defaultFilters = {
+      timeFilter: '15',
       continent: 'all',
       country: 'all',
       maxEntries: '50',
-    });
+    };
+    onFiltersChange(defaultFilters);
+    // Save the cleared filters to storage
+    saveFiltersToStorage(defaultFilters);
   };
 
   return (
@@ -159,6 +163,11 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
           >
             Clear Filters
           </button>
+          {areFiltersCustomized(filters) && (
+            <span className="filter-status">
+              📌 Filters saved
+            </span>
+          )}
         </div>
       </div>
     </div>

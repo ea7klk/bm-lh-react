@@ -1096,3 +1096,14 @@ Make the containers for the filters and the charts rounded keeping the  white ba
 Change the bars in the graphs to a color scheme matching the background. 
 
 Commit: 70a97159195e27d7ff584d8592bdbb260ebfea6e Change color scheme
+
+=======================================================================================================================================================
+
+Make the default for the time range filter "Last 15 minutes"
+
+When a user sets filter values, set a cookie that restores the last used values on subsequent visits to the page. 
+
+Center the filters and the "Clear Filters" button in its container. 
+
+Check if there are any unused .css classes in any page and do a cleanup by deleting them in the .css files. 
+

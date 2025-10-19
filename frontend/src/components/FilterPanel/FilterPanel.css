@@ -12,6 +12,7 @@
   color: #764ba2;
   font-size: 1.2rem;
   font-weight: 600;
+  text-align: center;
 }
 
 .filter-row {
@@ -20,6 +21,7 @@
   flex-wrap: wrap;
   align-items: end;
   margin-bottom: 1rem;
+  justify-content: center;
 }
 
 .filter-group {
@@ -69,26 +71,17 @@
 .filter-actions {
   display: flex;
   gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
 }
 
-.apply-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.15s ease-in-out;
-}
-
-.apply-button:hover:not(:disabled) {
-  background-color: #0056b3;
-}
-
-.apply-button:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
+.filter-status {
+  font-size: 0.8rem;
+  color: #764ba2;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .clear-button {
@@ -113,14 +106,17 @@
 @media (max-width: 768px) {
   .filter-row {
     flex-direction: column;
+    align-items: center;
   }
   
   .filter-group {
     min-width: 100%;
+    max-width: 400px;
   }
   
   .filter-group label {
     font-size: 1.2rem;
+    text-align: center;
   }
   
   .filter-group select {
@@ -139,9 +135,10 @@
   
   .filter-actions {
     flex-direction: column;
+    width: 100%;
+    max-width: 400px;
   }
   
-  .apply-button,
   .clear-button {
     width: 100%;
     font-size: 1.2rem;
@@ -159,9 +156,14 @@
     font-size: 1.4rem;
   }
   
+  .filter-group {
+    max-width: 100%;
+  }
+  
   .filter-group label {
     font-size: 1.3rem;
     margin-bottom: 0.5rem;
+    text-align: center;
   }
   
   .filter-group select {
@@ -179,7 +181,10 @@
     min-height: 2.5rem;
   }
   
-  .apply-button,
+  .filter-actions {
+    max-width: 100%;
+  }
+  
   .clear-button {
     font-size: 1.3rem;
     padding: 1.2rem;
@@ -206,9 +211,9 @@
   
   .filter-group label {
     font-size: 1.4rem;
+    text-align: center;
   }
   
-  .apply-button,
   .clear-button {
     font-size: 1.4rem;
     padding: 1.4rem;
