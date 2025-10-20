@@ -1107,14 +1107,3 @@ Center the filters and the "Clear Filters" button in its container.
 
 Check if there are any unused .css classes in any page and do a cleanup by deleting them in the .css files. 
 
-Commit: 833ec9d9440a30ce5d88a802020ef9c38f6fa682 Implement some more cosmetic adjustmente
-
-=======================================================================================================================================================
-
-The sum of time in the duration graph seems to be incorrect in some cases, sometimes it is longer than the selected time range. This is not possible. 
-
-Option 2
-
-Commit: TBD Fix duration calculation to prevent exceeding time window by capping at maximum possible value and properly handling overlapping transmissions 
-
-The sum still exceed the total time range duration. There must be some other inconsistency. Maybe the filters are not applied properly in the database query. 
