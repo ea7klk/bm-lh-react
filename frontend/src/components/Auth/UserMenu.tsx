@@ -8,13 +8,15 @@ interface UserMenuProps {
   onLogout: () => void;
   onProfile?: () => void;
   onSettings?: () => void;
+  onChangeEmail?: () => void;
 }
 
 const UserMenu: React.FC<UserMenuProps> = ({
   user,
   onLogout,
   onProfile,
-  onSettings
+  onSettings,
+  onChangeEmail
 }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -48,6 +50,11 @@ const UserMenu: React.FC<UserMenuProps> = ({
     if (onSettings) onSettings();
   };
 
+  const handleChangeEmail = () => {
+    setIsOpen(false);
+    if (onChangeEmail) onChangeEmail();
+  };
+
   return (
     <div className="user-menu" ref={menuRef}>
       <button
@@ -71,6 +78,13 @@ const UserMenu: React.FC<UserMenuProps> = ({
             <button className="user-menu-item" onClick={handleProfile}>
               <span>👤</span>
               {t('viewProfile')}
+            </button>
+          )}
+
+          {onChangeEmail && (
+            <button className="user-menu-item" onClick={handleChangeEmail}>
+              <span>✉️</span>
+              {t('changeEmail')}
             </button>
           )}
 

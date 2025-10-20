@@ -28,6 +28,22 @@ function App() {
     return loadFiltersFromStorage();
   });
 
+  // User menu handlers
+  const handleViewProfile = () => {
+    // TODO: Implement profile view functionality
+    alert(`${t('viewProfile')} - ${t('profile')} functionality coming soon!`);
+  };
+
+  const handleAccountSettings = () => {
+    // TODO: Implement account settings functionality
+    alert(`${t('accountSettings')} functionality coming soon!`);
+  };
+
+  const handleChangeEmail = () => {
+    // TODO: Implement email change functionality
+    alert(`${t('changeEmail')} functionality coming soon!`);
+  };
+
   const fetchData = async (currentFilters?: FilterOptions) => {
     try {
       setLoading(true);
@@ -132,6 +148,9 @@ function App() {
               <UserMenu 
                 user={user!} 
                 onLogout={logout}
+                onProfile={handleViewProfile}
+                onSettings={handleAccountSettings}
+                onChangeEmail={handleChangeEmail}
               />
             ) : (
               <button 
