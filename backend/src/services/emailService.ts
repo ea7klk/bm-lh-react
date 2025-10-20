@@ -27,19 +27,20 @@ class EmailService {
   private enabled: boolean;
 
   constructor() {
-    this.enabled = process.env.EMAIL_ENABLED === 'true';
+    // Email service is enabled if EMAIL_HOST is configured
+    this.enabled = !!process.env.EMAIL_HOST;
     
     this.config = {
-      host: process.env.SMTP_HOST || 'localhost',
-      port: parseInt(process.env.SMTP_PORT || '587', 10),
-      secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+      host: process.env.EMAIL_HOST || 'localhost',
+      port: parseInt(process.env.EMAIL_PORT || '587', 10),
+      secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
       auth: {
-        user: process.env.SMTP_USER || '',
-        pass: process.env.SMTP_PASS || '',
+        user: process.env.EMAIL_USER || '',
+        pass: process.env.EMAIL_PASSWORD || '',
       },
-      from: process.env.SMTP_FROM || 'noreply@example.com',
+      from: process.env.EMAIL_FROM || 'noreply@example.com',
       appName: process.env.APP_NAME || 'BM Last Heard',
-      appUrl: process.env.APP_URL || 'http://localhost:3000',
+      appUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
     };
 
     if (this.enabled) {
@@ -49,7 +50,7 @@ class EmailService {
 
   private initializeTransporter(): void {
     try {
-      this.transporter = createTransport({
+      const transporterConfig: any = {
         host: this.config.host,
         port: this.config.port,
         secure: this.config.secure,
@@ -57,7 +58,14 @@ class EmailService {
           user: this.config.auth.user,
           pass: this.config.auth.pass,
         },
-      });
+      };
+
+      // Handle STARTTLS requirement for port 587
+      if (process.env.EMAIL_REQUIRE_TLS === 'true') {
+        transporterConfig.requireTLS = true;
+      }
+
+      this.transporter = createTransport(transporterConfig);
 
       console.log('Email service initialized successfully');
     } catch (error) {

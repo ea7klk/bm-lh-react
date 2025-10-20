@@ -24,11 +24,11 @@ services:
   app:
     build: .
     container_name: bm-lh-app
+    env_file:
+      - .env
     environment:
+      # Override specific values if needed
       DATABASE_URL: postgresql://bmuser:bmpassword@postgres:5432/bm_lastheard
-      NODE_ENV: production
-      USE_MOCK_DATA: "false"
-      ENABLE_BRANDMEISTER_SERVICE: "true"
     ports:
       - "3000:80"
     depends_on:
