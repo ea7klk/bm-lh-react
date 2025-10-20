@@ -5,24 +5,46 @@ import TalkgroupChart from './components/TalkgroupChart/TalkgroupChart';
 import TalkgroupDurationChart from './components/TalkgroupDurationChart/TalkgroupDurationChart';
 import FilterPanel from './components/FilterPanel/FilterPanel';
 import LanguageSelector from './components/LanguageSelector/LanguageSelector';
+import { AuthModal, UserMenu, UserProfile, AccountSettings } from './components/Auth';
 import { lastHeardService } from './services/api';
 import { TalkgroupStats, TalkgroupDurationStats, FilterOptions } from './types';
 import { loadFiltersFromStorage, saveFiltersToStorage } from './utils/filterStorage';
 import { useTranslation } from './i18n';
+import { useAuth } from './contexts/AuthContext';
 
 function App() {
   const { t } = useTranslation();
+  const { user, logout, isAuthenticated } = useAuth();
   const [talkgroupStats, setTalkgroupStats] = useState<TalkgroupStats[]>([]);
   const [talkgroupDurationStats, setTalkgroupDurationStats] = useState<TalkgroupDurationStats[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [isPolling, setIsPolling] = useState<boolean>(true);
   const [lastUpdate, setLastUpdate] = useState<number>(Math.floor(Date.now() / 1000));
+  const [authModalOpen, setAuthModalOpen] = useState<boolean>(false);
+  const [profileModalOpen, setProfileModalOpen] = useState<boolean>(false);
+  const [settingsModalOpen, setSettingsModalOpen] = useState<boolean>(false);
+  const [verificationMessage, setVerificationMessage] = useState<string>('');
+  const [verificationSuccess, setVerificationSuccess] = useState<boolean | null>(null);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [filters, setFilters] = useState<FilterOptions>(() => {
     // Load filters from storage on initial render
     return loadFiltersFromStorage();
   });
+
+  // User menu handlers
+  const handleViewProfile = () => {
+    setProfileModalOpen(true);
+  };
+
+  const handleAccountSettings = () => {
+    setSettingsModalOpen(true);
+  };
+
+  const handleChangeEmail = () => {
+    // TODO: Implement email change functionality
+    alert(`${t('changeEmail')} functionality coming soon!`);
+  };
 
   const fetchData = async (currentFilters?: FilterOptions) => {
     try {
@@ -87,6 +109,28 @@ function App() {
     fetchData();
   }, []);
 
+  // Check for email verification parameters in URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const verified = urlParams.get('verified');
+    const message = urlParams.get('message');
+    
+    if (verified !== null && message) {
+      setVerificationSuccess(verified === 'true');
+      setVerificationMessage(decodeURIComponent(message));
+      
+      // Clear URL parameters after showing message
+      const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+      
+      // Clear message after 10 seconds
+      setTimeout(() => {
+        setVerificationMessage('');
+        setVerificationSuccess(null);
+      }, 10000);
+    }
+  }, []);
+
   // Start/stop polling based on isPolling state
   useEffect(() => {
     startPolling();
@@ -121,6 +165,27 @@ function App() {
             {t('autoRefresh')}
           </label>
           <LanguageSelector />
+          
+          {/* Authentication Section */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {isAuthenticated ? (
+              <UserMenu 
+                user={user!} 
+                onLogout={logout}
+                onProfile={handleViewProfile}
+                onSettings={handleAccountSettings}
+                onChangeEmail={handleChangeEmail}
+              />
+            ) : (
+              <button 
+                className="auth-button" 
+                onClick={() => setAuthModalOpen(true)}
+              >
+                {t('login')}
+              </button>
+            )}
+          </div>
+          
           <span className="entry-count">
             {t('showingTalkgroups', { count: talkgroupStats.length })}
           </span>
@@ -137,10 +202,44 @@ function App() {
             <button onClick={() => fetchData()}>{t('retry')}</button>
           </div>
         )}
+
+        {verificationMessage && (
+          <div className={`verification-message ${verificationSuccess ? 'success' : 'error'}`}>
+            <p>{verificationMessage}</p>
+            <button onClick={() => {
+              setVerificationMessage('');
+              setVerificationSuccess(null);
+            }}>×</button>
+          </div>
+        )}
         
         <TalkgroupChart data={talkgroupStats} loading={loading} />
         <TalkgroupDurationChart data={talkgroupDurationStats} loading={loading} />
       </main>
+      
+      {/* Authentication Modal */}
+      <AuthModal 
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
+      
+      {/* User Profile Modal */}
+      {isAuthenticated && user && (
+        <UserProfile 
+          isOpen={profileModalOpen}
+          onClose={() => setProfileModalOpen(false)}
+          user={user}
+        />
+      )}
+
+      {/* Account Settings Modal */}
+      {isAuthenticated && user && (
+        <AccountSettings 
+          isOpen={settingsModalOpen}
+          onClose={() => setSettingsModalOpen(false)}
+          user={user}
+        />
+      )}
     </div>
   );
 }

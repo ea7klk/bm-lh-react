@@ -18,6 +18,8 @@ This is a full-stack application for monitoring Brandmeister (BM) DMR network ac
 - TypeScript
 - PostgreSQL database
 - RESTful API
+- Email service with SMTP support
+- User authentication and session management
 
 ### DevOps
 - Docker & Docker Compose
@@ -142,7 +144,51 @@ npm start
 
 The application will open at http://localhost:3000
 
+## Email Service Configuration
+
+The application includes a comprehensive email service for user authentication. See [EMAIL_SETUP.md](EMAIL_SETUP.md) for detailed configuration instructions.
+
+### Quick Email Setup
+
+1. Copy environment files:
+```bash
+cp backend/.env.example backend/.env
+```
+
+2. Configure email in `backend/.env`:
+```bash
+EMAIL_ENABLED=true
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+SMTP_FROM=noreply@yourdomain.com
+```
+
+3. For development, keep `EMAIL_ENABLED=false` to log emails to console instead.
+
+## Authentication Features
+
+- **User Registration**: Ham radio callsign-based registration with email verification
+- **Email Verification**: Secure token-based email confirmation
+- **Password Reset**: Email-based password recovery system
+- **Email Change**: Secure email address update with confirmation
+- **Session Management**: Secure session-based authentication
+- **Multi-language Support**: Authentication forms in EN/ES/DE/FR
+
 ## API Endpoints
+
+### Authentication
+
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
+- `GET /api/auth/verify/:token` - Email verification
+- `POST /api/auth/password-reset` - Request password reset
+- `POST /api/auth/password-reset/confirm` - Confirm password reset
+- `POST /api/auth/email-change` - Request email change
+- `POST /api/auth/email-change/confirm/:token` - Confirm email change
+- `GET /api/auth/profile` - Get user profile
 
 ### Last Heard
 

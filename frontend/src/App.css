@@ -87,10 +87,92 @@
   transform: translateY(-2px);
 }
 
+.verification-message {
+  padding: 20px;
+  border-radius: 16px;
+  margin: 20px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.verification-message.success {
+  background-color: rgba(232, 245, 233, 0.95);
+  color: #2e7d32;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.verification-message.error {
+  background-color: rgba(255, 235, 238, 0.95);
+  color: #c62828;
+  border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.verification-message p {
+  margin: 0;
+  flex: 1;
+  font-weight: 500;
+}
+
+.verification-message button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  padding: 0;
+  margin-left: 15px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.verification-message button:hover {
+  opacity: 1;
+}
+
 .entry-count {
   font-size: 14px;
   color: #6c757d;
   font-style: italic;
+}
+
+.auth-button {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+}
+
+.auth-button:hover {
+  background: linear-gradient(135deg, #8b5fbf 0%, #7d91f2 100%);
+  transform: translateY(-1px);
+}
+
+.auth-button.secondary {
+  background: white;
+  color: #667eea;
+  border: 1px solid #667eea;
+}
+
+.auth-button.secondary:hover {
+  background: #667eea;
+  color: white;
 }
 
 /* Responsive design for controls */
