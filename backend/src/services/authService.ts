@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 import { DatabaseService } from './databaseService';
 import { emailService } from './emailService';
 import { 
@@ -16,9 +17,24 @@ export class AuthService {
   private readonly SESSION_DURATION = 30 * 24 * 60 * 60; // 30 days in seconds
   private readonly VERIFICATION_DURATION = 24 * 60 * 60; // 24 hours in seconds
   private readonly RESET_TOKEN_DURATION = 60 * 60; // 1 hour in seconds
+  private readonly SALT_ROUNDS = 10; // bcrypt salt rounds
 
   constructor() {
     this.db = new DatabaseService();
+  }
+
+  /**
+   * Hash password using bcrypt with salt rounds of 10
+   */
+  private async hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, this.SALT_ROUNDS);
+  }
+
+  /**
+   * Verify password against hash using bcrypt
+   */
+  private async verifyPassword(password: string, hash: string): Promise<boolean> {
+    return await bcrypt.compare(password, hash);
   }
 
   async register(registerData: RegisterRequest): Promise<AuthResponse> {
@@ -32,6 +48,9 @@ export class AuthService {
         };
       }
 
+      // Hash the password
+      const hashedPassword = await this.hashPassword(registerData.password);
+
       // For now, create a simple verification token (we'll improve this later)
       const verificationToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
       const expiresAt = Math.floor(Date.now() / 1000) + this.VERIFICATION_DURATION;
@@ -41,7 +60,7 @@ export class AuthService {
         callsign: registerData.callsign.toUpperCase(),
         name: registerData.name,
         email: registerData.email.toLowerCase(),
-        password_hash: registerData.password, // We'll hash this properly later
+        password_hash: hashedPassword,
         verification_token: verificationToken,
         is_verified: false,
         created_at: Math.floor(Date.now() / 1000),
@@ -159,8 +178,9 @@ export class AuthService {
         };
       }
 
-      // Simple password check for now (we'll improve this later)
-      if (loginData.password !== user.password_hash) {
+      // Verify password using bcrypt
+      const passwordValid = await this.verifyPassword(loginData.password, user.password_hash);
+      if (!passwordValid) {
         return {
           success: false,
           message: 'Invalid credentials'
@@ -328,8 +348,9 @@ export class AuthService {
         };
       }
 
-      // Verify current password
-      if (currentPassword !== user.password_hash) { // Will be properly hashed later
+      // Verify current password using bcrypt
+      const passwordValid = await this.verifyPassword(currentPassword, user.password_hash);
+      if (!passwordValid) {
         return {
           success: false,
           message: 'Current password is incorrect.'
@@ -554,8 +575,9 @@ export class AuthService {
   }
 
   private async updateUserPassword(userId: number, newPassword: string): Promise<void> {
+    const hashedPassword = await this.hashPassword(newPassword);
     const query = `UPDATE users SET password_hash = $1 WHERE id = $2`;
-    await this.db.query(query, [newPassword, userId]); // Will be properly hashed later
+    await this.db.query(query, [hashedPassword, userId]);
   }
 
   private async removeAllUserSessions(userId: number): Promise<void> {
