@@ -6,6 +6,7 @@ import {
   PasswordResetConfirmRequest,
   PasswordChangeRequest,
   EmailChangeRequest,
+  ProfileUpdateRequest,
   UserProfile,
   VerificationResponse 
 } from '../types';
@@ -95,6 +96,21 @@ class AuthService {
       console.error('Get profile error:', error);
       return null;
     }
+  }
+
+  async updateProfile(data: ProfileUpdateRequest): Promise<AuthResponse> {
+    const response = await fetch(`${API_BASE_URL}/auth/profile`, {
+      method: 'PUT',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Profile update failed');
+    }
+
+    return response.json();
   }
 
   async verifyEmail(token: string): Promise<VerificationResponse> {

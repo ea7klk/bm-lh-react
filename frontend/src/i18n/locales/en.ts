@@ -140,6 +140,13 @@ export const en = {
   lastLogin: "Last Login",
   never: "Never",
   close: "Close",
+  save: "Save",
+  cancel: "Cancel",
+  editProfile: "Edit Profile",
+  saveChanges: "Save Changes",
+  updateProfile: "Update Profile",
+  profileUpdated: "Profile updated successfully",
+  languagePreference: "Language Preference",
   
   // User menu
   userMenu: "User Menu",

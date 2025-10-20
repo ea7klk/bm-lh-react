@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { AuthContextType, UserProfile, LoginRequest, RegisterRequest } from '../types';
+import { AuthContextType, UserProfile, LoginRequest, RegisterRequest, ProfileUpdateRequest } from '../types';
 import { authService } from '../services/authService';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,6 +29,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const result = await authService.register(data);
     // Note: User is not automatically logged in after registration
     // They need to verify their email first
+    return result;
+  };
+
+  const updateProfile = async (data: ProfileUpdateRequest) => {
+    const result = await authService.updateProfile(data);
+    if (result.success && result.user) {
+      setUser(result.user);
+    }
     return result;
   };
 
@@ -64,6 +72,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     logout,
     register,
+    updateProfile,
     isAuthenticated,
   };
 

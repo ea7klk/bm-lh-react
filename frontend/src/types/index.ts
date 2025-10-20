@@ -101,6 +101,12 @@ export interface EmailChangeRequest {
   password: string;
 }
 
+export interface ProfileUpdateRequest {
+  name: string;
+  callsign: string;
+  locale: string;
+}
+
 export interface AuthResponse {
   success: boolean;
   message: string;
@@ -120,5 +126,6 @@ export interface AuthContextType {
   login: (credentials: LoginRequest) => Promise<AuthResponse>;
   logout: () => Promise<void>;
   register: (data: RegisterRequest) => Promise<AuthResponse>;
+  updateProfile: (data: ProfileUpdateRequest) => Promise<AuthResponse>;
   isAuthenticated: boolean;
 }

@@ -140,6 +140,13 @@ export const de = {
   lastLogin: "Letzte Anmeldung",
   never: "Nie",
   close: "Schließen",
+  save: "Speichern",
+  cancel: "Abbrechen",
+  editProfile: "Profil Bearbeiten",
+  saveChanges: "Änderungen Speichern",
+  updateProfile: "Profil Aktualisieren",
+  profileUpdated: "Profil erfolgreich aktualisiert",
+  languagePreference: "Spracheinstellung",
   
   // User menu
   userMenu: "Benutzermenü",
