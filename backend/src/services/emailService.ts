@@ -75,7 +75,7 @@ class EmailService {
   }
 
   private generateEmailVerificationTemplate(user: User, token: string): EmailTemplate {
-    const verificationUrl = `${this.config.appUrl}/verify-email/${token}`;
+    const verificationUrl = `${this.config.appUrl}/api/auth/verify/${token}`;
     
     const subject = `Welcome to ${this.config.appName} - Verify Your Email`;
     

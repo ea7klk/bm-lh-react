@@ -95,17 +95,16 @@ router.get('/verify/:token', async (req: Request, res: Response) => {
     const result = await authService.verifyEmail(token);
     
     if (result.success) {
-      res.status(200).json(result);
+      // Redirect to main app with success message
+      res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}?verified=true&message=${encodeURIComponent('Email verified successfully! You can now log in.')}`);
     } else {
-      res.status(400).json(result);
+      // Redirect to main app with error message
+      res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}?verified=false&message=${encodeURIComponent(result.message)}`);
     }
     
   } catch (error) {
     console.error('Email verification route error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}?verified=false&message=${encodeURIComponent('Internal server error')}`);
   }
 });
 

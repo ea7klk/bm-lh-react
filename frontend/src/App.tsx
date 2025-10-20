@@ -24,6 +24,8 @@ function App() {
   const [authModalOpen, setAuthModalOpen] = useState<boolean>(false);
   const [profileModalOpen, setProfileModalOpen] = useState<boolean>(false);
   const [settingsModalOpen, setSettingsModalOpen] = useState<boolean>(false);
+  const [verificationMessage, setVerificationMessage] = useState<string>('');
+  const [verificationSuccess, setVerificationSuccess] = useState<boolean | null>(null);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [filters, setFilters] = useState<FilterOptions>(() => {
     // Load filters from storage on initial render
@@ -107,6 +109,28 @@ function App() {
     fetchData();
   }, []);
 
+  // Check for email verification parameters in URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const verified = urlParams.get('verified');
+    const message = urlParams.get('message');
+    
+    if (verified !== null && message) {
+      setVerificationSuccess(verified === 'true');
+      setVerificationMessage(decodeURIComponent(message));
+      
+      // Clear URL parameters after showing message
+      const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+      
+      // Clear message after 10 seconds
+      setTimeout(() => {
+        setVerificationMessage('');
+        setVerificationSuccess(null);
+      }, 10000);
+    }
+  }, []);
+
   // Start/stop polling based on isPolling state
   useEffect(() => {
     startPolling();
@@ -176,6 +200,16 @@ function App() {
           <div className="error-message">
             <p>{error}</p>
             <button onClick={() => fetchData()}>{t('retry')}</button>
+          </div>
+        )}
+
+        {verificationMessage && (
+          <div className={`verification-message ${verificationSuccess ? 'success' : 'error'}`}>
+            <p>{verificationMessage}</p>
+            <button onClick={() => {
+              setVerificationMessage('');
+              setVerificationSuccess(null);
+            }}>×</button>
           </div>
         )}
         
