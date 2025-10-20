@@ -5,7 +5,7 @@ import TalkgroupChart from './components/TalkgroupChart/TalkgroupChart';
 import TalkgroupDurationChart from './components/TalkgroupDurationChart/TalkgroupDurationChart';
 import FilterPanel from './components/FilterPanel/FilterPanel';
 import LanguageSelector from './components/LanguageSelector/LanguageSelector';
-import { AuthModal, UserMenu } from './components/Auth';
+import { AuthModal, UserMenu, UserProfile } from './components/Auth';
 import { lastHeardService } from './services/api';
 import { TalkgroupStats, TalkgroupDurationStats, FilterOptions } from './types';
 import { loadFiltersFromStorage, saveFiltersToStorage } from './utils/filterStorage';
@@ -22,6 +22,7 @@ function App() {
   const [isPolling, setIsPolling] = useState<boolean>(true);
   const [lastUpdate, setLastUpdate] = useState<number>(Math.floor(Date.now() / 1000));
   const [authModalOpen, setAuthModalOpen] = useState<boolean>(false);
+  const [profileModalOpen, setProfileModalOpen] = useState<boolean>(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [filters, setFilters] = useState<FilterOptions>(() => {
     // Load filters from storage on initial render
@@ -30,8 +31,7 @@ function App() {
 
   // User menu handlers
   const handleViewProfile = () => {
-    // TODO: Implement profile view functionality
-    alert(`${t('viewProfile')} - ${t('profile')} functionality coming soon!`);
+    setProfileModalOpen(true);
   };
 
   const handleAccountSettings = () => {
@@ -188,6 +188,15 @@ function App() {
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
       />
+      
+      {/* User Profile Modal */}
+      {isAuthenticated && user && (
+        <UserProfile 
+          isOpen={profileModalOpen}
+          onClose={() => setProfileModalOpen(false)}
+          user={user}
+        />
+      )}
     </div>
   );
 }

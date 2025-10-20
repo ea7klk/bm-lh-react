@@ -129,8 +129,17 @@ export const fr = {
   profile: "Profil",
   settings: "Paramètres",
   personalInformation: "Informations Personnelles",
+  basicInformation: "Informations de Base",
+  accountInformation: "Informations du Compte",
   security: "Sécurité",
   preferences: "Préférences",
+  status: "Statut",
+  active: "Actif",
+  inactive: "Inactif",
+  memberSince: "Membre depuis",
+  lastLogin: "Dernière connexion",
+  never: "Jamais",
+  close: "Fermer",
   
   // User menu
   userMenu: "Menu Utilisateur",

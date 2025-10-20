@@ -129,8 +129,17 @@ export const de = {
   profile: "Profil",
   settings: "Einstellungen",
   personalInformation: "Persönliche Informationen",
+  basicInformation: "Grundinformationen",
+  accountInformation: "Kontoinformationen",
   security: "Sicherheit",
   preferences: "Einstellungen",
+  status: "Status",
+  active: "Aktiv",
+  inactive: "Inaktiv",
+  memberSince: "Mitglied seit",
+  lastLogin: "Letzte Anmeldung",
+  never: "Nie",
+  close: "Schließen",
   
   // User menu
   userMenu: "Benutzermenü",
