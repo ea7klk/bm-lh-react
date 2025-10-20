@@ -84,7 +84,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           )}
 
           <div className="form-group">
-            <label htmlFor="identifier">Email or Callsign</label>
+            <label htmlFor="identifier">{t('emailOrCallsign')}</label>
             <input
               id="identifier"
               type="text"
@@ -123,7 +123,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
             disabled={isLoading}
           >
             {isLoading && <span className="loading-spinner" />}
-            {t('loginButton')}
+            {t('login')}
           </button>
 
           <div className="form-links">

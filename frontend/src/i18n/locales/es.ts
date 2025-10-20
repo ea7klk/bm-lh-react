@@ -61,7 +61,6 @@ export const es = {
   
   // Authentication
   login: "Iniciar Sesión / Registrarse",
-  logout: "Cerrar Sesión",
   register: "Registrarse",
   callsign: "Indicativo",
   name: "Nombre",
@@ -85,15 +84,14 @@ export const es = {
   emailPlaceholder: "Ingrese su dirección de correo",
   passwordPlaceholder: "Ingrese su contraseña",
   confirmPasswordPlaceholder: "Confirme su contraseña",
+  emailOrCallsign: "Correo o Indicativo",
   emailOrCallsignPlaceholder: "Ingrese correo o indicativo",
   
   // Auth buttons
-  loginButton: "Iniciar Sesión / Registrarse",
   registerButton: "Crear Cuenta",
   resetPasswordButton: "Enviar Enlace",
   changePasswordButton: "Actualizar Contraseña",
   changeEmailButton: "Actualizar Correo",
-  verifyEmailButton: "Verificar Correo",
   cancelButton: "Cancelar",
   backToLogin: "Volver al Inicio",
   
@@ -144,5 +142,4 @@ export const es = {
   accountVerificationRequired: "Verificación de Cuenta Requerida",
   checkEmailForVerification: "Revise su correo y haga clic en el enlace de verificación para activar su cuenta.",
   verificationLinkExpired: "Enlace de verificación expirado. Solicite uno nuevo.",
-  resendVerificationEmail: "Reenviar Correo de Verificación",
 } as const;

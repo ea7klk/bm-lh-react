@@ -61,7 +61,6 @@ export const en = {
   
   // Authentication
   login: "Login / Register",
-  logout: "Logout",
   register: "Register",
   callsign: "Callsign",
   name: "Name",
@@ -85,15 +84,14 @@ export const en = {
   emailPlaceholder: "Enter your email address",
   passwordPlaceholder: "Enter your password",
   confirmPasswordPlaceholder: "Confirm your password",
+  emailOrCallsign: "Email or Callsign",
   emailOrCallsignPlaceholder: "Enter email or callsign",
   
   // Auth buttons
-  loginButton: "Login / Register",
   registerButton: "Create Account",
   resetPasswordButton: "Send Reset Link",
   changePasswordButton: "Update Password",
   changeEmailButton: "Update Email",
-  verifyEmailButton: "Verify Email",
   cancelButton: "Cancel",
   backToLogin: "Back to Login",
   
@@ -144,5 +142,4 @@ export const en = {
   accountVerificationRequired: "Account Verification Required",
   checkEmailForVerification: "Please check your email and click the verification link to activate your account.",
   verificationLinkExpired: "Verification link expired. Please request a new one.",
-  resendVerificationEmail: "Resend Verification Email",
 } as const;
