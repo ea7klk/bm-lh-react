@@ -60,7 +60,7 @@ export const fr = {
   language: "Langue",
   
   // Authentication
-  login: "Se Connecter",
+  login: "Se Connecter / S'inscrire",
   logout: "Se Déconnecter",
   register: "S'inscrire",
   callsign: "Indicatif",
@@ -88,7 +88,7 @@ export const fr = {
   emailOrCallsignPlaceholder: "Entrez e-mail ou indicatif",
   
   // Auth buttons
-  loginButton: "Se Connecter",
+  loginButton: "Se Connecter / S'inscrire",
   registerButton: "Créer un Compte",
   resetPasswordButton: "Envoyer le Lien",
   changePasswordButton: "Mettre à Jour le Mot de Passe",

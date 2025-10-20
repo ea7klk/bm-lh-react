@@ -60,7 +60,7 @@ export const de = {
   language: "Sprache",
   
   // Authentication
-  login: "Anmelden",
+  login: "Anmelden / Registrieren",
   logout: "Abmelden",
   register: "Registrieren",
   callsign: "Rufzeichen",
@@ -88,7 +88,7 @@ export const de = {
   emailOrCallsignPlaceholder: "E-Mail oder Rufzeichen eingeben",
   
   // Auth buttons
-  loginButton: "Anmelden",
+  loginButton: "Anmelden / Registrieren",
   registerButton: "Konto Erstellen",
   resetPasswordButton: "Reset-Link Senden",
   changePasswordButton: "Passwort Aktualisieren",

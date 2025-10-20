@@ -60,7 +60,7 @@ export const es = {
   language: "Idioma",
   
   // Authentication
-  login: "Iniciar Sesión",
+  login: "Iniciar Sesión / Registrarse",
   logout: "Cerrar Sesión",
   register: "Registrarse",
   callsign: "Indicativo",
@@ -88,7 +88,7 @@ export const es = {
   emailOrCallsignPlaceholder: "Ingrese correo o indicativo",
   
   // Auth buttons
-  loginButton: "Iniciar Sesión",
+  loginButton: "Iniciar Sesión / Registrarse",
   registerButton: "Crear Cuenta",
   resetPasswordButton: "Enviar Enlace",
   changePasswordButton: "Actualizar Contraseña",
