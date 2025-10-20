@@ -55,6 +55,7 @@ export const translations = {
     totalAirTimeByTalkgroup: "Total air time by talkgroup",
     showingTopActiveGroups: "Showing top {{count}} most active talkgroups",
     showingTopGroupsByDuration: "Showing top {{count}} talkgroups by duration",
+    simultaneousSessionsNote: "In some occasions, the total reported time can exceed the selected time range duration. This is caused by the data coming from the BM LastHeard Websocket, which allows simultaneous sessions on the same talkgroup, but only the first session is actually transmitted",
     
     // Language selector
     language: "Language",
@@ -115,7 +116,8 @@ export const translations = {
     numberOfTransmissionsByTalkgroup: "Número de transmisiones por grupo de conversación",
     totalAirTimeByTalkgroup: "Tiempo total de transmisión por grupo de conversación",
     showingTopActiveGroups: "Mostrando los {{count}} grupos de conversación más activos",
-    showingTopGroupsByDuration: "Mostrando los {{count}} grupos de conversación por duración",
+    showingTopGroupsByDuration: "Mostrando los {{count}} grupos de conversación más activos por duración",
+    simultaneousSessionsNote: "En algunas ocasiones, el tiempo total reportado puede exceder la duración del rango de tiempo seleccionado. Esto se debe a que los datos provienen del WebSocket BM LastHeard, que permite sesiones simultáneas en el mismo grupo de conversación, pero solo la primera sesión se transmite realmente",
     
     // Language selector
     language: "Idioma",
@@ -176,7 +178,8 @@ export const translations = {
     numberOfTransmissionsByTalkgroup: "Anzahl der Übertragungen pro Gesprächsgruppe",
     totalAirTimeByTalkgroup: "Gesamte Sendezeit pro Gesprächsgruppe",
     showingTopActiveGroups: "Zeige die {{count}} aktivsten Gesprächsgruppen",
-    showingTopGroupsByDuration: "Zeige die {{count}} Gesprächsgruppen nach Dauer",
+    showingTopGroupsByDuration: "Zeige die {{count}} aktivsten Gesprächsgruppen nach Dauer",
+    simultaneousSessionsNote: "Gelegentlich kann die insgesamt gemeldete Zeit die Dauer des gewählten Zeitbereichs überschreiten. Dies liegt daran, dass die Daten vom BM LastHeard WebSocket stammen, der gleichzeitige Sitzungen in derselben Gesprächsgruppe ermöglicht, aber nur die erste Sitzung tatsächlich übertragen wird",
     
     // Language selector
     language: "Sprache",
@@ -237,8 +240,9 @@ export const translations = {
     numberOfTransmissionsByTalkgroup: "Nombre de transmissions par groupe de discussion",
     totalAirTimeByTalkgroup: "Temps total de transmission par groupe de discussion",
     showingTopActiveGroups: "Affichage des {{count}} groupes de discussion les plus actifs",
-    showingTopGroupsByDuration: "Affichage des {{count}} groupes de discussion par durée",
-    
+    showingTopGroupsByDuration: "Affichage des {{count}} groupes de discussion les plus actifs par durée",
+    simultaneousSessionsNote: "Dans certains cas, le temps total rapporté peut dépasser la durée de la plage de temps sélectionnée. Ceci est causé par les données provenant du WebSocket BM LastHeard, qui permet des sessions simultanées sur le même groupe de discussion, mais seule la première session est réellement transmise",
+
     // Language selector
     language: "Langue",
   }

@@ -222,6 +222,10 @@ const TalkgroupDurationChart: React.FC<TalkgroupDurationChartProps> = ({ data, l
       
       <div className="chart-footer">
         <small>{t('showingTopGroupsByDuration', { count: data.length })}</small>
+        <br />
+        <small style={{ fontStyle: 'italic', opacity: 0.8 }}>
+          {t('simultaneousSessionsNote')}
+        </small>
       </div>
     </div>
   );
