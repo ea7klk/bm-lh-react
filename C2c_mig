@@ -1,4 +1,4 @@
-docker exec -i d6d34820e67d pg_dump \
+docker exec -i bminfo-pgsql-postgres-1 pg_dump \
   -h localhost \
   -p 5432 \
   -U bm_lastheard \
@@ -9,7 +9,7 @@ docker exec -i d6d34820e67d pg_dump \
   > users_export.sql
 
 
-  docker exec -i e6f226035601 psql \
+  docker exec -i bm-lh-postgres psql \
   -h localhost \
   -p 5432 \
   -U bmuser \
@@ -40,6 +40,7 @@ docker exec -i bm-lh-postgres psql \
 
 # Import data to destination
 docker exec -i bm-lh-postgres psql \
+  -q \
   -h localhost \
   -p 5432 \
   -U bmuser \
