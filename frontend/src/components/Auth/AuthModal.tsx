@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../../i18n';
 import { useAuth } from '../../contexts/AuthContext';
 import LoginForm from './LoginForm';
@@ -25,6 +25,16 @@ const AuthModal: React.FC<AuthModalProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
+
+  // Reset to login view whenever the modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentView('login');
+      setError('');
+      setSuccess('');
+      setIsLoading(false);
+    }
+  }, [isOpen]);
 
   const handleLogin = async (credentials: LoginRequest) => {
     setIsLoading(true);
