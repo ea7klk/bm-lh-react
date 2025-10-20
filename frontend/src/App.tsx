@@ -4,11 +4,14 @@ import Header from './components/Header/Header';
 import TalkgroupChart from './components/TalkgroupChart/TalkgroupChart';
 import TalkgroupDurationChart from './components/TalkgroupDurationChart/TalkgroupDurationChart';
 import FilterPanel from './components/FilterPanel/FilterPanel';
+import LanguageSelector from './components/LanguageSelector/LanguageSelector';
 import { lastHeardService } from './services/api';
 import { TalkgroupStats, TalkgroupDurationStats, FilterOptions } from './types';
 import { loadFiltersFromStorage, saveFiltersToStorage } from './utils/filterStorage';
+import { useTranslation } from './i18n';
 
 function App() {
+  const { t } = useTranslation();
   const [talkgroupStats, setTalkgroupStats] = useState<TalkgroupStats[]>([]);
   const [talkgroupDurationStats, setTalkgroupDurationStats] = useState<TalkgroupDurationStats[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -37,7 +40,7 @@ function App() {
       setTalkgroupDurationStats(durationResult);
       setLastUpdate(Math.floor(Date.now() / 1000));
     } catch (err) {
-      setError('Failed to load data. Please check if the backend is running.');
+      setError(t('failedToLoad'));
       console.error(err);
     } finally {
       setLoading(false);
@@ -107,7 +110,7 @@ function App() {
       <main className="main-content">
         <div className="controls">
           <button onClick={() => fetchData()} disabled={loading}>
-            Refresh Data
+            {t('refreshData')}
           </button>
           <label className="realtime-toggle">
             <input
@@ -115,10 +118,11 @@ function App() {
               checked={isPolling}
               onChange={(e) => setIsPolling(e.target.checked)}
             />
-            Auto-refresh (10s)
+            {t('autoRefresh')}
           </label>
+          <LanguageSelector />
           <span className="entry-count">
-            Showing {talkgroupStats.length} talkgroups
+            {t('showingTalkgroups', { count: talkgroupStats.length })}
           </span>
         </div>
         
@@ -130,7 +134,7 @@ function App() {
         {error && (
           <div className="error-message">
             <p>{error}</p>
-            <button onClick={() => fetchData()}>Retry</button>
+            <button onClick={() => fetchData()}>{t('retry')}</button>
           </div>
         )}
         

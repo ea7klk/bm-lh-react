@@ -10,6 +10,7 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { TalkgroupDurationStats } from '../../types';
+import { useTranslation } from '../../i18n';
 import './TalkgroupDurationChart.css';
 
 ChartJS.register(
@@ -77,13 +78,15 @@ interface TalkgroupDurationChartProps {
 }
 
 const TalkgroupDurationChart: React.FC<TalkgroupDurationChartProps> = ({ data, loading }) => {
+  const { t } = useTranslation();
+  
   if (loading) {
     return (
       <div className="talkgroup-duration-chart">
         <div className="chart-header">
-          <h2>Talkgroups by Total Duration</h2>
+          <h2>{t('activityDuration')}</h2>
         </div>
-        <div className="loading-message">Loading chart data...</div>
+        <div className="loading-message">{t('loading')}</div>
       </div>
     );
   }
@@ -92,7 +95,7 @@ const TalkgroupDurationChart: React.FC<TalkgroupDurationChartProps> = ({ data, l
     return (
       <div className="talkgroup-duration-chart">
         <div className="chart-header">
-          <h2>Talkgroups by Total Duration</h2>
+          <h2>{t('activityDuration')}</h2>
         </div>
         <div className="no-data-message">No data available for the selected filters.</div>
       </div>
@@ -104,7 +107,7 @@ const TalkgroupDurationChart: React.FC<TalkgroupDurationChartProps> = ({ data, l
     labels: data.map(item => `${item.name} (ID: ${item.talkgroup_id})`),
     datasets: [
       {
-        label: 'Total Duration (seconds)',
+        label: t('avgDurationSeconds'),
         data: data.map(item => item.total_duration),
         backgroundColor: 'rgba(102, 126, 234, 0.8)',
         borderColor: 'rgba(118, 75, 162, 1)',
@@ -205,8 +208,8 @@ const TalkgroupDurationChart: React.FC<TalkgroupDurationChartProps> = ({ data, l
   return (
     <div className="talkgroup-duration-chart">
       <div className="chart-header">
-        <h2>Talkgroups by Total Duration</h2>
-        <p className="chart-subtitle">Total air time by talkgroup</p>
+        <h2>{t('talkgroupsByTotalDuration')}</h2>
+        <p className="chart-subtitle">{t('totalAirTimeByTalkgroup')}</p>
       </div>
       
       <div className="chart-container">
@@ -218,7 +221,7 @@ const TalkgroupDurationChart: React.FC<TalkgroupDurationChartProps> = ({ data, l
       </div>
       
       <div className="chart-footer">
-        <small>Showing top {data.length} talkgroups by duration</small>
+        <small>{t('showingTopGroupsByDuration', { count: data.length })}</small>
       </div>
     </div>
   );
