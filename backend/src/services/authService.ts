@@ -8,6 +8,7 @@ import {
   PasswordResetToken,
   RegisterRequest,
   LoginRequest,
+  ProfileUpdateRequest,
   UserProfile,
   AuthResponse
 } from '../models/User';
@@ -241,6 +242,55 @@ export class AuthService {
     } catch (error) {
       console.error('Session validation error:', error);
       return null;
+    }
+  }
+
+  async updateProfile(userId: number, updateData: ProfileUpdateRequest): Promise<AuthResponse> {
+    try {
+      // Check if callsign is already taken by another user
+      const existingCallsignUser = await this.getUserByCallsign(updateData.callsign);
+      if (existingCallsignUser && existingCallsignUser.id !== userId) {
+        return {
+          success: false,
+          message: 'Callsign is already taken by another user'
+        };
+      }
+
+      // Update user profile
+      const query = `
+        UPDATE users 
+        SET name = $1, callsign = $2, locale = $3
+        WHERE id = $4 AND is_active = true
+        RETURNING *
+      `;
+      const result = await this.db.query(query, [
+        updateData.name,
+        updateData.callsign.toUpperCase(),
+        updateData.locale,
+        userId
+      ]);
+
+      if (result.rows.length === 0) {
+        return {
+          success: false,
+          message: 'User not found or not active'
+        };
+      }
+
+      const updatedUser = result.rows[0];
+
+      return {
+        success: true,
+        message: 'Profile updated successfully',
+        user: this.toUserProfile(updatedUser)
+      };
+
+    } catch (error) {
+      console.error('Update profile error:', error);
+      return {
+        success: false,
+        message: 'Profile update failed'
+      };
     }
   }
 
@@ -552,6 +602,12 @@ export class AuthService {
   private async getUserByEmail(email: string): Promise<User | null> {
     const query = `SELECT * FROM users WHERE email = $1`;
     const result = await this.db.query(query, [email.toLowerCase()]);
+    return result.rows[0] || null;
+  }
+
+  private async getUserByCallsign(callsign: string): Promise<User | null> {
+    const query = `SELECT * FROM users WHERE callsign = $1`;
+    const result = await this.db.query(query, [callsign.toUpperCase()]);
     return result.rows[0] || null;
   }
 

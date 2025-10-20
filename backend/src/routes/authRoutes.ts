@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { AuthService } from '../services/authService';
-import { RegisterRequest, LoginRequest, PasswordResetRequest, PasswordResetConfirmRequest, EmailChangeRequest } from '../models/User';
+import { RegisterRequest, LoginRequest, PasswordResetRequest, PasswordResetConfirmRequest, EmailChangeRequest, ProfileUpdateRequest } from '../models/User';
 
 const router = Router();
 const authService = new AuthService();
@@ -173,6 +173,55 @@ router.get('/profile', authenticateSession, async (req: Request, res: Response) 
     
   } catch (error) {
     console.error('Profile route error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+});
+
+// Update user profile
+router.put('/profile', authenticateSession, async (req: Request, res: Response) => {
+  try {
+    const user = (req as any).user;
+    const { name, callsign, locale } = req.body;
+
+    // Basic validation
+    if (!name || !callsign || !locale) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields: name, callsign, locale'
+      });
+    }
+
+    // Validate callsign format
+    const callsignRegex = /^[A-Z0-9]{3,8}$/i;
+    if (!callsignRegex.test(callsign)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid callsign format'
+      });
+    }
+
+    // Validate locale
+    const validLocales = ['en', 'es', 'de', 'fr'];
+    if (!validLocales.includes(locale)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid locale'
+      });
+    }
+
+    const result = await authService.updateProfile(user.id, { name, callsign, locale });
+    
+    if (result.success) {
+      res.status(200).json(result);
+    } else {
+      res.status(400).json(result);
+    }
+    
+  } catch (error) {
+    console.error('Profile update route error:', error);
     res.status(500).json({
       success: false,
       message: 'Internal server error'

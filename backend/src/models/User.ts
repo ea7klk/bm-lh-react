@@ -86,6 +86,12 @@ export interface EmailChangeRequest {
   password: string;
 }
 
+export interface ProfileUpdateRequest {
+  name: string;
+  callsign: string;
+  locale: string;
+}
+
 export interface UserProfile {
   id: number;
   callsign: string;
