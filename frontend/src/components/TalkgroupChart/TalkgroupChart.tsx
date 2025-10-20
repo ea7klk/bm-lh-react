@@ -10,6 +10,7 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { TalkgroupStats } from '../../types';
+import { useTranslation } from '../../i18n';
 import './TalkgroupChart.css';
 
 ChartJS.register(
@@ -61,13 +62,15 @@ interface TalkgroupChartProps {
 }
 
 const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
+  const { t } = useTranslation();
+  
   if (loading) {
     return (
       <div className="talkgroup-chart">
         <div className="chart-header">
-          <h2>Most Active Talkgroups</h2>
+          <h2>{t('talkgroupActivity')}</h2>
         </div>
-        <div className="loading-message">Loading chart data...</div>
+        <div className="loading-message">{t('loading')}</div>
       </div>
     );
   }
@@ -76,7 +79,7 @@ const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
     return (
       <div className="talkgroup-chart">
         <div className="chart-header">
-          <h2>Most Active Talkgroups</h2>
+          <h2>{t('talkgroupActivity')}</h2>
         </div>
         <div className="no-data-message">No data available for the selected filters.</div>
       </div>
@@ -88,7 +91,7 @@ const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
     labels: data.map(item => `${item.name} (ID: ${item.talkgroup_id})`),
     datasets: [
       {
-        label: 'Transmissions',
+        label: t('transmissions'),
         data: data.map(item => item.count),
         backgroundColor: 'rgba(118, 75, 162, 0.8)',
         borderColor: 'rgba(102, 126, 234, 1)',
@@ -114,7 +117,7 @@ const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
             return `${item.name} (ID: ${item.talkgroup_id})`;
           },
           label: (context: any) => {
-            return `Transmissions: ${context.parsed.x}`;
+            return `${t('transmissions')}: ${context.parsed.x}`;
           }
         }
       },
@@ -188,8 +191,8 @@ const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
   return (
     <div className="talkgroup-chart">
       <div className="chart-header">
-        <h2>Most Active Talkgroups</h2>
-        <p className="chart-subtitle">Number of transmissions by talkgroup</p>
+        <h2>{t('talkgroupActivity')}</h2>
+        <p className="chart-subtitle">{t('numberOfTransmissionsByTalkgroup')}</p>
       </div>
       
       <div className="chart-container">
@@ -201,7 +204,7 @@ const TalkgroupChart: React.FC<TalkgroupChartProps> = ({ data, loading }) => {
       </div>
       
       <div className="chart-footer">
-        <small>Showing top {data.length} most active talkgroups</small>
+        <small>{t('showingTopActiveGroups', { count: data.length })}</small>
       </div>
     </div>
   );
