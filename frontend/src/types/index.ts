@@ -53,3 +53,72 @@ export interface TalkgroupDurationStats {
   country?: string;
   full_country_name?: string;
 }
+
+// User authentication types
+export interface UserProfile {
+  id: number;
+  callsign: string;
+  name: string;
+  email: string;
+  is_active: boolean;
+  created_at: number;
+  last_login_at?: number;
+  locale: string;
+}
+
+export interface RegisterRequest {
+  callsign: string;
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  locale?: string;
+}
+
+export interface LoginRequest {
+  identifier: string; // Can be email or callsign
+  password: string;
+}
+
+export interface PasswordResetRequest {
+  email: string;
+}
+
+export interface PasswordResetConfirmRequest {
+  token: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface PasswordChangeRequest {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface EmailChangeRequest {
+  newEmail: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  message: string;
+  user?: UserProfile;
+  session_token?: string;
+}
+
+export interface VerificationResponse {
+  success: boolean;
+  message: string;
+  verified?: boolean;
+}
+
+export interface AuthContextType {
+  user: UserProfile | null;
+  isLoading: boolean;
+  login: (credentials: LoginRequest) => Promise<AuthResponse>;
+  logout: () => Promise<void>;
+  register: (data: RegisterRequest) => Promise<AuthResponse>;
+  isAuthenticated: boolean;
+}

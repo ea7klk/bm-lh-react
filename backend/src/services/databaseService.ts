@@ -1,6 +1,18 @@
 import fs from 'fs';
 import path from 'path';
 import pool from '../config/database';
+import { QueryResult } from 'pg';
+
+export class DatabaseService {
+  async query(text: string, params?: any[]): Promise<QueryResult> {
+    try {
+      return await pool.query(text, params);
+    } catch (error) {
+      console.error('Database query error:', error);
+      throw error;
+    }
+  }
+}
 
 export async function initializeDatabase(): Promise<void> {
   try {

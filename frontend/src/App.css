@@ -93,6 +93,35 @@
   font-style: italic;
 }
 
+.auth-button {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+}
+
+.auth-button:hover {
+  background: linear-gradient(135deg, #8b5fbf 0%, #7d91f2 100%);
+  transform: translateY(-1px);
+}
+
+.auth-button.secondary {
+  background: white;
+  color: #667eea;
+  border: 1px solid #667eea;
+}
+
+.auth-button.secondary:hover {
+  background: #667eea;
+  color: white;
+}
+
 /* Responsive design for controls */
 @media (max-width: 768px) {
   .controls {

@@ -58,4 +58,91 @@ export const de = {
   
   // Language selector
   language: "Sprache",
+  
+  // Authentication
+  login: "Anmelden",
+  logout: "Abmelden",
+  register: "Registrieren",
+  callsign: "Rufzeichen",
+  name: "Name",
+  email: "E-Mail",
+  password: "Passwort",
+  confirmPassword: "Passwort Bestätigen",
+  currentPassword: "Aktuelles Passwort",
+  newPassword: "Neues Passwort",
+  forgotPassword: "Passwort vergessen?",
+  resetPassword: "Passwort Zurücksetzen",
+  changePassword: "Passwort Ändern",
+  changeEmail: "E-Mail Ändern",
+  newEmail: "Neue E-Mail",
+  verifyEmail: "E-Mail Verifizieren",
+  emailVerification: "E-Mail Verifizierung",
+  resendVerification: "Verifizierung Erneut Senden",
+  
+  // Auth form labels and placeholders
+  callsignPlaceholder: "Rufzeichen eingeben",
+  namePlaceholder: "Vollständigen Namen eingeben",
+  emailPlaceholder: "E-Mail-Adresse eingeben",
+  passwordPlaceholder: "Passwort eingeben",
+  confirmPasswordPlaceholder: "Passwort bestätigen",
+  emailOrCallsignPlaceholder: "E-Mail oder Rufzeichen eingeben",
+  
+  // Auth buttons
+  loginButton: "Anmelden",
+  registerButton: "Konto Erstellen",
+  resetPasswordButton: "Reset-Link Senden",
+  changePasswordButton: "Passwort Aktualisieren",
+  changeEmailButton: "E-Mail Aktualisieren",
+  verifyEmailButton: "E-Mail Verifizieren",
+  cancelButton: "Abbrechen",
+  backToLogin: "Zurück zur Anmeldung",
+  
+  // Auth messages
+  registrationSuccess: "Registrierung erfolgreich! Überprüfen Sie Ihre E-Mail zur Kontobestätigung.",
+  loginSuccess: "Willkommen zurück!",
+  logoutSuccess: "Sie wurden erfolgreich abgemeldet.",
+  emailVerificationSent: "Bestätigungs-E-Mail gesendet. Überprüfen Sie Ihren Posteingang.",
+  emailVerified: "E-Mail erfolgreich bestätigt! Sie können sich jetzt anmelden.",
+  passwordResetSent: "Passwort-Reset-Link an Ihre E-Mail gesendet.",
+  passwordChanged: "Passwort erfolgreich geändert.",
+  emailChanged: "E-Mail-Adresse erfolgreich aktualisiert.",
+  
+  // Auth errors
+  invalidCredentials: "Ungültige E-Mail/Rufzeichen oder Passwort.",
+  accountNotActivated: "Konto nicht aktiviert. Bitte bestätigen Sie Ihre E-Mail.",
+  emailAlreadyExists: "Ein Konto mit dieser E-Mail existiert bereits.",
+  callsignAlreadyExists: "Ein Konto mit diesem Rufzeichen existiert bereits.",
+  invalidEmail: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+  invalidCallsign: "Bitte geben Sie ein gültiges Rufzeichen ein.",
+  passwordTooShort: "Passwort muss mindestens 8 Zeichen lang sein.",
+  passwordsDoNotMatch: "Passwörter stimmen nicht überein.",
+  tokenExpired: "Token ist abgelaufen. Bitte fordern Sie einen neuen an.",
+  invalidToken: "Ungültiger oder abgelaufener Token.",
+  currentPasswordIncorrect: "Aktuelles Passwort ist falsch.",
+  
+  // Auth form validation
+  required: "Dieses Feld ist erforderlich",
+  emailRequired: "E-Mail ist erforderlich",
+  callsignRequired: "Rufzeichen ist erforderlich",
+  nameRequired: "Name ist erforderlich",
+  passwordRequired: "Passwort ist erforderlich",
+  
+  // Profile
+  profile: "Profil",
+  settings: "Einstellungen",
+  personalInformation: "Persönliche Informationen",
+  security: "Sicherheit",
+  preferences: "Einstellungen",
+  
+  // User menu
+  userMenu: "Benutzermenü",
+  viewProfile: "Profil Anzeigen",
+  accountSettings: "Kontoeinstellungen",
+  signOut: "Abmelden",
+  
+  // Account verification
+  accountVerificationRequired: "Kontobestätigung Erforderlich",
+  checkEmailForVerification: "Überprüfen Sie Ihre E-Mail und klicken Sie auf den Bestätigungslink zur Kontoaktivierung.",
+  verificationLinkExpired: "Bestätigungslink abgelaufen. Bitte fordern Sie einen neuen an.",
+  resendVerificationEmail: "Bestätigungs-E-Mail Erneut Senden",
 } as const;

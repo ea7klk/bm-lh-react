@@ -58,4 +58,91 @@ export const en = {
   
   // Language selector
   language: "Language",
+  
+  // Authentication
+  login: "Login",
+  logout: "Logout",
+  register: "Register",
+  callsign: "Callsign",
+  name: "Name",
+  email: "Email",
+  password: "Password",
+  confirmPassword: "Confirm Password",
+  currentPassword: "Current Password",
+  newPassword: "New Password",
+  forgotPassword: "Forgot Password?",
+  resetPassword: "Reset Password",
+  changePassword: "Change Password",
+  changeEmail: "Change Email",
+  newEmail: "New Email",
+  verifyEmail: "Verify Email",
+  emailVerification: "Email Verification",
+  resendVerification: "Resend Verification",
+  
+  // Auth form labels and placeholders
+  callsignPlaceholder: "Enter your callsign",
+  namePlaceholder: "Enter your full name",
+  emailPlaceholder: "Enter your email address",
+  passwordPlaceholder: "Enter your password",
+  confirmPasswordPlaceholder: "Confirm your password",
+  emailOrCallsignPlaceholder: "Enter email or callsign",
+  
+  // Auth buttons
+  loginButton: "Sign In",
+  registerButton: "Create Account",
+  resetPasswordButton: "Send Reset Link",
+  changePasswordButton: "Update Password",
+  changeEmailButton: "Update Email",
+  verifyEmailButton: "Verify Email",
+  cancelButton: "Cancel",
+  backToLogin: "Back to Login",
+  
+  // Auth messages
+  registrationSuccess: "Registration successful! Please check your email to verify your account.",
+  loginSuccess: "Welcome back!",
+  logoutSuccess: "You have been logged out successfully.",
+  emailVerificationSent: "Verification email sent. Please check your inbox.",
+  emailVerified: "Email verified successfully! You can now log in.",
+  passwordResetSent: "Password reset link sent to your email.",
+  passwordChanged: "Password changed successfully.",
+  emailChanged: "Email address updated successfully.",
+  
+  // Auth errors
+  invalidCredentials: "Invalid email/callsign or password.",
+  accountNotActivated: "Account not activated. Please verify your email.",
+  emailAlreadyExists: "An account with this email already exists.",
+  callsignAlreadyExists: "An account with this callsign already exists.",
+  invalidEmail: "Please enter a valid email address.",
+  invalidCallsign: "Please enter a valid callsign.",
+  passwordTooShort: "Password must be at least 8 characters long.",
+  passwordsDoNotMatch: "Passwords do not match.",
+  tokenExpired: "Token has expired. Please request a new one.",
+  invalidToken: "Invalid or expired token.",
+  currentPasswordIncorrect: "Current password is incorrect.",
+  
+  // Auth form validation
+  required: "This field is required",
+  emailRequired: "Email is required",
+  callsignRequired: "Callsign is required",
+  nameRequired: "Name is required",
+  passwordRequired: "Password is required",
+  
+  // Profile
+  profile: "Profile",
+  settings: "Settings",
+  personalInformation: "Personal Information",
+  security: "Security",
+  preferences: "Preferences",
+  
+  // User menu
+  userMenu: "User Menu",
+  viewProfile: "View Profile",
+  accountSettings: "Account Settings",
+  signOut: "Sign Out",
+  
+  // Account verification
+  accountVerificationRequired: "Account Verification Required",
+  checkEmailForVerification: "Please check your email and click the verification link to activate your account.",
+  verificationLinkExpired: "Verification link expired. Please request a new one.",
+  resendVerificationEmail: "Resend Verification Email",
 } as const;

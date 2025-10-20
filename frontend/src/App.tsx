@@ -5,19 +5,23 @@ import TalkgroupChart from './components/TalkgroupChart/TalkgroupChart';
 import TalkgroupDurationChart from './components/TalkgroupDurationChart/TalkgroupDurationChart';
 import FilterPanel from './components/FilterPanel/FilterPanel';
 import LanguageSelector from './components/LanguageSelector/LanguageSelector';
+import { AuthModal, UserMenu } from './components/Auth';
 import { lastHeardService } from './services/api';
 import { TalkgroupStats, TalkgroupDurationStats, FilterOptions } from './types';
 import { loadFiltersFromStorage, saveFiltersToStorage } from './utils/filterStorage';
 import { useTranslation } from './i18n';
+import { useAuth } from './contexts/AuthContext';
 
 function App() {
   const { t } = useTranslation();
+  const { user, logout, isAuthenticated } = useAuth();
   const [talkgroupStats, setTalkgroupStats] = useState<TalkgroupStats[]>([]);
   const [talkgroupDurationStats, setTalkgroupDurationStats] = useState<TalkgroupDurationStats[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [isPolling, setIsPolling] = useState<boolean>(true);
   const [lastUpdate, setLastUpdate] = useState<number>(Math.floor(Date.now() / 1000));
+  const [authModalOpen, setAuthModalOpen] = useState<boolean>(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [filters, setFilters] = useState<FilterOptions>(() => {
     // Load filters from storage on initial render
@@ -121,6 +125,24 @@ function App() {
             {t('autoRefresh')}
           </label>
           <LanguageSelector />
+          
+          {/* Authentication Section */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {isAuthenticated ? (
+              <UserMenu 
+                user={user!} 
+                onLogout={logout}
+              />
+            ) : (
+              <button 
+                className="auth-button" 
+                onClick={() => setAuthModalOpen(true)}
+              >
+                {t('login')}
+              </button>
+            )}
+          </div>
+          
           <span className="entry-count">
             {t('showingTalkgroups', { count: talkgroupStats.length })}
           </span>
@@ -141,6 +163,12 @@ function App() {
         <TalkgroupChart data={talkgroupStats} loading={loading} />
         <TalkgroupDurationChart data={talkgroupDurationStats} loading={loading} />
       </main>
+      
+      {/* Authentication Modal */}
+      <AuthModal 
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
     </div>
   );
 }

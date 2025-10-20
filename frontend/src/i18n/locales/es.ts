@@ -58,4 +58,91 @@ export const es = {
   
   // Language selector
   language: "Idioma",
+  
+  // Authentication
+  login: "Iniciar Sesión",
+  logout: "Cerrar Sesión",
+  register: "Registrarse",
+  callsign: "Indicativo",
+  name: "Nombre",
+  email: "Correo Electrónico",
+  password: "Contraseña",
+  confirmPassword: "Confirmar Contraseña",
+  currentPassword: "Contraseña Actual",
+  newPassword: "Nueva Contraseña",
+  forgotPassword: "¿Olvidaste tu contraseña?",
+  resetPassword: "Restablecer Contraseña",
+  changePassword: "Cambiar Contraseña",
+  changeEmail: "Cambiar Correo",
+  newEmail: "Nuevo Correo",
+  verifyEmail: "Verificar Correo",
+  emailVerification: "Verificación de Correo",
+  resendVerification: "Reenviar Verificación",
+  
+  // Auth form labels and placeholders
+  callsignPlaceholder: "Ingrese su indicativo",
+  namePlaceholder: "Ingrese su nombre completo",
+  emailPlaceholder: "Ingrese su dirección de correo",
+  passwordPlaceholder: "Ingrese su contraseña",
+  confirmPasswordPlaceholder: "Confirme su contraseña",
+  emailOrCallsignPlaceholder: "Ingrese correo o indicativo",
+  
+  // Auth buttons
+  loginButton: "Iniciar Sesión",
+  registerButton: "Crear Cuenta",
+  resetPasswordButton: "Enviar Enlace",
+  changePasswordButton: "Actualizar Contraseña",
+  changeEmailButton: "Actualizar Correo",
+  verifyEmailButton: "Verificar Correo",
+  cancelButton: "Cancelar",
+  backToLogin: "Volver al Inicio",
+  
+  // Auth messages
+  registrationSuccess: "¡Registro exitoso! Revise su correo para verificar su cuenta.",
+  loginSuccess: "¡Bienvenido de vuelta!",
+  logoutSuccess: "Ha cerrado sesión exitosamente.",
+  emailVerificationSent: "Correo de verificación enviado. Revise su bandeja de entrada.",
+  emailVerified: "¡Correo verificado exitosamente! Ya puede iniciar sesión.",
+  passwordResetSent: "Enlace de restablecimiento enviado a su correo.",
+  passwordChanged: "Contraseña cambiada exitosamente.",
+  emailChanged: "Dirección de correo actualizada exitosamente.",
+  
+  // Auth errors
+  invalidCredentials: "Correo/indicativo o contraseña inválidos.",
+  accountNotActivated: "Cuenta no activada. Verifique su correo electrónico.",
+  emailAlreadyExists: "Ya existe una cuenta con este correo electrónico.",
+  callsignAlreadyExists: "Ya existe una cuenta con este indicativo.",
+  invalidEmail: "Ingrese una dirección de correo válida.",
+  invalidCallsign: "Ingrese un indicativo válido.",
+  passwordTooShort: "La contraseña debe tener al menos 8 caracteres.",
+  passwordsDoNotMatch: "Las contraseñas no coinciden.",
+  tokenExpired: "El token ha expirado. Solicite uno nuevo.",
+  invalidToken: "Token inválido o expirado.",
+  currentPasswordIncorrect: "La contraseña actual es incorrecta.",
+  
+  // Auth form validation
+  required: "Este campo es obligatorio",
+  emailRequired: "El correo es obligatorio",
+  callsignRequired: "El indicativo es obligatorio",
+  nameRequired: "El nombre es obligatorio",
+  passwordRequired: "La contraseña es obligatoria",
+  
+  // Profile
+  profile: "Perfil",
+  settings: "Configuración",
+  personalInformation: "Información Personal",
+  security: "Seguridad",
+  preferences: "Preferencias",
+  
+  // User menu
+  userMenu: "Menú de Usuario",
+  viewProfile: "Ver Perfil",
+  accountSettings: "Configuración de Cuenta",
+  signOut: "Cerrar Sesión",
+  
+  // Account verification
+  accountVerificationRequired: "Verificación de Cuenta Requerida",
+  checkEmailForVerification: "Revise su correo y haga clic en el enlace de verificación para activar su cuenta.",
+  verificationLinkExpired: "Enlace de verificación expirado. Solicite uno nuevo.",
+  resendVerificationEmail: "Reenviar Correo de Verificación",
 } as const;

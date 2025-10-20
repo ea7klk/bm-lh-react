@@ -1,0 +1,16 @@
+{
+  "name": "bm-lh-migration",
+  "version": "1.0.0",
+  "description": "Database migration scripts for BM Last Heard user data",
+  "main": "migrate_users.js",
+  "scripts": {
+    "migrate": "node migrate_users.js",
+    "migrate:dry-run": "DRY_RUN=true VERBOSE=true node migrate_users.js",
+    "migrate:verbose": "VERBOSE=true node migrate_users.js"
+  },
+  "dependencies": {
+    "pg": "^8.16.3"
+  },
+  "author": "BM Last Heard Team",
+  "license": "MIT"
+}

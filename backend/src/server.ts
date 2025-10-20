@@ -3,9 +3,11 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import lastHeardRoutes from './routes/lastHeardRoutes';
 import talkgroupsRoutes from './routes/talkgroupsRoutes';
+import authRoutes from './routes/authRoutes';
 import { startBrandmeisterService, stopBrandmeisterService } from './services/brandmeisterService';
 import { initializeDatabase } from './services/databaseService';
 import { startScheduler, stopScheduler } from './services/schedulerService';
+import { emailService } from './services/emailService';
 
 dotenv.config();
 
@@ -24,6 +26,7 @@ app.get('/health', (req: Request, res: Response) => {
 
 app.use('/api/lastheard', lastHeardRoutes);
 app.use('/api/talkgroups', talkgroupsRoutes);
+app.use('/api/auth', authRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: any) => {
@@ -41,6 +44,14 @@ app.listen(PORT, async () => {
   
   // Initialize database
   await initializeDatabase();
+  
+  // Test email service connection
+  if (emailService.isEnabled()) {
+    const emailConnectionOk = await emailService.testConnection();
+    console.log(`Email service: ${emailConnectionOk ? 'Connected' : 'Connection failed'}`);
+  } else {
+    console.log('Email service: Disabled');
+  }
   
   // Start Brandmeister websocket service
   startBrandmeisterService();
