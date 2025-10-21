@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTranslation } from '../../i18n';
+import { useTranslation } from 'react-i18next';
 import { authService } from '../../services/authService';
 import './Auth.css';
 

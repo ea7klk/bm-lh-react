@@ -1,6 +1,6 @@
 export const de = {
   // Header
-  title: "BM Zuletzt Gehört",
+  title: "Was läuft auf Brandmeister?",
   subtitle: "Brandmeister Netzwerk-Aktivitätsmonitor",
   
   // Controls
@@ -54,7 +54,15 @@ export const de = {
   totalAirTimeByTalkgroup: "Gesamte Sendezeit pro Gesprächsgruppe",
   showingTopActiveGroups: "Zeige die {{count}} aktivsten Gesprächsgruppen",
   showingTopGroupsByDuration: "Zeige die {{count}} aktivsten Gesprächsgruppen nach Dauer",
-  simultaneousSessionsNote: "Gelegentlich kann die insgesamt gemeldete Zeit die Dauer des gewählten Zeitbereichs überschreiten. Dies liegt daran, dass die Daten vom BM LastHeard WebSocket stammen, der gleichzeitige Sitzungen in derselben Gesprächsgruppe ermöglicht, aber nur die erste Sitzung tatsächlich übertragen wird",
+  simultaneousSessionsNote: "Manchmal kann die gemeldete Gesamtzeit die Dauer des ausgewählten Zeitbereichs überschreiten. Dies liegt daran, dass die Daten vom BM LastHeard WebSocket stammen, der gleichzeitige Sitzungen in derselben Gesprächsgruppe ermöglicht, aber nur die erste Sitzung wird tatsächlich übertragen",
+  
+  // Table
+  talkgroupStatisticsTable: "Gesamt-QSO-Statistiken nach Gesprächsgruppe",
+  detailedTalkgroupStatistics: "Detaillierte Gesprächsgruppen-Statistiken",
+  destinationName: "Zielname",
+  destinationID: "Ziel-ID",
+  count: "Anzahl",
+  totalDuration: "Gesamtdauer",
   
   // Language selector
   language: "Sprache",

@@ -1,6 +1,6 @@
 export const fr = {
   // Header
-  title: "BM Derniers Entendus",
+  title: "Quoi de neuf sur Brandmeister ?",
   subtitle: "Moniteur d'Activité du Réseau Brandmeister",
   
   // Controls
@@ -54,7 +54,15 @@ export const fr = {
   totalAirTimeByTalkgroup: "Temps total de transmission par groupe de discussion",
   showingTopActiveGroups: "Affichage des {{count}} groupes de discussion les plus actifs",
   showingTopGroupsByDuration: "Affichage des {{count}} groupes de discussion les plus actifs par durée",
-  simultaneousSessionsNote: "Dans certains cas, le temps total rapporté peut dépasser la durée de la plage de temps sélectionnée. Ceci est causé par les données provenant du WebSocket BM LastHeard, qui permet des sessions simultanées sur le même groupe de discussion, mais seule la première session est réellement transmise",
+  simultaneousSessionsNote: "Parfois, le temps total rapporté peut dépasser la durée de la plage de temps sélectionnée. Cela est dû au fait que les données proviennent du WebSocket BM LastHeard, qui permet des sessions simultanées sur le même groupe de discussion, mais seule la première session est réellement transmise",
+  
+  // Table
+  talkgroupStatisticsTable: "Statistiques totales de QSO par groupe de discussion",
+  detailedTalkgroupStatistics: "Statistiques détaillées des groupes de discussion",
+  destinationName: "Nom de Destination",
+  destinationID: "ID de Destination",
+  count: "Nombre",
+  totalDuration: "Durée Totale",
 
   // Language selector
   language: "Langue",

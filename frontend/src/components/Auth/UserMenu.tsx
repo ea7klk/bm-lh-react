@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useTranslation } from '../../i18n';
+import { useTranslation } from 'react-i18next';
 import { UserProfile } from '../../types';
 import './Auth.css';
 

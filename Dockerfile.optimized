@@ -7,7 +7,7 @@ RUN apk add --no-cache python3 make g++
 FROM base AS frontend-deps
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
-RUN npm install --no-audit --prefer-offline
+RUN npm install --legacy-peer-deps --no-audit --prefer-offline
 
 FROM frontend-deps AS frontend-builder
 COPY frontend/ .

@@ -1,6 +1,6 @@
 export const en = {
   // Header
-  title: "BM Last Heard",
+  title: "What's on in Brandmeister?",
   subtitle: "Brandmeister Network Activity Monitor",
   
   // Controls
@@ -55,6 +55,14 @@ export const en = {
   showingTopActiveGroups: "Showing top {{count}} most active talkgroups",
   showingTopGroupsByDuration: "Showing top {{count}} talkgroups by duration",
   simultaneousSessionsNote: "In some occasions, the total reported time can exceed the selected time range duration. This is caused by the data coming from the BM LastHeard Websocket, which allows simultaneous sessions on the same talkgroup, but only the first session is actually transmitted",
+  
+  // Table
+  talkgroupStatisticsTable: "Talkgroup total QSO statistics",
+  detailedTalkgroupStatistics: "Detailed talkgroup statistics",
+  destinationName: "Destination Name",
+  destinationID: "Destination ID",
+  count: "Count",
+  totalDuration: "Total Duration",
   
   // Language selector
   language: "Language",

@@ -1,0 +1,81 @@
+.talkgroup-table-container {
+  margin: 20px 0;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.talkgroup-table-title {
+  font-size: 1.4em;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+  text-align: center;
+}
+
+.talkgroup-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.talkgroup-table th {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+}
+
+.talkgroup-table td {
+  border: 1px solid #dee2e6;
+  padding: 10px 8px;
+  color: #212529;
+}
+
+.talkgroup-table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.talkgroup-table tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+.talkgroup-table .numeric {
+  text-align: right;
+  font-family: monospace;
+}
+
+.talkgroup-table .id-column {
+  font-family: monospace;
+  color: #6c757d;
+}
+
+@media (max-width: 768px) {
+  .talkgroup-table-container {
+    margin: 15px 0;
+    padding: 15px;
+  }
+  
+  .talkgroup-table {
+    font-size: 12px;
+  }
+  
+  .talkgroup-table th,
+  .talkgroup-table td {
+    padding: 8px 6px;
+  }
+}
+
+@media (max-width: 576px) {
+  .talkgroup-table th,
+  .talkgroup-table td {
+    padding: 6px 4px;
+  }
+  
+  .talkgroup-table-title {
+    font-size: 1.2em;
+  }
+}

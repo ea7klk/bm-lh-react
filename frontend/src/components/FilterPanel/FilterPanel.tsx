@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FilterOptions, Country } from '../../types';
 import { lastHeardService } from '../../services/api';
 import { saveFiltersToStorage, areFiltersCustomized } from '../../utils/filterStorage';
-import { useTranslation } from '../../i18n';
+import { useTranslation } from 'react-i18next';
 import './FilterPanel.css';
 
 interface FilterPanelProps {

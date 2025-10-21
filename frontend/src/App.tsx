@@ -4,6 +4,7 @@ import './App.css';
 import Header from './components/Header/Header';
 import TalkgroupChart from './components/TalkgroupChart/TalkgroupChart';
 import TalkgroupDurationChart from './components/TalkgroupDurationChart/TalkgroupDurationChart';
+import TalkgroupTable from './components/TalkgroupTable/TalkgroupTable';
 import FilterPanel from './components/FilterPanel/FilterPanel';
 import LanguageSelector from './components/LanguageSelector/LanguageSelector';
 import { AuthModal, UserMenu, UserProfile, AccountSettings } from './components/Auth';
@@ -11,7 +12,7 @@ import AdminPanel from './components/Admin/AdminPanel';
 import { lastHeardService } from './services/api';
 import { TalkgroupStats, TalkgroupDurationStats, FilterOptions } from './types';
 import { loadFiltersFromStorage, saveFiltersToStorage } from './utils/filterStorage';
-import { useTranslation } from './i18n';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from './contexts/AuthContext';
 
 function MainDashboard() {
@@ -238,6 +239,11 @@ function MainDashboard() {
         
         <TalkgroupChart data={talkgroupStats} loading={loading} />
         <TalkgroupDurationChart data={talkgroupDurationStats} loading={loading} />
+        <TalkgroupTable 
+          statsData={talkgroupStats} 
+          durationData={talkgroupDurationStats} 
+          loading={loading} 
+        />
       </main>
       
       {/* Authentication Modal */}

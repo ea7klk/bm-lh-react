@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { I18nProvider } from './i18n';
+import './i18n/i18n'; // Import i18n configuration
 import { AuthProvider } from './contexts/AuthContext';
 import reportWebVitals from './reportWebVitals';
 
@@ -11,11 +11,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <I18nProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </I18nProvider>
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </React.StrictMode>
 );
 

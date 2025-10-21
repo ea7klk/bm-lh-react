@@ -4,7 +4,7 @@ WORKDIR /app/frontend
 
 # Copy package files first for better caching
 COPY frontend/package*.json ./
-RUN npm install --no-audit --no-fund --silent
+RUN npm install --legacy-peer-deps --no-audit --no-fund --silent
 
 COPY frontend/ .
 RUN npm run build
