@@ -19,20 +19,26 @@ export function startScheduler() {
     }
   });
 
-  // Schedule hourly summary job at 5 minutes past each hour
-  schedule.scheduleJob('summary-hourly', '5 * * * *', async () => {
-    console.log('Running scheduled hourly summary at :05...');
-    try {
-      await SummaryService.runIncrementalSummary();
-      console.log('Scheduled hourly summary completed');
-    } catch (error: any) {
-      console.error('Scheduled hourly summary failed:', error.message);
-    }
-  });
+  // Schedule hourly summary job at 5 minutes past each hour (if enabled)
+  const enableSummaryScheduler = process.env.ENABLE_SUMMARY_SCHEDULER !== 'false';
+  
+  if (enableSummaryScheduler) {
+    schedule.scheduleJob('summary-hourly', '5 * * * *', async () => {
+      console.log('Running scheduled hourly summary at :05...');
+      try {
+        await SummaryService.runIncrementalSummary();
+        console.log('Scheduled hourly summary completed');
+      } catch (error: any) {
+        console.error('Scheduled hourly summary failed:', error.message);
+      }
+    });
+    console.log('- Summary: hourly updates at :05');
+  } else {
+    console.log('- Summary: scheduler disabled (ENABLE_SUMMARY_SCHEDULER=false)');
+  }
 
   console.log('Schedulers started:');
   console.log('- Talkgroups: daily updates at 02:00');
-  console.log('- Summary: hourly updates at :05');
 }
 
 async function initializeTalkgroups() {

@@ -4,21 +4,18 @@ The BM Last Heard application includes a comprehensive email service for user au
 
 ## Quick Setup
 
-1. Copy the example environment files:
+1. Copy the example environment file:
    ```bash
-   cp backend/.env.example backend/.env
-   cp frontend/.env.example frontend/.env
+   cp .env.example .env
    ```
 
-2. Configure email settings in `backend/.env`:
+2. Configure email settings in `.env`:
    ```bash
-   EMAIL_ENABLED=true
-   SMTP_HOST=your-smtp-host
-   SMTP_PORT=587
-   SMTP_SECURE=false
-   SMTP_USER=your-email@domain.com
-   SMTP_PASS=your-password
-   SMTP_FROM=noreply@yourdomain.com
+   EMAIL_HOST=your-smtp-host
+   EMAIL_PORT=587
+   EMAIL_USER=your-email@domain.com
+   EMAIL_PASSWORD=your-password
+   EMAIL_FROM=noreply@yourdomain.com
    APP_NAME=BM Last Heard
    APP_URL=http://localhost:3000
    ```
@@ -29,17 +26,15 @@ The BM Last Heard application includes a comprehensive email service for user au
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
-| `EMAIL_ENABLED` | Enable/disable email service | `false` | No |
-| `SMTP_HOST` | SMTP server hostname | `localhost` | Yes* |
-| `SMTP_PORT` | SMTP server port | `587` | Yes* |
-| `SMTP_SECURE` | Use SSL/TLS (true for port 465) | `false` | No |
-| `SMTP_USER` | SMTP authentication username | - | Yes* |
-| `SMTP_PASS` | SMTP authentication password | - | Yes* |
-| `SMTP_FROM` | Default "from" email address | `noreply@example.com` | No |
+| `EMAIL_HOST` | SMTP server hostname | - | Yes |
+| `EMAIL_PORT` | SMTP server port | `587` | Yes |
+| `EMAIL_SECURE` | Use SSL/TLS (true for port 465) | `false` | No |
+| `EMAIL_USER` | SMTP authentication username | - | Yes |
+| `EMAIL_PASSWORD` | SMTP authentication password | - | Yes |
+| `EMAIL_FROM` | Default "from" email address | `noreply@example.com` | No |
+| `EMAIL_REQUIRE_TLS` | Require STARTTLS for port 587 | `false` | No |
 | `APP_NAME` | Application name for emails | `BM Last Heard` | No |
 | `APP_URL` | Frontend URL for email links | `http://localhost:3000` | No |
-
-*Required only when `EMAIL_ENABLED=true`
 
 ### Frontend Environment Variables
 
@@ -60,51 +55,48 @@ The BM Last Heard application includes a comprehensive email service for user au
    - Generate password for "Mail"
 3. Configure in `.env`:
    ```bash
-   EMAIL_ENABLED=true
-   SMTP_HOST=smtp.gmail.com
-   SMTP_PORT=587
-   SMTP_SECURE=false
-   SMTP_USER=your-gmail@gmail.com
-   SMTP_PASS=your-16-char-app-password
-   SMTP_FROM=your-gmail@gmail.com
+   EMAIL_HOST=smtp.gmail.com
+   EMAIL_PORT=587
+   EMAIL_SECURE=false
+   EMAIL_USER=your-gmail@gmail.com
+   EMAIL_PASSWORD=your-16-char-app-password
+   EMAIL_FROM=your-gmail@gmail.com
    ```
 
 ### Outlook/Hotmail Configuration
 
 ```bash
-EMAIL_ENABLED=true
-SMTP_HOST=smtp-mail.outlook.com
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USER=your-email@outlook.com
-SMTP_PASS=your-password
-SMTP_FROM=your-email@outlook.com
+EMAIL_HOST=smtp-mail.outlook.com
+EMAIL_PORT=587
+EMAIL_SECURE=false
+EMAIL_USER=your-email@outlook.com
+EMAIL_PASSWORD=your-password
+EMAIL_FROM=your-email@outlook.com
 ```
 
 ### Custom SMTP Server
 
 ```bash
-EMAIL_ENABLED=true
-SMTP_HOST=mail.yourdomain.com
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USER=noreply@yourdomain.com
-SMTP_PASS=your-password
-SMTP_FROM=noreply@yourdomain.com
+EMAIL_HOST=mail.yourdomain.com
+EMAIL_PORT=587
+EMAIL_SECURE=false
+EMAIL_USER=noreply@yourdomain.com
+EMAIL_PASSWORD=your-password
+EMAIL_FROM=noreply@yourdomain.com
 ```
 
 ### SSL/TLS Configuration
 
 For secure connections (port 465):
 ```bash
-SMTP_PORT=465
-SMTP_SECURE=true
+EMAIL_PORT=465
+EMAIL_SECURE=true
 ```
 
 For STARTTLS (port 587):
 ```bash
-SMTP_PORT=587
-SMTP_SECURE=false
+EMAIL_PORT=587
+EMAIL_SECURE=false
 ```
 
 ## Email Templates
@@ -131,7 +123,7 @@ The email service includes professionally designed HTML email templates for:
 
 ## Development Mode
 
-When `EMAIL_ENABLED=false` (default), the email service will:
+When email configuration is missing or incomplete, the email service will:
 - Log email details to console instead of sending
 - Show email subject and preview
 - Return success for all operations
@@ -178,7 +170,7 @@ You can also test email functionality by:
    ```
    Error: Invalid login: 535-5.7.8 Username and Password not accepted
    ```
-   - Check SMTP_USER and SMTP_PASS
+   - Check EMAIL_USER and EMAIL_PASSWORD
    - For Gmail, ensure App Password is used
    - Verify 2FA is enabled for Gmail
 
@@ -186,7 +178,7 @@ You can also test email functionality by:
    ```
    Error: connect ETIMEDOUT
    ```
-   - Check SMTP_HOST and SMTP_PORT
+   - Check EMAIL_HOST and EMAIL_PORT
    - Verify firewall allows outgoing connections
    - Try different port (25, 465, 587)
 
@@ -194,14 +186,14 @@ You can also test email functionality by:
    ```
    Error: self signed certificate
    ```
-   - Set SMTP_SECURE=false for port 587
-   - Set SMTP_SECURE=true for port 465
+   - Set EMAIL_SECURE=false for port 587
+   - Set EMAIL_SECURE=true for port 465
 
 4. **Domain/DNS Issues**
    ```
    Error: getaddrinfo ENOTFOUND
    ```
-   - Verify SMTP_HOST is correct
+   - Verify EMAIL_HOST is correct
    - Check DNS resolution
 
 ### Debug Mode

@@ -99,19 +99,15 @@ Returns processing logs and summary statistics.
 - `src/routes/summaryRoutes.ts` - Route definitions
 
 ### Database
-- `database/migrations/add_summary_tables.sql` - Table creation script
-- `database/migrations/run_summary_migration.sh` - Migration execution script
+- Summary tables are now integrated into the main `database/schema.sql`
+- No separate migration needed - tables are created during initial setup
 
 ### Scheduler Integration
 - Updated `src/services/schedulerService.ts` to include hourly job
 
 ## Deployment Steps
 
-1. **Run Migration**:
-   ```bash
-   cd backend/database/migrations
-   ./run_summary_migration.sh
-   ```
+1. **Database Setup**: Summary tables are automatically created when running the main schema.sql during initial database setup
 
 2. **Update Server Code**: The new routes are automatically included when the server restarts
 
@@ -121,6 +117,27 @@ Returns processing logs and summary statistics.
    ```bash
    curl -X POST http://localhost:3001/api/summary/process
    ```
+
+## Configuration
+
+### Environment Variables
+
+The summarization feature can be controlled through environment variables:
+
+- **`ENABLE_SUMMARY_SCHEDULER`**: Controls whether the automated hourly summarization job runs
+  - Values: `true` (default) or `false`
+  - When set to `false`, the hourly scheduler is disabled
+  - Manual processing via API endpoints remains available
+  - Useful for development environments or when running multiple instances
+
+Example configuration in `.env`:
+```bash
+# Enable automatic hourly summarization (default: true)
+ENABLE_SUMMARY_SCHEDULER=true
+
+# Disable automatic summarization
+ENABLE_SUMMARY_SCHEDULER=false
+```
 
 ## Performance Characteristics
 
