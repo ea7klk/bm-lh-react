@@ -43,231 +43,11 @@ async function authenticateAdmin(req: Request, res: Response, next: any) {
   }
 }
 
-// Apply admin authentication to all routes
-router.use(authenticateAdmin);
-
 /**
- * Get database statistics (Admin only)
- */
-router.get('/stats', async (req: Request, res: Response) => {
-  try {
-    const totalRecords = await db.query('SELECT COUNT(*) as count FROM lastheard WHERE "DestinationID" != 9');
-    const uniqueTalkgroups = await db.query('SELECT COUNT(DISTINCT "DestinationID") as count FROM lastheard WHERE "DestinationID" != 9');
-    const uniqueCallsigns = await db.query('SELECT COUNT(DISTINCT "SourceCall") as count FROM lastheard WHERE "DestinationID" != 9');
-    
-    res.json({
-      totalRecords: parseInt(totalRecords.rows[0].count),
-      uniqueTalkgroups: parseInt(uniqueTalkgroups.rows[0].count),
-      uniqueCallsigns: parseInt(uniqueCallsigns.rows[0].count)
-    });
-  } catch (error) {
-    console.error('Error fetching stats:', error);
-    res.status(500).json({ error: 'Failed to fetch statistics' });
-  }
-});
-
-/**
- * Expunge old records (Admin only)
- */
-router.post('/expunge', async (req: Request, res: Response) => {
-  try {
-    const sevenDaysAgo = Math.floor(Date.now() / 1000) - (7 * 24 * 60 * 60);
-    const result = await db.query('DELETE FROM lastheard WHERE "Start" < $1', [sevenDaysAgo]);
-    
-    res.json({
-      message: 'Records expunged successfully',
-      deletedCount: result.rowCount
-    });
-  } catch (error) {
-    console.error('Error expunging records:', error);
-    res.status(500).json({ error: 'Failed to expunge records' });
-  }
-});
-
-/**
- * Update talkgroups from Brandmeister (Admin only)
- */
-router.post('/update-talkgroups', async (req: Request, res: Response) => {
-  try {
-    console.log('Manual talkgroups update triggered by admin');
-    const result = await updateTalkgroups();
-    
-    if (result.success) {
-      res.json({
-        success: true,
-        readFromSource: result.readFromSource,
-        added: result.added,
-        updated: result.updated,
-        totalBefore: result.totalBefore,
-        totalAfter: result.totalAfter
-      });
-    } else {
-      res.status(500).json({ 
-        success: false, 
-        error: result.error || 'Failed to update talkgroups' 
-      });
-    }
-  } catch (error: any) {
-    console.error('Error updating talkgroups:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: error.message || 'Failed to update talkgroups' 
-    });
-  }
-});
-
-/**
- * Send email to all users (Admin only)
- */
-router.post('/send-email-to-all', async (req: Request, res: Response) => {
-  try {
-    const { subject, htmlContent, plainContent } = req.body;
-    
-    if (!subject || !htmlContent || !plainContent) {
-      return res.status(400).json({ error: 'Subject and content are required' });
-    }
-    
-    // Get all active users with their emails
-    const usersQuery = await db.query(`
-      SELECT email, name, locale FROM users 
-      WHERE is_active = true AND email IS NOT NULL
-    `);
-    
-    if (usersQuery.rows.length === 0) {
-      return res.status(400).json({ error: 'No active users found' });
-    }
-    
-    // Send emails using the bulk email function
-    const results = await emailService.sendBulkEmail(
-      usersQuery.rows, 
-      subject, 
-      htmlContent, 
-      plainContent
-    );
-    
-    res.json({
-      success: true,
-      sentCount: results.successful,
-      failedCount: results.failed,
-      totalUsers: usersQuery.rows.length
-    });
-  } catch (error) {
-    console.error('Error sending bulk email:', error);
-    res.status(500).json({ error: 'Failed to send emails' });
-  }
-});
-
-/**
- * Get all users (Admin only)
- */
-router.get('/users', async (req: Request, res: Response) => {
-  try {
-    const result = await db.query('SELECT id, callsign, name, email, is_active, created_at, last_login_at, locale FROM users ORDER BY created_at DESC');
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    res.status(500).json({ error: 'Failed to fetch users' });
-  }
-});
-
-/**
- * Get user by ID for editing (Admin only)
- */
-router.get('/users/:id', async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const result = await db.query('SELECT id, callsign, name, email, is_active, created_at, last_login_at, locale FROM users WHERE id = $1', [id]);
-    
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    
-    res.json(result.rows[0]);
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({ error: 'Failed to fetch user' });
-  }
-});
-
-/**
- * Update user data (Admin only)
- */
-router.put('/users/:id', async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const { name, email, is_active, locale } = req.body;
-    
-    const result = await db.query(
-      'UPDATE users SET name = $1, email = $2, is_active = $3, locale = $4 WHERE id = $5',
-      [name, email, is_active, locale || 'en', id]
-    );
-    
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    
-    res.json({ message: 'User updated successfully' });
-  } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).json({ error: 'Failed to update user' });
-  }
-});
-
-/**
- * Update user status (Admin only)
- */
-router.put('/users/:id/status', async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const { is_active } = req.body;
-    
-    if (is_active === undefined) {
-      return res.status(400).json({ error: 'is_active field is required' });
-    }
-    
-    const result = await db.query('UPDATE users SET is_active = $1 WHERE id = $2', [is_active, id]);
-    
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    
-    res.json({ message: 'User status updated successfully' });
-  } catch (error) {
-    console.error('Error updating user status:', error);
-    res.status(500).json({ error: 'Failed to update user status' });
-  }
-});
-
-/**
- * Delete a user (Admin only)
- */
-router.delete('/users/:id', async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    
-    // Delete user sessions first (cascading delete)
-    await db.query(`DELETE FROM user_sessions WHERE user_id = $1`, [id]);
-    
-    // Delete user
-    const result = await db.query('DELETE FROM users WHERE id = $1', [id]);
-    
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    
-    res.json({ message: 'User deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    res.status(500).json({ error: 'Failed to delete user' });
-  }
-});
-
-/**
- * Admin home page - HTML interface
+ * Admin home page - HTML interface (no authentication required here)
+ * Authentication is handled on the client side
  */
 router.get('/', async (req: Request, res: Response) => {
-  // For the HTML page, we'll let the JavaScript handle authentication
-  // The page will check for the session token and redirect if not authenticated
   res.send(`
 <!DOCTYPE html>
 <html lang="en">
@@ -275,6 +55,98 @@ router.get('/', async (req: Request, res: Response) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Brandmeister Lastheard Next Generation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .auth-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            margin: 50px auto;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div id="authCheck" class="auth-message">
+        <h2>🔐 Admin Panel Access</h2>
+        <p id="authMessage">Checking authentication...</p>
+        <button onclick="window.location.href='/'">Return to Main Page</button>
+    </div>
+
+    <script>
+        // Check authentication and authorization on page load
+        async function checkAuthAndAccess() {
+            const token = localStorage.getItem('session_token');
+            if (!token) {
+                document.getElementById('authMessage').textContent = 'No session token found. Please log in first.';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth/profile', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+
+                if (!response.ok) {
+                    document.getElementById('authMessage').textContent = 'Session expired. Please log in again.';
+                    return;
+                }
+
+                const data = await response.json();
+                if (!data.success || !data.user) {
+                    document.getElementById('authMessage').textContent = 'Invalid session. Please log in again.';
+                    return;
+                }
+
+                // Check if user is EA7KLK
+                if (data.user.callsign !== 'EA7KLK') {
+                    document.getElementById('authMessage').textContent = 'Admin access required. This page is only accessible to EA7KLK.';
+                    return;
+                }
+
+                // User is authenticated and authorized - redirect to full admin interface
+                window.location.href = '/admin/dashboard';
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                document.getElementById('authMessage').textContent = 'Authentication check failed. Please try again.';
+            }
+        }
+
+        // Run auth check when page loads
+        document.addEventListener('DOMContentLoaded', checkAuthAndAccess);
+    </script>
+</body>
+</html>
+  `);
+});
+
+/**
+ * Admin dashboard - Full admin interface (requires authentication)
+ */
+router.get('/dashboard', authenticateAdmin, async (req: Request, res: Response) => {
+  res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Brandmeister Lastheard Next Generation</title>
     <!-- Quill.js Rich Text Editor -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
@@ -465,120 +337,13 @@ router.get('/', async (req: Request, res: Response) => {
             background: #ccc;
             cursor: not-allowed;
         }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-        .modal-content {
-            background-color: white;
-            margin: 10% auto;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .modal-header h2 {
-            margin: 0;
-        }
-        .close {
-            color: #aaa;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            line-height: 1;
-        }
-        .close:hover {
-            color: #000;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-            font-weight: 600;
-        }
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        .form-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-        .btn-primary {
-            padding: 10px 20px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        .btn-primary:hover {
-            background: #5568d3;
-        }
-        .btn-secondary {
-            padding: 10px 20px;
-            background: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-        /* Rich text editor styling */
-        #emailEditor {
-            background: white;
-        }
-        .ql-toolbar {
-            border-top: 1px solid #ccc !important;
-            border-left: 1px solid #ccc !important;
-            border-right: 1px solid #ccc !important;
-            border-bottom: none !important;
-        }
-        .ql-container {
-            border-bottom: 1px solid #ccc !important;
-            border-left: 1px solid #ccc !important;
-            border-right: 1px solid #ccc !important;
-            border-top: none !important;
-        }
-        .ql-editor {
-            min-height: 150px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔐 Admin Panel</h1>
-            <p class="subtitle">Brandmeister Lastheard Next Generation - User Management</p>
+            <h1>🔐 Admin Dashboard</h1>
+            <p class="subtitle">Brandmeister Lastheard Next Generation - Administration Panel</p>
         </div>
 
         <div id="message" class="message"></div>
@@ -639,96 +404,7 @@ router.get('/', async (req: Request, res: Response) => {
             </button>
         </div>
 
-        <div class="section">
-            <h2>📧 Send Email to All Users</h2>
-            <p style="color: #666; margin-bottom: 20px;">
-                Send an announcement or newsletter to all registered users. The email will be sent in both HTML and plain text formats.
-            </p>
-            <form id="emailForm" onsubmit="sendEmailToAllUsers(event)">
-                <div style="margin-bottom: 15px;">
-                    <label for="emailSubject" style="display: block; margin-bottom: 5px; font-weight: 600;">Subject:</label>
-                    <input type="text" id="emailSubject" required 
-                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label for="emailContent" style="display: block; margin-bottom: 5px; font-weight: 600;">Message:</label>
-                    <div id="emailEditor" style="border: 1px solid #ddd; border-radius: 6px; min-height: 200px;"></div>
-                    <textarea id="emailContent" name="content" style="display: none;" required></textarea>
-                    <small style="color: #666; margin-top: 5px; display: block;">
-                        The email will be sent in both HTML format and automatically converted to plain text for compatibility.
-                    </small>
-                </div>
-                <button type="submit" id="sendEmailBtn" class="expunge-btn" style="background: #17a2b8;">
-                    📧 Send Email to All Users
-                </button>
-            </form>
-        </div>
-
         <a href="/" class="back-link">← Back to Home</a>
-    </div>
-
-    <!-- Update Talkgroups Modal -->
-    <div id="updateTgModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Update Talkgroups</h2>
-                <span class="close" onclick="closeUpdateTgModal()" id="updateTgClose" style="display: none;">&times;</span>
-            </div>
-            <div id="updateTgContent">
-                <div class="loading">
-                    <p>Talkgroup update process running...</p>
-                    <p style="color: #999; margin-top: 10px;">This may take a few moments.</p>
-                </div>
-            </div>
-            <div class="form-actions" id="updateTgActions" style="display: none;">
-                <button type="button" class="btn-primary" onclick="closeUpdateTgModal()">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit User Modal -->
-    <div id="editUserModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Edit User</h2>
-                <span class="close" onclick="closeEditModal()">&times;</span>
-            </div>
-            <form id="editUserForm">
-                <input type="hidden" id="editUserId">
-                <div class="form-group">
-                    <label>Callsign</label>
-                    <input type="text" id="editCallsign" disabled>
-                </div>
-                <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" id="editName" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="editEmail" required>
-                </div>
-                <div class="form-group">
-                    <label>Status</label>
-                    <select id="editStatus">
-                        <option value="true">Active</option>
-                        <option value="false">Inactive</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Language</label>
-                    <select id="editLocale">
-                        <option value="en">English</option>
-                        <option value="es">Español</option>
-                        <option value="de">Deutsch</option>
-                        <option value="fr">Français</option>
-                    </select>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn-secondary" onclick="closeEditModal()">Cancel</button>
-                    <button type="submit" class="btn-primary">Save Changes</button>
-                </div>
-            </form>
-        </div>
     </div>
 
     <script>
@@ -743,53 +419,6 @@ router.get('/', async (req: Request, res: Response) => {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token
             };
-        }
-
-        // Check authentication and authorization on page load
-        async function checkAuthAndAccess() {
-            const token = localStorage.getItem('session_token');
-            if (!token) {
-                redirectToLogin('No session token found. Please log in.');
-                return false;
-            }
-
-            try {
-                const response = await fetch(API_BASE + '/auth/profile', {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token
-                    }
-                });
-
-                if (!response.ok) {
-                    redirectToLogin('Session expired. Please log in again.');
-                    return false;
-                }
-
-                const data = await response.json();
-                if (!data.success || !data.user) {
-                    redirectToLogin('Invalid session. Please log in again.');
-                    return false;
-                }
-
-                // Check if user is EA7KLK
-                if (data.user.callsign !== 'EA7KLK') {
-                    redirectToLogin('Admin access required. This page is only accessible to EA7KLK.');
-                    return false;
-                }
-
-                // User is authenticated and authorized
-                return true;
-            } catch (error) {
-                console.error('Auth check failed:', error);
-                redirectToLogin('Authentication check failed. Please log in again.');
-                return false;
-            }
-        }
-
-        function redirectToLogin(message) {
-            alert(message);
-            window.location.href = '/';
         }
 
         function showMessage(message, type) {
@@ -828,10 +457,6 @@ router.get('/', async (req: Request, res: Response) => {
                     headers: headers
                 });
                 if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
-                        redirectToLogin('Session expired or access denied.');
-                        return;
-                    }
                     throw new Error('Failed to load stats');
                 }
                 
@@ -853,10 +478,6 @@ router.get('/', async (req: Request, res: Response) => {
                     headers: headers
                 });
                 if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
-                        redirectToLogin('Session expired or access denied.');
-                        return;
-                    }
                     throw new Error('Failed to load users');
                 }
                 
@@ -887,7 +508,7 @@ router.get('/', async (req: Request, res: Response) => {
                 
                 data.forEach(user => {
                     html += '<tr>';
-                    html += '<td><a href="#" class="clickable-callsign" onclick="editUser(' + user.id + '); return false;"><code>' + escapeHtml(user.callsign) + '</code></a></td>';
+                    html += '<td><code>' + escapeHtml(user.callsign) + '</code></td>';
                     html += '<td>' + escapeHtml(user.name) + '</td>';
                     html += '<td>' + escapeHtml(user.email) + '</td>';
                     html += '<td><span class="status-' + (user.is_active ? 'active' : 'inactive') + '">' + (user.is_active ? 'Active' : 'Inactive') + '</span></td>';
@@ -912,78 +533,6 @@ router.get('/', async (req: Request, res: Response) => {
             }
         }
 
-        async function editUser(id) {
-            try {
-                const headers = getAuthHeaders();
-                if (!headers) return;
-
-                const response = await fetch(API_BASE + '/admin/users/' + id, {
-                    headers: headers
-                });
-                if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
-                        redirectToLogin('Session expired or access denied.');
-                        return;
-                    }
-                    throw new Error('Failed to load user');
-                }
-                
-                const user = await response.json();
-                
-                document.getElementById('editUserId').value = user.id;
-                document.getElementById('editCallsign').value = user.callsign;
-                document.getElementById('editName').value = user.name;
-                document.getElementById('editEmail').value = user.email;
-                document.getElementById('editStatus').value = user.is_active ? 'true' : 'false';
-                document.getElementById('editLocale').value = user.locale || 'en';
-                
-                document.getElementById('editUserModal').style.display = 'block';
-            } catch (error) {
-                console.error('Error loading user:', error);
-                showMessage('Failed to load user data', 'error');
-            }
-        }
-
-        function closeEditModal() {
-            document.getElementById('editUserModal').style.display = 'none';
-        }
-
-        document.getElementById('editUserForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const headers = getAuthHeaders();
-            if (!headers) return;
-
-            const id = document.getElementById('editUserId').value;
-            const name = document.getElementById('editName').value;
-            const email = document.getElementById('editEmail').value;
-            const is_active = document.getElementById('editStatus').value === 'true';
-            const locale = document.getElementById('editLocale').value;
-            
-            try {
-                const response = await fetch(API_BASE + '/admin/users/' + id, {
-                    method: 'PUT',
-                    headers: headers,
-                    body: JSON.stringify({ name, email, is_active, locale })
-                });
-                
-                if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
-                        redirectToLogin('Session expired or access denied.');
-                        return;
-                    }
-                    throw new Error('Failed to update user');
-                }
-                
-                showMessage('User updated successfully', 'success');
-                closeEditModal();
-                loadUsers();
-            } catch (error) {
-                console.error('Error updating user:', error);
-                showMessage('Failed to update user', 'error');
-            }
-        });
-
         async function expungeOldRecords() {
             if (!confirm('Are you sure you want to delete all records older than 7 days? This action cannot be undone.')) {
                 return;
@@ -1003,10 +552,6 @@ router.get('/', async (req: Request, res: Response) => {
                 });
                 
                 if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
-                        redirectToLogin('Session expired or access denied.');
-                        return;
-                    }
                     throw new Error('Failed to expunge records');
                 }
                 
@@ -1023,19 +568,6 @@ router.get('/', async (req: Request, res: Response) => {
         }
 
         async function updateTalkgroups() {
-            // Show modal
-            const modal = document.getElementById('updateTgModal');
-            modal.style.display = 'block';
-            
-            // Reset content to loading state
-            document.getElementById('updateTgContent').innerHTML = 
-                '<div class="loading">' +
-                    '<p>Talkgroup update process running...</p>' +
-                    '<p style="color: #999; margin-top: 10px;">This may take a few moments.</p>' +
-                '</div>';
-            document.getElementById('updateTgActions').style.display = 'none';
-            document.getElementById('updateTgClose').style.display = 'none';
-            
             const headers = getAuthHeaders();
             if (!headers) return;
 
@@ -1050,88 +582,22 @@ router.get('/', async (req: Request, res: Response) => {
                 });
                 
                 if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
-                        redirectToLogin('Session expired or access denied.');
-                        return;
-                    }
                     throw new Error('Failed to update talkgroups');
                 }
                 
                 const data = await response.json();
                 
-                // Show success results
                 if (data.success) {
-                    const readFromSource = (data.readFromSource || 0).toLocaleString();
-                    const added = (data.added || 0).toLocaleString();
-                    const updated = (data.updated || 0).toLocaleString();
-                    const totalBefore = (data.totalBefore || 0).toLocaleString();
-                    const totalAfter = (data.totalAfter || 0).toLocaleString();
-                    
-                    document.getElementById('updateTgContent').innerHTML = 
-                        '<div style="padding: 20px 0;">' +
-                            '<div class="message success" style="display: block; margin-bottom: 20px;">' +
-                                'Talkgroup update completed successfully!' +
-                            '</div>' +
-                            '<div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 10px;">' +
-                                '<strong>📊 Update Statistics:</strong>' +
-                            '</div>' +
-                            '<table style="width: 100%; margin-top: 10px;">' +
-                                '<tr>' +
-                                    '<td style="padding: 10px; border-bottom: 1px solid #e0e0e0;"><strong>Read from source:</strong></td>' +
-                                    '<td style="padding: 10px; border-bottom: 1px solid #e0e0e0; text-align: right;">' + readFromSource + '</td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                    '<td style="padding: 10px; border-bottom: 1px solid #e0e0e0;"><strong>Added to database:</strong></td>' +
-                                    '<td style="padding: 10px; border-bottom: 1px solid #e0e0e0; text-align: right; color: #28a745;">' + added + '</td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                    '<td style="padding: 10px; border-bottom: 1px solid #e0e0e0;"><strong>Updated in database:</strong></td>' +
-                                    '<td style="padding: 10px; border-bottom: 1px solid #e0e0e0; text-align: right; color: #667eea;">' + updated + '</td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                    '<td style="padding: 10px; border-bottom: 1px solid #e0e0e0;"><strong>Total before update:</strong></td>' +
-                                    '<td style="padding: 10px; border-bottom: 1px solid #e0e0e0; text-align: right;">' + totalBefore + '</td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                    '<td style="padding: 10px;"><strong>Total after update:</strong></td>' +
-                                    '<td style="padding: 10px; text-align: right; font-weight: 600;">' + totalAfter + '</td>' +
-                                '</tr>' +
-                            '</table>' +
-                        '</div>';
-                    document.getElementById('updateTgActions').style.display = 'flex';
-                    document.getElementById('updateTgClose').style.display = 'block';
                     showMessage('Talkgroups updated successfully', 'success');
                 } else {
                     throw new Error(data.error || 'Update failed');
                 }
             } catch (error) {
                 console.error('Error updating talkgroups:', error);
-                document.getElementById('updateTgContent').innerHTML = 
-                    '<div class="message error" style="display: block;">' +
-                        'Failed to update talkgroups: ' + error.message +
-                    '</div>';
-                document.getElementById('updateTgActions').style.display = 'flex';
-                document.getElementById('updateTgClose').style.display = 'block';
                 showMessage('Failed to update talkgroups', 'error');
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'Update BM TGs';
-            }
-        }
-
-        function closeUpdateTgModal() {
-            document.getElementById('updateTgModal').style.display = 'none';
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const editModal = document.getElementById('editUserModal');
-            const updateTgModal = document.getElementById('updateTgModal');
-            if (event.target == editModal) {
-                closeEditModal();
-            }
-            if (event.target == updateTgModal) {
-                closeUpdateTgModal();
             }
         }
 
@@ -1150,10 +616,6 @@ router.get('/', async (req: Request, res: Response) => {
                 });
                 
                 if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
-                        redirectToLogin('Session expired or access denied.');
-                        return;
-                    }
                     throw new Error('Failed to update user status');
                 }
                 
@@ -1178,10 +640,6 @@ router.get('/', async (req: Request, res: Response) => {
                 });
                 
                 if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
-                        redirectToLogin('Session expired or access denied.');
-                        return;
-                    }
                     throw new Error('Failed to delete user');
                 }
                 
@@ -1193,106 +651,152 @@ router.get('/', async (req: Request, res: Response) => {
             }
         }
 
-        // Initialize rich text editor
-        let quill;
+        // Initialize the page
         document.addEventListener('DOMContentLoaded', async function() {
-            // Check authentication and authorization first
-            const isAuthorized = await checkAuthAndAccess();
-            if (!isAuthorized) {
-                return; // User will be redirected
-            }
-
-            // Initialize the page if user is authorized
-            quill = new Quill('#emailEditor', {
-                theme: 'snow',
-                modules: {
-                    toolbar: [
-                        [{ 'header': [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline'],
-                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                        ['link'],
-                        ['clean']
-                    ]
-                },
-                placeholder: 'Compose your message to all users...'
-            });
-            
-            // Update hidden textarea when quill content changes
-            quill.on('text-change', function() {
-                document.getElementById('emailContent').value = quill.root.innerHTML;
-            });
-
             // Load initial data
             loadStats();
             loadUsers();
         });
-
-        async function sendEmailToAllUsers(event) {
-            event.preventDefault();
-            
-            const headers = getAuthHeaders();
-            if (!headers) return;
-
-            const subject = document.getElementById('emailSubject').value.trim();
-            const htmlContent = quill.root.innerHTML;
-            
-            if (!subject) {
-                showMessage('Please enter a subject', 'error');
-                return;
-            }
-            
-            if (quill.getText().trim().length === 0) {
-                showMessage('Please enter a message', 'error');
-                return;
-            }
-            
-            if (!confirm('Are you sure you want to send this email to ALL registered users? This action cannot be undone.')) {
-                return;
-            }
-            
-            const btn = document.getElementById('sendEmailBtn');
-            btn.disabled = true;
-            btn.textContent = '📧 Sending...';
-            
-            try {
-                const response = await fetch(API_BASE + '/admin/send-email-to-all', {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify({
-                        subject: subject,
-                        htmlContent: htmlContent,
-                        plainContent: quill.getText()
-                    })
-                });
-                
-                if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
-                        redirectToLogin('Session expired or access denied.');
-                        return;
-                    }
-                    throw new Error('Failed to send emails');
-                }
-                
-                const data = await response.json();
-                showMessage('Successfully sent email to ' + data.sentCount + ' users', 'success');
-                
-                // Reset form
-                document.getElementById('emailSubject').value = '';
-                quill.setContents([]);
-                document.getElementById('emailContent').value = '';
-                
-            } catch (error) {
-                console.error('Error sending emails:', error);
-                showMessage('Failed to send emails: ' + error.message, 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = '📧 Send Email to All Users';
-            }
-        }
     </script>
 </body>
 </html>
   `);
+});
+
+/**
+ * API Routes - All require admin authentication
+ */
+
+/**
+ * Get database statistics (Admin only)
+ */
+router.get('/stats', authenticateAdmin, async (req: Request, res: Response) => {
+  try {
+    const totalRecords = await db.query('SELECT COUNT(*) as count FROM lastheard WHERE "DestinationID" != 9');
+    const uniqueTalkgroups = await db.query('SELECT COUNT(DISTINCT "DestinationID") as count FROM lastheard WHERE "DestinationID" != 9');
+    const uniqueCallsigns = await db.query('SELECT COUNT(DISTINCT "SourceCall") as count FROM lastheard WHERE "DestinationID" != 9');
+    
+    res.json({
+      totalRecords: parseInt(totalRecords.rows[0].count),
+      uniqueTalkgroups: parseInt(uniqueTalkgroups.rows[0].count),
+      uniqueCallsigns: parseInt(uniqueCallsigns.rows[0].count)
+    });
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+    res.status(500).json({ error: 'Failed to fetch statistics' });
+  }
+});
+
+/**
+ * Expunge old records (Admin only)
+ */
+router.post('/expunge', authenticateAdmin, async (req: Request, res: Response) => {
+  try {
+    const sevenDaysAgo = Math.floor(Date.now() / 1000) - (7 * 24 * 60 * 60);
+    const result = await db.query('DELETE FROM lastheard WHERE "Start" < $1', [sevenDaysAgo]);
+    
+    res.json({
+      message: 'Records expunged successfully',
+      deletedCount: result.rowCount
+    });
+  } catch (error) {
+    console.error('Error expunging records:', error);
+    res.status(500).json({ error: 'Failed to expunge records' });
+  }
+});
+
+/**
+ * Update talkgroups from Brandmeister (Admin only)
+ */
+router.post('/update-talkgroups', authenticateAdmin, async (req: Request, res: Response) => {
+  try {
+    console.log('Manual talkgroups update triggered by admin');
+    const result = await updateTalkgroups();
+    
+    if (result.success) {
+      res.json({
+        success: true,
+        readFromSource: result.readFromSource,
+        added: result.added,
+        updated: result.updated,
+        totalBefore: result.totalBefore,
+        totalAfter: result.totalAfter
+      });
+    } else {
+      res.status(500).json({ 
+        success: false, 
+        error: result.error || 'Failed to update talkgroups' 
+      });
+    }
+  } catch (error: any) {
+    console.error('Error updating talkgroups:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message || 'Failed to update talkgroups' 
+    });
+  }
+});
+
+/**
+ * Get all users (Admin only)
+ */
+router.get('/users', authenticateAdmin, async (req: Request, res: Response) => {
+  try {
+    const result = await db.query('SELECT id, callsign, name, email, is_active, created_at, last_login_at, locale FROM users ORDER BY created_at DESC');
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
+/**
+ * Update user status (Admin only)
+ */
+router.put('/users/:id/status', authenticateAdmin, async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { is_active } = req.body;
+    
+    if (is_active === undefined) {
+      return res.status(400).json({ error: 'is_active field is required' });
+    }
+    
+    const result = await db.query('UPDATE users SET is_active = $1 WHERE id = $2', [is_active, id]);
+    
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json({ message: 'User status updated successfully' });
+  } catch (error) {
+    console.error('Error updating user status:', error);
+    res.status(500).json({ error: 'Failed to update user status' });
+  }
+});
+
+/**
+ * Delete a user (Admin only)
+ */
+router.delete('/users/:id', authenticateAdmin, async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    
+    // Delete user sessions first (cascading delete)
+    await db.query(`DELETE FROM user_sessions WHERE user_id = $1`, [id]);
+    
+    // Delete user
+    const result = await db.query('DELETE FROM users WHERE id = $1', [id]);
+    
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'Failed to delete user' });
+  }
 });
 
 export default router;

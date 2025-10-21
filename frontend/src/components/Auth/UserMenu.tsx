@@ -59,7 +59,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
   const handleAdminPanel = () => {
     setIsOpen(false);
     // Open admin panel in new tab
-    window.open('/api/admin', '_blank');
+    window.open('/admin', '_blank');
   };
 
   return (
