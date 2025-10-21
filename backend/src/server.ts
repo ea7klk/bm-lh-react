@@ -5,6 +5,7 @@ import lastHeardRoutes from './routes/lastHeardRoutes';
 import talkgroupsRoutes from './routes/talkgroupsRoutes';
 import authRoutes from './routes/authRoutes';
 import summaryRoutes from './routes/summaryRoutes';
+import adminRoutes from './routes/adminRoutes';
 import { startBrandmeisterService, stopBrandmeisterService } from './services/brandmeisterService';
 import { initializeDatabase } from './services/databaseService';
 import { startScheduler, stopScheduler } from './services/schedulerService';
@@ -29,6 +30,7 @@ app.use('/api/lastheard', lastHeardRoutes);
 app.use('/api/talkgroups', talkgroupsRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/summary', summaryRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: any) => {

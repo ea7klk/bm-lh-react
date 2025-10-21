@@ -339,6 +339,33 @@ class EmailService {
     }
   }
 
+  async sendBulkEmail(users: { email: string; name: string; locale?: string }[], subject: string, htmlContent: string, plainContent: string): Promise<{ successful: number; failed: number }> {
+    let successful = 0;
+    let failed = 0;
+
+    for (const user of users) {
+      try {
+        const template = {
+          subject: subject,
+          html: htmlContent,
+          text: plainContent
+        };
+        
+        const emailSent = await this.sendEmail(user.email, template);
+        if (emailSent) {
+          successful++;
+        } else {
+          failed++;
+        }
+      } catch (emailError) {
+        console.error(`Failed to send email to ${user.email}:`, emailError);
+        failed++;
+      }
+    }
+
+    return { successful, failed };
+  }
+
   async sendEmailVerification(user: User, token: string): Promise<boolean> {
     const template = this.generateEmailVerificationTemplate(user, token);
     return await this.sendEmail(user.email, template);
