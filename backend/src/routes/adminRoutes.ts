@@ -137,9 +137,9 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 /**
- * Admin dashboard - Full admin interface (requires authentication)
+ * Admin dashboard - Full admin interface (client-side authentication check)
  */
-router.get('/dashboard', authenticateAdmin, async (req: Request, res: Response) => {
+router.get('/dashboard', async (req: Request, res: Response) => {
   res.send(`
 <!DOCTYPE html>
 <html lang="en">
@@ -651,9 +651,62 @@ router.get('/dashboard', authenticateAdmin, async (req: Request, res: Response) 
             }
         }
 
+        // Check authentication and authorization on page load
+        async function checkAuthAndAccess() {
+            const token = localStorage.getItem('session_token');
+            if (!token) {
+                alert('No session token found. Please log in first.');
+                window.location.href = '/';
+                return false;
+            }
+
+            try {
+                const response = await fetch('/api/auth/profile', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+
+                if (!response.ok) {
+                    alert('Session expired. Please log in again.');
+                    window.location.href = '/';
+                    return false;
+                }
+
+                const data = await response.json();
+                if (!data.success || !data.user) {
+                    alert('Invalid session. Please log in again.');
+                    window.location.href = '/';
+                    return false;
+                }
+
+                // Check if user is EA7KLK
+                if (data.user.callsign !== 'EA7KLK') {
+                    alert('Admin access required. This page is only accessible to EA7KLK.');
+                    window.location.href = '/';
+                    return false;
+                }
+
+                // User is authenticated and authorized
+                return true;
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                alert('Authentication check failed. Please log in again.');
+                window.location.href = '/';
+                return false;
+            }
+        }
+
         // Initialize the page
         document.addEventListener('DOMContentLoaded', async function() {
-            // Load initial data
+            // Check authentication first
+            const isAuthorized = await checkAuthAndAccess();
+            if (!isAuthorized) {
+                return; // User will be redirected
+            }
+
+            // User is authorized, load admin data
             loadStats();
             loadUsers();
         });
