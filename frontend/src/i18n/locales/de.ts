@@ -69,7 +69,11 @@ export const de = {
   
   // Authentication
   login: "Anmelden / Registrieren",
+  signInPrompt: "Bitte melde dich bei deinem Konto an",
   register: "Registrieren",
+  createAccountPrompt: "Erstelle dein Amateurfunk-Konto",
+  noAccountYet: "Noch kein Konto?",
+  resetPasswordPrompt: "Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum Zurücksetzen deines Passworts.",
   callsign: "Rufzeichen",
   name: "Name",
   email: "E-Mail",
@@ -87,13 +91,13 @@ export const de = {
   resendVerification: "Verifizierung Erneut Senden",
   
   // Auth form labels and placeholders
-  callsignPlaceholder: "Rufzeichen eingeben",
-  namePlaceholder: "Vollständigen Namen eingeben",
-  emailPlaceholder: "E-Mail-Adresse eingeben",
-  passwordPlaceholder: "Passwort eingeben",
-  confirmPasswordPlaceholder: "Passwort bestätigen",
+  callsignPlaceholder: "Gib dein Rufzeichen ein",
+  namePlaceholder: "Gib deinen vollständigen Namen ein",
+  emailPlaceholder: "Gib deine E-Mail-Adresse ein",
+  passwordPlaceholder: "Gib dein Passwort ein",
+  confirmPasswordPlaceholder: "Bestätige dein Passwort",
   emailOrCallsign: "E-Mail oder Rufzeichen",
-  emailOrCallsignPlaceholder: "E-Mail oder Rufzeichen eingeben",
+  emailOrCallsignPlaceholder: "Gib E-Mail oder Rufzeichen ein",
   
   // Auth buttons
   registerButton: "Konto Erstellen",
@@ -104,25 +108,25 @@ export const de = {
   backToLogin: "Zurück zur Anmeldung",
   
   // Auth messages
-  registrationSuccess: "Registrierung erfolgreich! Überprüfen Sie Ihre E-Mail zur Kontobestätigung.",
+  registrationSuccess: "Registrierung erfolgreich! Überprüfe deine E-Mail zur Kontobestätigung.",
   loginSuccess: "Willkommen zurück!",
-  logoutSuccess: "Sie wurden erfolgreich abgemeldet.",
-  emailVerificationSent: "Bestätigungs-E-Mail gesendet. Überprüfen Sie Ihren Posteingang.",
-  emailVerified: "E-Mail erfolgreich bestätigt! Sie können sich jetzt anmelden.",
-  passwordResetSent: "Passwort-Reset-Link an Ihre E-Mail gesendet.",
+  logoutSuccess: "Du wurdest erfolgreich abgemeldet.",
+  emailVerificationSent: "Bestätigungs-E-Mail gesendet. Überprüfe deinen Posteingang.",
+  emailVerified: "E-Mail erfolgreich bestätigt! Du kannst dich jetzt anmelden.",
+  passwordResetSent: "Passwort-Reset-Link an deine E-Mail gesendet.",
   passwordChanged: "Passwort erfolgreich geändert.",
   emailChanged: "E-Mail-Adresse erfolgreich aktualisiert.",
   
   // Auth errors
   invalidCredentials: "Ungültige E-Mail/Rufzeichen oder Passwort.",
-  accountNotActivated: "Konto nicht aktiviert. Bitte bestätigen Sie Ihre E-Mail.",
+  accountNotActivated: "Konto nicht aktiviert. Bitte bestätige deine E-Mail.",
   emailAlreadyExists: "Ein Konto mit dieser E-Mail existiert bereits.",
   callsignAlreadyExists: "Ein Konto mit diesem Rufzeichen existiert bereits.",
-  invalidEmail: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
-  invalidCallsign: "Bitte geben Sie ein gültiges Rufzeichen ein.",
+  invalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
+  invalidCallsign: "Bitte gib ein gültiges Rufzeichen ein.",
   passwordTooShort: "Passwort muss mindestens 8 Zeichen lang sein.",
   passwordsDoNotMatch: "Passwörter stimmen nicht überein.",
-  tokenExpired: "Token ist abgelaufen. Bitte fordern Sie einen neuen an.",
+  tokenExpired: "Token ist abgelaufen. Bitte fordere einen neuen an.",
   invalidToken: "Ungültiger oder abgelaufener Token.",
   currentPasswordIncorrect: "Aktuelles Passwort ist falsch.",
   

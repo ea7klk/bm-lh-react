@@ -58,7 +58,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
         
         <div className="auth-modal-header">
           <h2>{t('resetPassword')}</h2>
-          <p>Enter your email address and we'll send you a link to reset your password.</p>
+          <p>{t('resetPasswordPrompt')}</p>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>

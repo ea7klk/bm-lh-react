@@ -73,7 +73,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         
         <div className="auth-modal-header">
           <h2>{t('login')}</h2>
-          <p>Please sign in to your account</p>
+          <p>{t('signInPrompt')}</p>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>
@@ -137,7 +137,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
             </button>
             
             <div className="form-switch">
-              Don't have an account?
+              {t('noAccountYet')}
               <button
                 type="button"
                 className="form-link"

@@ -69,7 +69,11 @@ export const es = {
   
   // Authentication
   login: "Iniciar Sesión / Registrarse",
+  signInPrompt: "Por favor, inicia sesión en tu cuenta",
   register: "Registrarse",
+  createAccountPrompt: "Crea tu cuenta de radioaficionado",
+  noAccountYet: "¿No tienes una cuenta?",
+  resetPasswordPrompt: "Introduce tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
   callsign: "Indicativo",
   name: "Nombre",
   email: "Correo Electrónico",
@@ -87,13 +91,13 @@ export const es = {
   resendVerification: "Reenviar Verificación",
   
   // Auth form labels and placeholders
-  callsignPlaceholder: "Ingrese su indicativo",
-  namePlaceholder: "Ingrese su nombre completo",
-  emailPlaceholder: "Ingrese su dirección de correo",
-  passwordPlaceholder: "Ingrese su contraseña",
-  confirmPasswordPlaceholder: "Confirme su contraseña",
+  callsignPlaceholder: "Ingresa tu indicativo",
+  namePlaceholder: "Ingresa tu nombre completo",
+  emailPlaceholder: "Ingresa tu dirección de correo",
+  passwordPlaceholder: "Ingresa tu contraseña",
+  confirmPasswordPlaceholder: "Confirma tu contraseña",
   emailOrCallsign: "Correo o Indicativo",
-  emailOrCallsignPlaceholder: "Ingrese correo o indicativo",
+  emailOrCallsignPlaceholder: "Ingresa correo o indicativo",
   
   // Auth buttons
   registerButton: "Crear Cuenta",
@@ -104,22 +108,22 @@ export const es = {
   backToLogin: "Volver al Inicio",
   
   // Auth messages
-  registrationSuccess: "¡Registro exitoso! Revise su correo para verificar su cuenta.",
+  registrationSuccess: "¡Registro exitoso! Revisa tu correo para verificar tu cuenta.",
   loginSuccess: "¡Bienvenido de vuelta!",
-  logoutSuccess: "Ha cerrado sesión exitosamente.",
-  emailVerificationSent: "Correo de verificación enviado. Revise su bandeja de entrada.",
-  emailVerified: "¡Correo verificado exitosamente! Ya puede iniciar sesión.",
-  passwordResetSent: "Enlace de restablecimiento enviado a su correo.",
+  logoutSuccess: "Has cerrado sesión exitosamente.",
+  emailVerificationSent: "Correo de verificación enviado. Revisa tu bandeja de entrada.",
+  emailVerified: "¡Correo verificado exitosamente! Ya puedes iniciar sesión.",
+  passwordResetSent: "Enlace de restablecimiento enviado a tu correo.",
   passwordChanged: "Contraseña cambiada exitosamente.",
   emailChanged: "Dirección de correo actualizada exitosamente.",
   
   // Auth errors
   invalidCredentials: "Correo/indicativo o contraseña inválidos.",
-  accountNotActivated: "Cuenta no activada. Verifique su correo electrónico.",
+  accountNotActivated: "Cuenta no activada. Verifica tu correo electrónico.",
   emailAlreadyExists: "Ya existe una cuenta con este correo electrónico.",
   callsignAlreadyExists: "Ya existe una cuenta con este indicativo.",
-  invalidEmail: "Ingrese una dirección de correo válida.",
-  invalidCallsign: "Ingrese un indicativo válido.",
+  invalidEmail: "Ingresa una dirección de correo válida.",
+  invalidCallsign: "Ingresa un indicativo válido.",
   passwordTooShort: "La contraseña debe tener al menos 8 caracteres.",
   passwordsDoNotMatch: "Las contraseñas no coinciden.",
   tokenExpired: "El token ha expirado. Solicite uno nuevo.",

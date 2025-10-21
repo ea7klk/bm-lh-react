@@ -69,7 +69,11 @@ export const en = {
   
   // Authentication
   login: "Login / Register",
+  signInPrompt: "Please sign in to your account",
   register: "Register",
+  createAccountPrompt: "Create your ham radio account",
+  noAccountYet: "Don't have an account?",
+  resetPasswordPrompt: "Enter your email address and we'll send you a link to reset your password.",
   callsign: "Callsign",
   name: "Name",
   email: "Email",

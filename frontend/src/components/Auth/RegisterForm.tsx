@@ -95,7 +95,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         
         <div className="auth-modal-header">
           <h2>{t('register')}</h2>
-          <p>Create your ham radio account</p>
+          <p>{t('createAccountPrompt')}</p>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>

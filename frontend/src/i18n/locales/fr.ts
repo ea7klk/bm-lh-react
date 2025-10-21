@@ -69,7 +69,11 @@ export const fr = {
   
   // Authentication
   login: "Se Connecter / S'inscrire",
+  signInPrompt: "Connecte-toi à ton compte",
   register: "S'inscrire",
+  createAccountPrompt: "Crée ton compte de radioamateur",
+  noAccountYet: "Tu n'as pas encore de compte ?",
+  resetPasswordPrompt: "Entre ton adresse e-mail et nous t'enverrons un lien pour réinitialiser ton mot de passe.",
   callsign: "Indicatif",
   name: "Nom",
   email: "E-mail",
@@ -87,13 +91,13 @@ export const fr = {
   resendVerification: "Renvoyer la Vérification",
   
   // Auth form labels and placeholders
-  callsignPlaceholder: "Entrez votre indicatif",
-  namePlaceholder: "Entrez votre nom complet",
-  emailPlaceholder: "Entrez votre adresse e-mail",
-  passwordPlaceholder: "Entrez votre mot de passe",
-  confirmPasswordPlaceholder: "Confirmez votre mot de passe",
+  callsignPlaceholder: "Entre ton indicatif",
+  namePlaceholder: "Entre ton nom complet",
+  emailPlaceholder: "Entre ton adresse e-mail",
+  passwordPlaceholder: "Entre ton mot de passe",
+  confirmPasswordPlaceholder: "Confirme ton mot de passe",
   emailOrCallsign: "E-mail ou Indicatif",
-  emailOrCallsignPlaceholder: "Entrez e-mail ou indicatif",
+  emailOrCallsignPlaceholder: "Entre e-mail ou indicatif",
   
   // Auth buttons
   registerButton: "Créer un Compte",
@@ -104,25 +108,25 @@ export const fr = {
   backToLogin: "Retour à la Connexion",
   
   // Auth messages
-  registrationSuccess: "Inscription réussie ! Vérifiez votre e-mail pour confirmer votre compte.",
+  registrationSuccess: "Inscription réussie ! Vérifie ton e-mail pour confirmer ton compte.",
   loginSuccess: "Bon retour !",
-  logoutSuccess: "Vous avez été déconnecté avec succès.",
-  emailVerificationSent: "E-mail de vérification envoyé. Vérifiez votre boîte de réception.",
-  emailVerified: "E-mail vérifié avec succès ! Vous pouvez maintenant vous connecter.",
-  passwordResetSent: "Lien de réinitialisation envoyé à votre e-mail.",
+  logoutSuccess: "Tu as été déconnecté avec succès.",
+  emailVerificationSent: "E-mail de vérification envoyé. Vérifie ta boîte de réception.",
+  emailVerified: "E-mail vérifié avec succès ! Tu peux maintenant te connecter.",
+  passwordResetSent: "Lien de réinitialisation envoyé à ton e-mail.",
   passwordChanged: "Mot de passe changé avec succès.",
   emailChanged: "Adresse e-mail mise à jour avec succès.",
   
   // Auth errors
   invalidCredentials: "E-mail/indicatif ou mot de passe invalide.",
-  accountNotActivated: "Compte non activé. Veuillez vérifier votre e-mail.",
+  accountNotActivated: "Compte non activé. Vérifie ton e-mail.",
   emailAlreadyExists: "Un compte avec cet e-mail existe déjà.",
   callsignAlreadyExists: "Un compte avec cet indicatif existe déjà.",
-  invalidEmail: "Veuillez entrer une adresse e-mail valide.",
-  invalidCallsign: "Veuillez entrer un indicatif valide.",
+  invalidEmail: "Entre une adresse e-mail valide.",
+  invalidCallsign: "Entre un indicatif valide.",
   passwordTooShort: "Le mot de passe doit contenir au moins 8 caractères.",
   passwordsDoNotMatch: "Les mots de passe ne correspondent pas.",
-  tokenExpired: "Le token a expiré. Veuillez en demander un nouveau.",
+  tokenExpired: "Le token a expiré. Demande-en un nouveau.",
   invalidToken: "Token invalide ou expiré.",
   currentPasswordIncorrect: "Le mot de passe actuel est incorrect.",
   
@@ -164,6 +168,6 @@ export const fr = {
   
   // Account verification
   accountVerificationRequired: "Vérification du Compte Requise",
-  checkEmailForVerification: "Vérifiez votre e-mail et cliquez sur le lien de vérification pour activer votre compte.",
-  verificationLinkExpired: "Lien de vérification expiré. Veuillez en demander un nouveau.",
+  checkEmailForVerification: "Vérifie ton e-mail et clique sur le lien de vérification pour activer ton compte.",
+  verificationLinkExpired: "Lien de vérification expiré. Demande-en un nouveau.",
 } as const;
