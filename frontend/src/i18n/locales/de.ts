@@ -437,4 +437,4 @@ export const de = {
   accountVerificationRequired: "Kontobestätigung Erforderlich",
   checkEmailForVerification: "Überprüfen Sie Ihre E-Mail und klicken Sie auf den Bestätigungslink zur Kontoaktivierung.",
   verificationLinkExpired: "Bestätigungslink abgelaufen. Bitte fordern Sie einen neuen an.",
-} as const;
+};

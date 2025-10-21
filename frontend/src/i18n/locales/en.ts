@@ -437,4 +437,4 @@ export const en = {
   accountVerificationRequired: "Account Verification Required",
   checkEmailForVerification: "Please check your email and click the verification link to activate your account.",
   verificationLinkExpired: "Verification link expired. Please request a new one.",
-} as const;
+};
