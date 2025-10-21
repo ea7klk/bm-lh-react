@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header/Header';
 import TalkgroupChart from './components/TalkgroupChart/TalkgroupChart';
@@ -6,13 +7,14 @@ import TalkgroupDurationChart from './components/TalkgroupDurationChart/Talkgrou
 import FilterPanel from './components/FilterPanel/FilterPanel';
 import LanguageSelector from './components/LanguageSelector/LanguageSelector';
 import { AuthModal, UserMenu, UserProfile, AccountSettings } from './components/Auth';
+import AdminPanel from './components/Admin/AdminPanel';
 import { lastHeardService } from './services/api';
 import { TalkgroupStats, TalkgroupDurationStats, FilterOptions } from './types';
 import { loadFiltersFromStorage, saveFiltersToStorage } from './utils/filterStorage';
 import { useTranslation } from './i18n';
 import { useAuth } from './contexts/AuthContext';
 
-function App() {
+function MainDashboard() {
   const { t } = useTranslation();
   const { user, logout, isAuthenticated } = useAuth();
   const [talkgroupStats, setTalkgroupStats] = useState<TalkgroupStats[]>([]);
@@ -184,6 +186,27 @@ function App() {
                 {t('login')}
               </button>
             )}
+            
+            {/* Admin Link */}
+            {isAuthenticated && user?.callsign === 'EA7KLK' && (
+              <Link 
+                to="/admin" 
+                className="admin-link"
+                style={{ 
+                  marginLeft: '10px', 
+                  padding: '8px 16px',
+                  background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  display: 'inline-block'
+                }}
+              >
+                Admin
+              </Link>
+            )}
           </div>
           
           <span className="entry-count">
@@ -241,6 +264,17 @@ function App() {
         />
       )}
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainDashboard />} />
+        <Route path="/admin" element={<AdminPanel />} />
+      </Routes>
+    </Router>
   );
 }
 

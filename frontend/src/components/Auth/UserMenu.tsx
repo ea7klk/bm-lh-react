@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from '../../i18n';
 import { UserProfile } from '../../types';
-import { adminService } from '../../services/adminService';
 import './Auth.css';
 
 interface UserMenuProps {
@@ -56,11 +55,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
     if (onChangeEmail) onChangeEmail();
   };
 
-  const handleAdminPanel = () => {
-    setIsOpen(false);
-    // Open admin panel in new tab
-    window.open('/admin', '_blank');
-  };
+
 
   return (
     <div className="user-menu" ref={menuRef}>
@@ -102,13 +97,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
             </button>
           )}
 
-          {/* Admin Panel Link - Only for EA7KLK */}
-          {adminService.isAdmin(user.callsign) && (
-            <button className="user-menu-item" onClick={handleAdminPanel}>
-              <span>🔐</span>
-              Admin Panel
-            </button>
-          )}
+
 
           <hr className="user-menu-divider" />
 
