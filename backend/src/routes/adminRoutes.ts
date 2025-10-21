@@ -43,625 +43,9 @@ async function authenticateAdmin(req: Request, res: Response, next: any) {
   }
 }
 
-/**
- * Admin home page - HTML interface (no authentication required here)
- * Authentication is handled on the client side
- */
-router.get('/', async (req: Request, res: Response) => {
-  res.send(`
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Brandmeister Lastheard Next Generation</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .auth-message {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            padding: 20px;
-            border-radius: 6px;
-            text-align: center;
-            margin: 50px auto;
-            max-width: 500px;
-        }
-    </style>
-</head>
-<body>
-    <div id="authCheck" class="auth-message">
-        <h2>🔐 Admin Panel Access</h2>
-        <p id="authMessage">Checking authentication...</p>
-        <button onclick="window.location.href='/'">Return to Main Page</button>
-    </div>
+// Admin routes now handled by React Router - no HTML endpoints needed
 
-    <script>
-        // Check authentication and authorization on page load
-        async function checkAuthAndAccess() {
-            const token = localStorage.getItem('session_token');
-            if (!token) {
-                document.getElementById('authMessage').textContent = 'No session token found. Please log in first.';
-                return;
-            }
 
-            try {
-                const response = await fetch('/api/auth/profile', {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token
-                    }
-                });
-
-                if (!response.ok) {
-                    document.getElementById('authMessage').textContent = 'Session expired. Please log in again.';
-                    return;
-                }
-
-                const data = await response.json();
-                if (!data.success || !data.user) {
-                    document.getElementById('authMessage').textContent = 'Invalid session. Please log in again.';
-                    return;
-                }
-
-                // Check if user is EA7KLK
-                if (data.user.callsign !== 'EA7KLK') {
-                    document.getElementById('authMessage').textContent = 'Admin access required. This page is only accessible to EA7KLK.';
-                    return;
-                }
-
-                // User is authenticated and authorized - redirect to full admin interface
-                window.location.href = '/admin/dashboard';
-            } catch (error) {
-                console.error('Auth check failed:', error);
-                document.getElementById('authMessage').textContent = 'Authentication check failed. Please try again.';
-            }
-        }
-
-        // Run auth check when page loads
-        document.addEventListener('DOMContentLoaded', checkAuthAndAccess);
-    </script>
-</body>
-</html>
-  `);
-});
-
-/**
- * Admin dashboard - Full admin interface (requires authentication)
- */
-router.get('/dashboard', authenticateAdmin, async (req: Request, res: Response) => {
-  res.send(`
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Brandmeister Lastheard Next Generation</title>
-    <!-- Quill.js Rich Text Editor -->
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .header {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-bottom: 20px;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        .subtitle {
-            color: #666;
-            font-size: 14px;
-        }
-        .section {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-bottom: 20px;
-        }
-        h2 {
-            color: #333;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .refresh-btn {
-            padding: 8px 16px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        .refresh-btn:hover {
-            background: #5568d3;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        th {
-            background: #f8f9fa;
-            color: #333;
-            font-weight: 600;
-        }
-        tr:hover {
-            background: #f8f9fa;
-        }
-        .delete-btn {
-            padding: 6px 12px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        .delete-btn:hover {
-            background: #c82333;
-        }
-        .status-active {
-            color: #28a745;
-            font-weight: 600;
-        }
-        .status-inactive {
-            color: #dc3545;
-            font-weight: 600;
-        }
-        .message {
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            display: none;
-        }
-        .message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-        }
-        .empty {
-            text-align: center;
-            padding: 40px;
-            color: #999;
-        }
-        code {
-            font-family: 'Courier New', monospace;
-            background: #f8f9fa;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 12px;
-        }
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            color: #667eea;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        .back-link:hover {
-            text-decoration: underline;
-        }
-        .stats {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        .stat-card {
-            flex: 1;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-        }
-        .stat-label {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
-        .stat-value {
-            color: #333;
-            font-size: 28px;
-            font-weight: 600;
-        }
-        .clickable-callsign {
-            color: #667eea;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .clickable-callsign:hover {
-            text-decoration: underline;
-        }
-        .expunge-btn {
-            padding: 12px 24px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            display: inline-block;
-        }
-        .expunge-btn:hover {
-            background: #c82333;
-        }
-        .expunge-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🔐 Admin Dashboard</h1>
-            <p class="subtitle">Brandmeister Lastheard Next Generation - Administration Panel</p>
-        </div>
-
-        <div id="message" class="message"></div>
-
-        <div class="section">
-            <h2>📊 Database Statistics</h2>
-            <div class="stats" id="dbStats">
-                <div class="stat-card">
-                    <div class="stat-label">Total Lastheard Records</div>
-                    <div class="stat-value" id="totalRecords">-</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Unique Talkgroups</div>
-                    <div class="stat-value" id="uniqueTalkgroups">-</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Unique Callsigns</div>
-                    <div class="stat-value" id="uniqueCallsigns">-</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>
-                👥 Users
-                <button class="refresh-btn" onclick="loadUsers()">🔄 Refresh</button>
-            </h2>
-            <div class="stats" id="userStats">
-                <div class="stat-card">
-                    <div class="stat-label">Total Users</div>
-                    <div class="stat-value" id="totalUsers">-</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Active Users</div>
-                    <div class="stat-value" id="activeUsers">-</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Inactive Users</div>
-                    <div class="stat-value" id="inactiveUsers">-</div>
-                </div>
-            </div>
-            <div id="usersContent" class="loading">Loading...</div>
-        </div>
-
-        <div class="section">
-            <h2>🗑️ Database Maintenance</h2>
-            <p style="color: #666; margin-bottom: 20px;">
-                Remove records older than 7 days from the database to free up space and improve performance.
-            </p>
-            <button class="expunge-btn" onclick="expungeOldRecords()" id="expungeBtn">
-                Expunge Records Older Than 7 Days
-            </button>
-            <p style="color: #666; margin: 30px 0 20px 0;">
-                Update talkgroups database from Brandmeister API. This process runs automatically at 02:00 AM daily.
-            </p>
-            <button class="expunge-btn" style="background: #28a745;" onclick="updateTalkgroups()" id="updateTgBtn">
-                Update BM TGs
-            </button>
-        </div>
-
-        <a href="/" class="back-link">← Back to Home</a>
-    </div>
-
-    <script>
-        const API_BASE = '/api';
-        
-        function getAuthHeaders() {
-            const token = localStorage.getItem('session_token');
-            if (!token) {
-                return null;
-            }
-            return {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            };
-        }
-
-        function showMessage(message, type) {
-            const messageDiv = document.getElementById('message');
-            messageDiv.textContent = message;
-            messageDiv.className = 'message ' + type;
-            messageDiv.style.display = 'block';
-            setTimeout(() => {
-                messageDiv.style.display = 'none';
-            }, 5000);
-        }
-
-        function formatDate(timestamp) {
-            if (!timestamp) return '-';
-            const date = new Date(timestamp * 1000);
-            return date.toLocaleString();
-        }
-
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, m => map[m]);
-        }
-
-        async function loadStats() {
-            try {
-                const headers = getAuthHeaders();
-                if (!headers) return;
-
-                const response = await fetch(API_BASE + '/admin/stats', {
-                    headers: headers
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to load stats');
-                }
-                
-                const data = await response.json();
-                document.getElementById('totalRecords').textContent = data.totalRecords.toLocaleString();
-                document.getElementById('uniqueTalkgroups').textContent = data.uniqueTalkgroups.toLocaleString();
-                document.getElementById('uniqueCallsigns').textContent = data.uniqueCallsigns.toLocaleString();
-            } catch (error) {
-                console.error('Error loading stats:', error);
-            }
-        }
-
-        async function loadUsers() {
-            try {
-                const headers = getAuthHeaders();
-                if (!headers) return;
-
-                const response = await fetch(API_BASE + '/admin/users', {
-                    headers: headers
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to load users');
-                }
-                
-                const data = await response.json();
-                
-                // Update stats
-                document.getElementById('totalUsers').textContent = data.length;
-                document.getElementById('activeUsers').textContent = data.filter(u => u.is_active).length;
-                document.getElementById('inactiveUsers').textContent = data.filter(u => !u.is_active).length;
-                
-                const content = document.getElementById('usersContent');
-                
-                if (data.length === 0) {
-                    content.innerHTML = '<div class="empty">No users found</div>';
-                    return;
-                }
-                
-                let html = '<table>';
-                html += '<thead><tr>';
-                html += '<th>Callsign</th>';
-                html += '<th>Name</th>';
-                html += '<th>Email</th>';
-                html += '<th>Status</th>';
-                html += '<th>Created</th>';
-                html += '<th>Last Login</th>';
-                html += '<th>Actions</th>';
-                html += '</tr></thead><tbody>';
-                
-                data.forEach(user => {
-                    html += '<tr>';
-                    html += '<td><code>' + escapeHtml(user.callsign) + '</code></td>';
-                    html += '<td>' + escapeHtml(user.name) + '</td>';
-                    html += '<td>' + escapeHtml(user.email) + '</td>';
-                    html += '<td><span class="status-' + (user.is_active ? 'active' : 'inactive') + '">' + (user.is_active ? 'Active' : 'Inactive') + '</span></td>';
-                    html += '<td>' + formatDate(user.created_at) + '</td>';
-                    html += '<td>' + formatDate(user.last_login_at) + '</td>';
-                    html += '<td>';
-                    if (user.is_active) {
-                        html += '<button class="delete-btn" style="background: #ffc107; margin-right: 5px;" onclick="toggleUserStatus(' + user.id + ', false)">Deactivate</button>';
-                    } else {
-                        html += '<button class="delete-btn" style="background: #28a745; margin-right: 5px;" onclick="toggleUserStatus(' + user.id + ', true)">Activate</button>';
-                    }
-                    html += '<button class="delete-btn" onclick="deleteUser(' + user.id + ')">Delete</button>';
-                    html += '</td>';
-                    html += '</tr>';
-                });
-                
-                html += '</tbody></table>';
-                content.innerHTML = html;
-            } catch (error) {
-                console.error('Error loading users:', error);
-                document.getElementById('usersContent').innerHTML = '<div class="error">Error loading users</div>';
-            }
-        }
-
-        async function expungeOldRecords() {
-            if (!confirm('Are you sure you want to delete all records older than 7 days? This action cannot be undone.')) {
-                return;
-            }
-            
-            const headers = getAuthHeaders();
-            if (!headers) return;
-
-            const btn = document.getElementById('expungeBtn');
-            btn.disabled = true;
-            btn.textContent = 'Processing...';
-            
-            try {
-                const response = await fetch(API_BASE + '/admin/expunge', {
-                    method: 'POST',
-                    headers: headers
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Failed to expunge records');
-                }
-                
-                const data = await response.json();
-                showMessage('Successfully deleted ' + data.deletedCount.toLocaleString() + ' old records', 'success');
-                loadStats(); // Reload stats
-            } catch (error) {
-                console.error('Error expunging records:', error);
-                showMessage('Failed to expunge records', 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Expunge Records Older Than 7 Days';
-            }
-        }
-
-        async function updateTalkgroups() {
-            const headers = getAuthHeaders();
-            if (!headers) return;
-
-            const btn = document.getElementById('updateTgBtn');
-            btn.disabled = true;
-            btn.textContent = 'Updating...';
-            
-            try {
-                const response = await fetch(API_BASE + '/admin/update-talkgroups', {
-                    method: 'POST',
-                    headers: headers
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Failed to update talkgroups');
-                }
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showMessage('Talkgroups updated successfully', 'success');
-                } else {
-                    throw new Error(data.error || 'Update failed');
-                }
-            } catch (error) {
-                console.error('Error updating talkgroups:', error);
-                showMessage('Failed to update talkgroups', 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Update BM TGs';
-            }
-        }
-
-        async function toggleUserStatus(id, newStatus) {
-            const action = newStatus ? 'activate' : 'deactivate';
-            if (!confirm('Are you sure you want to ' + action + ' this user?')) return;
-            
-            const headers = getAuthHeaders();
-            if (!headers) return;
-
-            try {
-                const response = await fetch(API_BASE + '/admin/users/' + id + '/status', {
-                    method: 'PUT',
-                    headers: headers,
-                    body: JSON.stringify({ is_active: newStatus })
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Failed to update user status');
-                }
-                
-                showMessage('User ' + action + 'd successfully', 'success');
-                loadUsers();
-            } catch (error) {
-                console.error('Error updating user status:', error);
-                showMessage('Failed to update user status', 'error');
-            }
-        }
-
-        async function deleteUser(id) {
-            if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
-            
-            const headers = getAuthHeaders();
-            if (!headers) return;
-
-            try {
-                const response = await fetch(API_BASE + '/admin/users/' + id, {
-                    method: 'DELETE',
-                    headers: headers
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Failed to delete user');
-                }
-                
-                showMessage('User deleted successfully', 'success');
-                loadUsers();
-            } catch (error) {
-                console.error('Error deleting user:', error);
-                showMessage('Failed to delete user', 'error');
-            }
-        }
-
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Load initial data
-            loadStats();
-            loadUsers();
-        });
-    </script>
-</body>
-</html>
-  `);
-});
 
 /**
  * API Routes - All require admin authentication
@@ -675,11 +59,19 @@ router.get('/stats', authenticateAdmin, async (req: Request, res: Response) => {
     const totalRecords = await db.query('SELECT COUNT(*) as count FROM lastheard WHERE "DestinationID" != 9');
     const uniqueTalkgroups = await db.query('SELECT COUNT(DISTINCT "DestinationID") as count FROM lastheard WHERE "DestinationID" != 9');
     const uniqueCallsigns = await db.query('SELECT COUNT(DISTINCT "SourceCall") as count FROM lastheard WHERE "DestinationID" != 9');
+    const oldestRecord = await db.query('SELECT MIN("Start") as oldest FROM lastheard WHERE "DestinationID" != 9');
+    
+    let oldestRecordDate = null;
+    if (oldestRecord.rows[0].oldest) {
+      const date = new Date(oldestRecord.rows[0].oldest * 1000);
+      oldestRecordDate = date.toLocaleDateString();
+    }
     
     res.json({
       totalRecords: parseInt(totalRecords.rows[0].count),
       uniqueTalkgroups: parseInt(uniqueTalkgroups.rows[0].count),
-      uniqueCallsigns: parseInt(uniqueCallsigns.rows[0].count)
+      uniqueCallsigns: parseInt(uniqueCallsigns.rows[0].count),
+      oldestRecord: oldestRecordDate
     });
   } catch (error) {
     console.error('Error fetching stats:', error);
@@ -690,7 +82,7 @@ router.get('/stats', authenticateAdmin, async (req: Request, res: Response) => {
 /**
  * Expunge old records (Admin only)
  */
-router.post('/expunge', authenticateAdmin, async (req: Request, res: Response) => {
+router.post('/expunge-old-records', authenticateAdmin, async (req: Request, res: Response) => {
   try {
     const sevenDaysAgo = Math.floor(Date.now() / 1000) - (7 * 24 * 60 * 60);
     const result = await db.query('DELETE FROM lastheard WHERE "Start" < $1', [sevenDaysAgo]);
@@ -772,6 +164,58 @@ router.put('/users/:id/status', authenticateAdmin, async (req: Request, res: Res
   } catch (error) {
     console.error('Error updating user status:', error);
     res.status(500).json({ error: 'Failed to update user status' });
+  }
+});
+
+/**
+ * Update user information (Admin only)
+ */
+router.put('/users/:id', authenticateAdmin, async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { name, email, callsign, is_active, locale } = req.body;
+    
+    if (!name || !email || !callsign) {
+      return res.status(400).json({ error: 'Name, email, and callsign are required' });
+    }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
+    
+    // Validate callsign format
+    const callsignRegex = /^[A-Z0-9]{3,8}$/i;
+    if (!callsignRegex.test(callsign)) {
+      return res.status(400).json({ error: 'Invalid callsign format (3-8 alphanumeric characters)' });
+    }
+    
+    // Check if callsign is already taken by another user
+    const existingUser = await db.query('SELECT id FROM users WHERE callsign = $1 AND id != $2', [callsign.toUpperCase(), id]);
+    if (existingUser.rows.length > 0) {
+      return res.status(400).json({ error: 'Callsign is already taken by another user' });
+    }
+    
+    // Check if email is already taken by another user
+    const existingEmail = await db.query('SELECT id FROM users WHERE email = $1 AND id != $2', [email, id]);
+    if (existingEmail.rows.length > 0) {
+      return res.status(400).json({ error: 'Email is already taken by another user' });
+    }
+    
+    const result = await db.query(
+      'UPDATE users SET name = $1, email = $2, callsign = $3, is_active = $4, locale = $5 WHERE id = $6',
+      [name, email, callsign.toUpperCase(), is_active, locale || 'en', id]
+    );
+    
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json({ message: 'User updated successfully' });
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Failed to update user' });
   }
 });
 

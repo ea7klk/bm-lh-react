@@ -10,7 +10,7 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { TalkgroupDurationStats } from '../../types';
-import { useTranslation } from '../../i18n';
+import { useTranslation } from 'react-i18next';
 import './TalkgroupDurationChart.css';
 
 ChartJS.register(
@@ -159,7 +159,7 @@ const TalkgroupDurationChart: React.FC<TalkgroupDurationChartProps> = ({ data, l
         ticks: {
           color: '#2c3e50',
           font: {
-            size: 12,
+            size: 11,
             weight: 'normal' as const,
           },
           maxRotation: 0,
@@ -167,7 +167,7 @@ const TalkgroupDurationChart: React.FC<TalkgroupDurationChartProps> = ({ data, l
             const item = data[index];
             return item ? `${item.name} (ID: ${item.talkgroup_id})` : '';
           },
-          padding: 10,
+          padding: 8,
         },
         border: {
           display: false,
@@ -176,10 +176,10 @@ const TalkgroupDurationChart: React.FC<TalkgroupDurationChartProps> = ({ data, l
     },
     layout: {
       padding: {
-        left: 10,
-        right: 80, // More padding for duration text positioned after bars
-        top: 10,
-        bottom: 10
+        left: 5,
+        right: 70, // More padding for duration text positioned after bars
+        top: 5,
+        bottom: 5
       }
     },
     elements: {
@@ -189,8 +189,8 @@ const TalkgroupDurationChart: React.FC<TalkgroupDurationChartProps> = ({ data, l
     },
     datasets: {
       bar: {
-        categoryPercentage: 0.9,
-        barPercentage: 0.8,
+        categoryPercentage: 0.8,
+        barPercentage: 0.6,
       }
     },
     interaction: {
@@ -202,8 +202,8 @@ const TalkgroupDurationChart: React.FC<TalkgroupDurationChartProps> = ({ data, l
     }
   };
 
-  // Calculate height based on number of items
-  const chartHeight = Math.max(300, data.length * 50);
+  // Calculate height based on number of items - more compact
+  const chartHeight = Math.max(200, data.length * 30);
 
   return (
     <div className="talkgroup-duration-chart">

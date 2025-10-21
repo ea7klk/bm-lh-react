@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useTranslation } from '../../i18n';
+import { useTranslation } from 'react-i18next';
 import { UserProfile } from '../../types';
-import { adminService } from '../../services/adminService';
 import './Auth.css';
 
 interface UserMenuProps {
@@ -10,6 +9,8 @@ interface UserMenuProps {
   onProfile?: () => void;
   onSettings?: () => void;
   onChangeEmail?: () => void;
+  onAdmin?: () => void;
+  isAdmin?: boolean;
 }
 
 const UserMenu: React.FC<UserMenuProps> = ({
@@ -17,7 +18,9 @@ const UserMenu: React.FC<UserMenuProps> = ({
   onLogout,
   onProfile,
   onSettings,
-  onChangeEmail
+  onChangeEmail,
+  onAdmin,
+  isAdmin = false
 }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -56,11 +59,12 @@ const UserMenu: React.FC<UserMenuProps> = ({
     if (onChangeEmail) onChangeEmail();
   };
 
-  const handleAdminPanel = () => {
+  const handleAdmin = () => {
     setIsOpen(false);
-    // Open admin panel in new tab
-    window.open('/admin', '_blank');
+    if (onAdmin) onAdmin();
   };
+
+
 
   return (
     <div className="user-menu" ref={menuRef}>
@@ -102,11 +106,10 @@ const UserMenu: React.FC<UserMenuProps> = ({
             </button>
           )}
 
-          {/* Admin Panel Link - Only for EA7KLK */}
-          {adminService.isAdmin(user.callsign) && (
-            <button className="user-menu-item" onClick={handleAdminPanel}>
-              <span>🔐</span>
-              Admin Panel
+          {isAdmin && onAdmin && (
+            <button className="user-menu-item" onClick={handleAdmin}>
+              <span>🔧</span>
+              {t('admin')}
             </button>
           )}
 

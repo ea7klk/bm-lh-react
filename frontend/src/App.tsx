@@ -1,20 +1,24 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header/Header';
 import TalkgroupChart from './components/TalkgroupChart/TalkgroupChart';
 import TalkgroupDurationChart from './components/TalkgroupDurationChart/TalkgroupDurationChart';
+import TalkgroupTable from './components/TalkgroupTable/TalkgroupTable';
 import FilterPanel from './components/FilterPanel/FilterPanel';
 import LanguageSelector from './components/LanguageSelector/LanguageSelector';
 import { AuthModal, UserMenu, UserProfile, AccountSettings } from './components/Auth';
+import AdminPanel from './components/Admin/AdminPanel';
 import { lastHeardService } from './services/api';
 import { TalkgroupStats, TalkgroupDurationStats, FilterOptions } from './types';
 import { loadFiltersFromStorage, saveFiltersToStorage } from './utils/filterStorage';
-import { useTranslation } from './i18n';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from './contexts/AuthContext';
 
-function App() {
+function MainDashboard() {
   const { t } = useTranslation();
   const { user, logout, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [talkgroupStats, setTalkgroupStats] = useState<TalkgroupStats[]>([]);
   const [talkgroupDurationStats, setTalkgroupDurationStats] = useState<TalkgroupDurationStats[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -44,6 +48,10 @@ function App() {
   const handleChangeEmail = () => {
     // TODO: Implement email change functionality
     alert(`${t('changeEmail')} functionality coming soon!`);
+  };
+
+  const handleAdmin = () => {
+    navigate('/admin');
   };
 
   const fetchData = async (currentFilters?: FilterOptions) => {
@@ -175,6 +183,8 @@ function App() {
                 onProfile={handleViewProfile}
                 onSettings={handleAccountSettings}
                 onChangeEmail={handleChangeEmail}
+                onAdmin={handleAdmin}
+                isAdmin={user?.callsign === 'EA7KLK'}
               />
             ) : (
               <button 
@@ -215,6 +225,11 @@ function App() {
         
         <TalkgroupChart data={talkgroupStats} loading={loading} />
         <TalkgroupDurationChart data={talkgroupDurationStats} loading={loading} />
+        <TalkgroupTable 
+          statsData={talkgroupStats} 
+          durationData={talkgroupDurationStats} 
+          loading={loading} 
+        />
       </main>
       
       {/* Authentication Modal */}
@@ -241,6 +256,17 @@ function App() {
         />
       )}
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainDashboard />} />
+        <Route path="/admin" element={<AdminPanel />} />
+      </Routes>
+    </Router>
   );
 }
 

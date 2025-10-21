@@ -1,13 +1,12 @@
 # Translation Structure
 
-This directory contains the internationalization (i18n) files for the BM Last Heard application.
+This directory contains the internationalization (i18n) files for the BM Last Heard application using react-i18next.
 
 ## Structure
 
 ```
 src/i18n/
-├── index.tsx                 # React context provider and translation hook
-├── translations.ts           # Main translations object (imports from locales)
+├── i18n.ts                  # i18next configuration and initialization
 └── locales/
     ├── index.ts             # Export file for all locales
     ├── en.ts                # English translations
@@ -18,18 +17,21 @@ src/i18n/
 
 ## Usage
 
-The translation system uses React Context and provides a hook for accessing translations:
+The translation system uses react-i18next library:
 
 ```tsx
-import { useTranslation } from '../i18n';
+import { useTranslation } from 'react-i18next';
 
 function MyComponent() {
-  const { t, language, setLanguage } = useTranslation();
+  const { t, i18n } = useTranslation();
   
   return (
     <div>
       <h1>{t('title')}</h1>
       <p>{t('showingTalkgroups', { count: 5 })}</p>
+      <button onClick={() => i18n.changeLanguage('es')}>
+        Switch to Spanish
+      </button>
     </div>
   );
 }

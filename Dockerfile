@@ -4,9 +4,13 @@ WORKDIR /app/frontend
 
 # Copy package files first for better caching
 COPY frontend/package*.json ./
-RUN npm install --no-audit --no-fund --silent
 
 COPY frontend/ .
+# Remove package-lock.json to avoid version conflicts and do fresh install
+RUN rm -f package-lock.json && npm cache clean --force
+# Install compatible ajv version first to avoid conflicts
+RUN npm install ajv@^8.0.0 --save --legacy-peer-deps --force --no-audit --no-fund --silent
+RUN npm install --legacy-peer-deps --force --no-audit --no-fund --silent
 RUN npm run build
 
 FROM node:20.18.0-alpine AS backend-builder
