@@ -4,9 +4,11 @@ WORKDIR /app/frontend
 
 # Copy package files first for better caching
 COPY frontend/package*.json ./
-RUN npm install --legacy-peer-deps --no-audit --no-fund --silent
 
 COPY frontend/ .
+# Remove package-lock.json to avoid version conflicts and do fresh install
+RUN rm -f package-lock.json && npm cache clean --force
+RUN npm install --legacy-peer-deps --force --no-audit --no-fund --silent
 RUN npm run build
 
 FROM node:20.18.0-alpine AS backend-builder
