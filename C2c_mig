@@ -1,0 +1,48 @@
+docker exec -i bminfo-pgsql-postgres-1 pg_dump \
+  -h localhost \
+  -p 5432 \
+  -U bm_lastheard \
+  -d bm_lastheard \
+  --table=users \
+  --data-only \
+  --column-inserts \
+  > users_export.sql
+
+
+  docker exec -i bm-lh-postgres psql \
+  -h localhost \
+  -p 5432 \
+  -U bmuser \
+  -d bm_lastheard \
+  < users_export.sql
+
+
+  Lastheard: 
+
+  # Export data from source
+docker exec -i bminfo-pgsql-postgres-1 pg_dump \
+  -h localhost \
+  -p 5432 \
+  -U bm_lastheard \
+  -d bm_lastheard \
+  --table=lastheard \
+  --data-only \
+  --column-inserts \
+  > lastheard_export.sql
+
+# Clear destination table
+docker exec -i bm-lh-postgres psql \
+  -h localhost \
+  -p 5432 \
+  -U bmuser \
+  -d bm_lastheard \
+  -c "DELETE FROM lastheard;"
+
+# Import data to destination
+docker exec -i bm-lh-postgres psql \
+  -q \
+  -h localhost \
+  -p 5432 \
+  -U bmuser \
+  -d bm_lastheard \
+  < lastheard_export.sql
