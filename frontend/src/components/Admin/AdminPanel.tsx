@@ -67,6 +67,7 @@ const AdminPanel: React.FC = () => {
       setDbStats(data);
     } catch (error) {
       console.error('Error loading stats:', error);
+      showMessage('Failed to load database statistics', 'error');
     }
   };
 
@@ -88,6 +89,7 @@ const AdminPanel: React.FC = () => {
       setUserStats({ totalUsers: total, activeUsers: active, inactiveUsers: inactive });
     } catch (error) {
       console.error('Error loading users:', error);
+      showMessage('Failed to load user data', 'error');
     }
   };
 
@@ -225,18 +227,19 @@ const AdminPanel: React.FC = () => {
         <div className="admin-header">
           <h1>🔐 Admin Panel</h1>
         </div>
-        <div className="admin-loading">Loading admin panel...</div>
+        <div className="loading-message">Loading admin panel...</div>
       </div>
     );
   }
 
   return (
     <div className="admin-panel">
-              <div className="admin-header">
+      <div className="admin-header">
         <h1>🔐 Admin Panel</h1>
         <p className="subtitle">Brandmeister Lastheard Next Generation - Administration Panel</p>
       </div>
-        <div className="loading-message">Loading admin data...</div>      {message && (
+      
+      {message && (
         <div className={`admin-message ${message.type}`}>
           {message.text}
         </div>
