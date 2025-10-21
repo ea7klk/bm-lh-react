@@ -164,6 +164,7 @@ export const en = {
   userMenu: "User Menu",
   viewProfile: "View Profile",
   accountSettings: "Account Settings",
+  admin: "Admin",
   signOut: "Sign Out",
   
   // Account verification
