@@ -14,11 +14,15 @@
 - **FRONTEND_URL**: http://localhost:3000 (for email links)
 
 ### Files Created/Updated:
-1. **/.env** - Main environment configuration with email settings
+1. **/.env** - Main environment configuration with email settings (used by Docker)
 2. **/.env.example** - Template for other developers (with placeholder values)
-3. **/backend/.env** - Backend-specific environment variables
-4. **/docker-compose.yml** - Updated to use env_file for environment variables
-5. **/backend/src/services/emailService.ts** - Updated to use EMAIL_* variables
+3. **/docker-compose.yml** - Uses env_file to load environment variables
+4. **/backend/src/services/emailService.ts** - Updated to use EMAIL_* variables
+
+### Consolidated Configuration:
+- ✅ Single .env file at project root (used by Docker Compose)
+- ✅ Backend .env files removed (not needed in Docker environment)
+- ✅ All environment variables managed centrally
 
 ### Security:
 - ✅ .env files are already in .gitignore (not committed to git)

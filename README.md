@@ -150,14 +150,13 @@ The application includes a comprehensive email service for user authentication. 
 
 ### Quick Email Setup
 
-1. Copy environment files:
+1. Copy environment file:
 ```bash
-cp backend/.env.example backend/.env
+cp .env.example .env
 ```
 
-2. Configure email in `backend/.env`:
+2. Configure email in `.env`:
 ```bash
-EMAIL_ENABLED=true
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
