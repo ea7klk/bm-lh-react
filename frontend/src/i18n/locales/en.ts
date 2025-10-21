@@ -52,8 +52,8 @@ export const en = {
   loading: "Loading...",
   numberOfTransmissionsByTalkgroup: "Number of transmissions by talkgroup",
   totalAirTimeByTalkgroup: "Total air time by talkgroup",
-  showingTopActiveGroups: "Showing top {{count}} most active talkgroups",
-  showingTopGroupsByDuration: "Showing top {{count}} talkgroups by duration",
+  showingTopActiveGroups: "Showing top {{count}} most active talkgroups (only trasmissions longer than 5 seconds)",
+  showingTopGroupsByDuration: "Showing top {{count}} talkgroups by duration (see note at bottom)",
   simultaneousSessionsNote: "In some occasions, the total reported time can exceed the selected time range duration. This is caused by the data coming from the BM LastHeard Websocket, which allows simultaneous sessions on the same talkgroup, but only the first session is actually transmitted",
   
   // Table

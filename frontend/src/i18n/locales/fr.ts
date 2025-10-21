@@ -52,8 +52,8 @@ export const fr = {
   loading: "Chargement...",
   numberOfTransmissionsByTalkgroup: "Nombre de transmissions par groupe de discussion",
   totalAirTimeByTalkgroup: "Temps total de transmission par groupe de discussion",
-  showingTopActiveGroups: "Affichage des {{count}} groupes de discussion les plus actifs",
-  showingTopGroupsByDuration: "Affichage des {{count}} groupes de discussion les plus actifs par durée",
+  showingTopActiveGroups: "Affichage des {{count}} groupes de discussion les plus actifs (seulement les transmissions de plus de 5 secondes)",
+  showingTopGroupsByDuration: "Affichage des {{count}} groupes de discussion les plus actifs par durée (voir note en bas)",
   simultaneousSessionsNote: "Parfois, le temps total rapporté peut dépasser la durée de la plage de temps sélectionnée. Cela est dû au fait que les données proviennent du WebSocket BM LastHeard, qui permet des sessions simultanées sur le même groupe de discussion, mais seule la première session est réellement transmise",
   
   // Table

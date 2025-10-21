@@ -52,8 +52,8 @@ export const de = {
   loading: "Laden...",
   numberOfTransmissionsByTalkgroup: "Anzahl der Übertragungen pro Gesprächsgruppe",
   totalAirTimeByTalkgroup: "Gesamte Sendezeit pro Gesprächsgruppe",
-  showingTopActiveGroups: "Zeige die {{count}} aktivsten Gesprächsgruppen",
-  showingTopGroupsByDuration: "Zeige die {{count}} aktivsten Gesprächsgruppen nach Dauer",
+  showingTopActiveGroups: "Zeige die {{count}} aktivsten Gesprächsgruppen (nur Übertragungen länger als 5 Sekunden)",
+  showingTopGroupsByDuration: "Zeige die {{count}} aktivsten Gesprächsgruppen nach Dauer (siehe Anmerkung unten)",
   simultaneousSessionsNote: "Manchmal kann die gemeldete Gesamtzeit die Dauer des ausgewählten Zeitbereichs überschreiten. Dies liegt daran, dass die Daten vom BM LastHeard WebSocket stammen, der gleichzeitige Sitzungen in derselben Gesprächsgruppe ermöglicht, aber nur die erste Sitzung wird tatsächlich übertragen",
   
   // Table
