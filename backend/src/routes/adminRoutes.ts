@@ -59,11 +59,19 @@ router.get('/stats', authenticateAdmin, async (req: Request, res: Response) => {
     const totalRecords = await db.query('SELECT COUNT(*) as count FROM lastheard WHERE "DestinationID" != 9');
     const uniqueTalkgroups = await db.query('SELECT COUNT(DISTINCT "DestinationID") as count FROM lastheard WHERE "DestinationID" != 9');
     const uniqueCallsigns = await db.query('SELECT COUNT(DISTINCT "SourceCall") as count FROM lastheard WHERE "DestinationID" != 9');
+    const oldestRecord = await db.query('SELECT MIN("Start") as oldest FROM lastheard WHERE "DestinationID" != 9');
+    
+    let oldestRecordDate = null;
+    if (oldestRecord.rows[0].oldest) {
+      const date = new Date(oldestRecord.rows[0].oldest * 1000);
+      oldestRecordDate = date.toLocaleDateString();
+    }
     
     res.json({
       totalRecords: parseInt(totalRecords.rows[0].count),
       uniqueTalkgroups: parseInt(uniqueTalkgroups.rows[0].count),
-      uniqueCallsigns: parseInt(uniqueCallsigns.rows[0].count)
+      uniqueCallsigns: parseInt(uniqueCallsigns.rows[0].count),
+      oldestRecord: oldestRecordDate
     });
   } catch (error) {
     console.error('Error fetching stats:', error);
@@ -156,6 +164,58 @@ router.put('/users/:id/status', authenticateAdmin, async (req: Request, res: Res
   } catch (error) {
     console.error('Error updating user status:', error);
     res.status(500).json({ error: 'Failed to update user status' });
+  }
+});
+
+/**
+ * Update user information (Admin only)
+ */
+router.put('/users/:id', authenticateAdmin, async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { name, email, callsign, is_active, locale } = req.body;
+    
+    if (!name || !email || !callsign) {
+      return res.status(400).json({ error: 'Name, email, and callsign are required' });
+    }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
+    
+    // Validate callsign format
+    const callsignRegex = /^[A-Z0-9]{3,8}$/i;
+    if (!callsignRegex.test(callsign)) {
+      return res.status(400).json({ error: 'Invalid callsign format (3-8 alphanumeric characters)' });
+    }
+    
+    // Check if callsign is already taken by another user
+    const existingUser = await db.query('SELECT id FROM users WHERE callsign = $1 AND id != $2', [callsign.toUpperCase(), id]);
+    if (existingUser.rows.length > 0) {
+      return res.status(400).json({ error: 'Callsign is already taken by another user' });
+    }
+    
+    // Check if email is already taken by another user
+    const existingEmail = await db.query('SELECT id FROM users WHERE email = $1 AND id != $2', [email, id]);
+    if (existingEmail.rows.length > 0) {
+      return res.status(400).json({ error: 'Email is already taken by another user' });
+    }
+    
+    const result = await db.query(
+      'UPDATE users SET name = $1, email = $2, callsign = $3, is_active = $4, locale = $5 WHERE id = $6',
+      [name, email, callsign.toUpperCase(), is_active, locale || 'en', id]
+    );
+    
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json({ message: 'User updated successfully' });
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Failed to update user' });
   }
 });
 
