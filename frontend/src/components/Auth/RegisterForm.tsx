@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTranslation } from '../../i18n';
+import { useTranslation } from 'react-i18next';
 import { RegisterRequest } from '../../types';
 import './Auth.css';
 
@@ -20,14 +20,14 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   error,
   success
 }) => {
-  const { t, language } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [formData, setFormData] = useState<RegisterRequest>({
     callsign: '',
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
-    locale: language
+    locale: i18n.language
   });
   const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
 
@@ -72,7 +72,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     }
 
     try {
-      await onSubmit({ ...formData, locale: language });
+      await onSubmit({ ...formData, locale: i18n.language });
     } catch (error) {
       // Error handling is done by parent component
     }
@@ -95,7 +95,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         
         <div className="auth-modal-header">
           <h2>{t('register')}</h2>
-          <p>Create your ham radio account</p>
+          <p>{t('createAccountPrompt')}</p>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>

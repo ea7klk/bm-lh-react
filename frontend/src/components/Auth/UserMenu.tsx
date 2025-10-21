@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useTranslation } from '../../i18n';
+import { useTranslation } from 'react-i18next';
 import { UserProfile } from '../../types';
 import './Auth.css';
 
@@ -9,6 +9,8 @@ interface UserMenuProps {
   onProfile?: () => void;
   onSettings?: () => void;
   onChangeEmail?: () => void;
+  onAdmin?: () => void;
+  isAdmin?: boolean;
 }
 
 const UserMenu: React.FC<UserMenuProps> = ({
@@ -16,7 +18,9 @@ const UserMenu: React.FC<UserMenuProps> = ({
   onLogout,
   onProfile,
   onSettings,
-  onChangeEmail
+  onChangeEmail,
+  onAdmin,
+  isAdmin = false
 }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -53,6 +57,11 @@ const UserMenu: React.FC<UserMenuProps> = ({
   const handleChangeEmail = () => {
     setIsOpen(false);
     if (onChangeEmail) onChangeEmail();
+  };
+
+  const handleAdmin = () => {
+    setIsOpen(false);
+    if (onAdmin) onAdmin();
   };
 
 
@@ -97,7 +106,12 @@ const UserMenu: React.FC<UserMenuProps> = ({
             </button>
           )}
 
-
+          {isAdmin && onAdmin && (
+            <button className="user-menu-item" onClick={handleAdmin}>
+              <span>🔧</span>
+              {t('admin')}
+            </button>
+          )}
 
           <hr className="user-menu-divider" />
 

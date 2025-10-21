@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import Header from '../Header/Header';
 import './AdminPanel.css';
 
 interface DatabaseStats {
@@ -473,26 +474,31 @@ const AdminPanel: React.FC = () => {
   if (loading) {
     return (
       <div className="admin-panel">
-        <div className="admin-header">
-          <h1>🔐 Admin Panel</h1>
+        <Header />
+        <div className="admin-content">
+          <div className="admin-section">
+            <h1>🔐 Admin Panel</h1>
+            <div className="loading-message">Loading admin panel...</div>
+          </div>
         </div>
-        <div className="loading-message">Loading admin panel...</div>
       </div>
     );
   }
 
   return (
     <div className="admin-panel">
-      <div className="admin-header">
-        <h1>🔐 Admin Panel</h1>
-        <p className="subtitle">Brandmeister Lastheard Next Generation - Administration Panel</p>
-      </div>
-      
-      {message && (
-        <div className={`admin-message ${message.type}`}>
-          {message.text}
+      <Header />
+      <div className="admin-content">
+        <div className="admin-section">
+          <h1>🔐 Admin Panel</h1>
+          <p className="subtitle">Administration Panel</p>
         </div>
-      )}
+        
+        {message && (
+          <div className={`admin-message ${message.type}`}>
+            {message.text}
+          </div>
+        )}
 
       {/* Database Statistics */}
       <div className="admin-section">
@@ -640,6 +646,7 @@ const AdminPanel: React.FC = () => {
           }}
         />
       )}
+      </div>
     </div>
   );
 };
