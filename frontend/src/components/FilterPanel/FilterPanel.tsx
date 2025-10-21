@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { FilterOptions, Country } from '../../types';
 import { lastHeardService } from '../../services/api';
 import { saveFiltersToStorage, areFiltersCustomized } from '../../utils/filterStorage';
@@ -14,6 +14,27 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
   const { t } = useTranslation();
   const [continents, setContinents] = useState<string[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
+
+  // Helper function to get translated continent name
+  const getTranslatedContinent = useCallback((continent: string): string => {
+    const continentTranslations = t('continents', { returnObjects: true }) as Record<string, string>;
+    return continentTranslations[continent] || continent;
+  }, [t]);
+
+  // Helper function to get translated country name
+  const getTranslatedCountry = useCallback((countryCode: string, fallbackName: string): string => {
+    const countryTranslations = t('countries', { returnObjects: true }) as Record<string, string>;
+    return countryTranslations[countryCode] || fallbackName;
+  }, [t]);
+
+  // Sort countries alphabetically by translated names
+  const sortedCountries = useMemo(() => {
+    return [...countries].sort((a, b) => {
+      const nameA = getTranslatedCountry(a.country, a.full_country_name);
+      const nameB = getTranslatedCountry(b.country, b.full_country_name);
+      return nameA.localeCompare(nameB);
+    });
+  }, [countries, getTranslatedCountry]);
 
   const TIME_OPTIONS = [
     { value: 'all', label: t('allTime') },
@@ -119,7 +140,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
               <option value="all">{t('allContinents')}</option>
               {continents.map((continent) => (
                 <option key={continent} value={continent}>
-                  {continent}
+                  {getTranslatedContinent(continent)}
                 </option>
               ))}
             </select>
@@ -134,9 +155,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
               disabled={filters.continent === 'all' || countries.length === 0}
             >
               <option value="all">{t('allCountries')}</option>
-              {countries.map((country) => (
+              {sortedCountries.map((country) => (
                 <option key={country.country} value={country.country}>
-                  {country.full_country_name}
+                  {getTranslatedCountry(country.country, country.full_country_name)}
                 </option>
               ))}
             </select>
