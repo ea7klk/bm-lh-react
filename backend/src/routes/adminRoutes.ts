@@ -266,6 +266,8 @@ router.delete('/users/:id', async (req: Request, res: Response) => {
  * Admin home page - HTML interface
  */
 router.get('/', async (req: Request, res: Response) => {
+  // For the HTML page, we'll let the JavaScript handle authentication
+  // The page will check for the session token and redirect if not authenticated
   res.send(`
 <!DOCTYPE html>
 <html lang="en">
@@ -734,10 +736,60 @@ router.get('/', async (req: Request, res: Response) => {
         
         function getAuthHeaders() {
             const token = localStorage.getItem('session_token');
+            if (!token) {
+                return null;
+            }
             return {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token
             };
+        }
+
+        // Check authentication and authorization on page load
+        async function checkAuthAndAccess() {
+            const token = localStorage.getItem('session_token');
+            if (!token) {
+                redirectToLogin('No session token found. Please log in.');
+                return false;
+            }
+
+            try {
+                const response = await fetch(API_BASE + '/auth/profile', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+
+                if (!response.ok) {
+                    redirectToLogin('Session expired. Please log in again.');
+                    return false;
+                }
+
+                const data = await response.json();
+                if (!data.success || !data.user) {
+                    redirectToLogin('Invalid session. Please log in again.');
+                    return false;
+                }
+
+                // Check if user is EA7KLK
+                if (data.user.callsign !== 'EA7KLK') {
+                    redirectToLogin('Admin access required. This page is only accessible to EA7KLK.');
+                    return false;
+                }
+
+                // User is authenticated and authorized
+                return true;
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                redirectToLogin('Authentication check failed. Please log in again.');
+                return false;
+            }
+        }
+
+        function redirectToLogin(message) {
+            alert(message);
+            window.location.href = '/';
         }
 
         function showMessage(message, type) {
@@ -769,10 +821,19 @@ router.get('/', async (req: Request, res: Response) => {
 
         async function loadStats() {
             try {
+                const headers = getAuthHeaders();
+                if (!headers) return;
+
                 const response = await fetch(API_BASE + '/admin/stats', {
-                    headers: getAuthHeaders()
+                    headers: headers
                 });
-                if (!response.ok) throw new Error('Failed to load stats');
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        redirectToLogin('Session expired or access denied.');
+                        return;
+                    }
+                    throw new Error('Failed to load stats');
+                }
                 
                 const data = await response.json();
                 document.getElementById('totalRecords').textContent = data.totalRecords.toLocaleString();
@@ -785,10 +846,19 @@ router.get('/', async (req: Request, res: Response) => {
 
         async function loadUsers() {
             try {
+                const headers = getAuthHeaders();
+                if (!headers) return;
+
                 const response = await fetch(API_BASE + '/admin/users', {
-                    headers: getAuthHeaders()
+                    headers: headers
                 });
-                if (!response.ok) throw new Error('Failed to load users');
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        redirectToLogin('Session expired or access denied.');
+                        return;
+                    }
+                    throw new Error('Failed to load users');
+                }
                 
                 const data = await response.json();
                 
@@ -844,10 +914,19 @@ router.get('/', async (req: Request, res: Response) => {
 
         async function editUser(id) {
             try {
+                const headers = getAuthHeaders();
+                if (!headers) return;
+
                 const response = await fetch(API_BASE + '/admin/users/' + id, {
-                    headers: getAuthHeaders()
+                    headers: headers
                 });
-                if (!response.ok) throw new Error('Failed to load user');
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        redirectToLogin('Session expired or access denied.');
+                        return;
+                    }
+                    throw new Error('Failed to load user');
+                }
                 
                 const user = await response.json();
                 
@@ -872,6 +951,9 @@ router.get('/', async (req: Request, res: Response) => {
         document.getElementById('editUserForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            const headers = getAuthHeaders();
+            if (!headers) return;
+
             const id = document.getElementById('editUserId').value;
             const name = document.getElementById('editName').value;
             const email = document.getElementById('editEmail').value;
@@ -881,11 +963,17 @@ router.get('/', async (req: Request, res: Response) => {
             try {
                 const response = await fetch(API_BASE + '/admin/users/' + id, {
                     method: 'PUT',
-                    headers: getAuthHeaders(),
+                    headers: headers,
                     body: JSON.stringify({ name, email, is_active, locale })
                 });
                 
-                if (!response.ok) throw new Error('Failed to update user');
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        redirectToLogin('Session expired or access denied.');
+                        return;
+                    }
+                    throw new Error('Failed to update user');
+                }
                 
                 showMessage('User updated successfully', 'success');
                 closeEditModal();
@@ -901,6 +989,9 @@ router.get('/', async (req: Request, res: Response) => {
                 return;
             }
             
+            const headers = getAuthHeaders();
+            if (!headers) return;
+
             const btn = document.getElementById('expungeBtn');
             btn.disabled = true;
             btn.textContent = 'Processing...';
@@ -908,10 +999,16 @@ router.get('/', async (req: Request, res: Response) => {
             try {
                 const response = await fetch(API_BASE + '/admin/expunge', {
                     method: 'POST',
-                    headers: getAuthHeaders()
+                    headers: headers
                 });
                 
-                if (!response.ok) throw new Error('Failed to expunge records');
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        redirectToLogin('Session expired or access denied.');
+                        return;
+                    }
+                    throw new Error('Failed to expunge records');
+                }
                 
                 const data = await response.json();
                 showMessage('Successfully deleted ' + data.deletedCount.toLocaleString() + ' old records', 'success');
@@ -939,6 +1036,9 @@ router.get('/', async (req: Request, res: Response) => {
             document.getElementById('updateTgActions').style.display = 'none';
             document.getElementById('updateTgClose').style.display = 'none';
             
+            const headers = getAuthHeaders();
+            if (!headers) return;
+
             const btn = document.getElementById('updateTgBtn');
             btn.disabled = true;
             btn.textContent = 'Updating...';
@@ -946,10 +1046,16 @@ router.get('/', async (req: Request, res: Response) => {
             try {
                 const response = await fetch(API_BASE + '/admin/update-talkgroups', {
                     method: 'POST',
-                    headers: getAuthHeaders()
+                    headers: headers
                 });
                 
-                if (!response.ok) throw new Error('Failed to update talkgroups');
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        redirectToLogin('Session expired or access denied.');
+                        return;
+                    }
+                    throw new Error('Failed to update talkgroups');
+                }
                 
                 const data = await response.json();
                 
@@ -1033,14 +1139,23 @@ router.get('/', async (req: Request, res: Response) => {
             const action = newStatus ? 'activate' : 'deactivate';
             if (!confirm('Are you sure you want to ' + action + ' this user?')) return;
             
+            const headers = getAuthHeaders();
+            if (!headers) return;
+
             try {
                 const response = await fetch(API_BASE + '/admin/users/' + id + '/status', {
                     method: 'PUT',
-                    headers: getAuthHeaders(),
+                    headers: headers,
                     body: JSON.stringify({ is_active: newStatus })
                 });
                 
-                if (!response.ok) throw new Error('Failed to update user status');
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        redirectToLogin('Session expired or access denied.');
+                        return;
+                    }
+                    throw new Error('Failed to update user status');
+                }
                 
                 showMessage('User ' + action + 'd successfully', 'success');
                 loadUsers();
@@ -1053,13 +1168,22 @@ router.get('/', async (req: Request, res: Response) => {
         async function deleteUser(id) {
             if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
             
+            const headers = getAuthHeaders();
+            if (!headers) return;
+
             try {
                 const response = await fetch(API_BASE + '/admin/users/' + id, {
                     method: 'DELETE',
-                    headers: getAuthHeaders()
+                    headers: headers
                 });
                 
-                if (!response.ok) throw new Error('Failed to delete user');
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        redirectToLogin('Session expired or access denied.');
+                        return;
+                    }
+                    throw new Error('Failed to delete user');
+                }
                 
                 showMessage('User deleted successfully', 'success');
                 loadUsers();
@@ -1071,7 +1195,14 @@ router.get('/', async (req: Request, res: Response) => {
 
         // Initialize rich text editor
         let quill;
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication and authorization first
+            const isAuthorized = await checkAuthAndAccess();
+            if (!isAuthorized) {
+                return; // User will be redirected
+            }
+
+            // Initialize the page if user is authorized
             quill = new Quill('#emailEditor', {
                 theme: 'snow',
                 modules: {
@@ -1090,11 +1221,18 @@ router.get('/', async (req: Request, res: Response) => {
             quill.on('text-change', function() {
                 document.getElementById('emailContent').value = quill.root.innerHTML;
             });
+
+            // Load initial data
+            loadStats();
+            loadUsers();
         });
 
         async function sendEmailToAllUsers(event) {
             event.preventDefault();
             
+            const headers = getAuthHeaders();
+            if (!headers) return;
+
             const subject = document.getElementById('emailSubject').value.trim();
             const htmlContent = quill.root.innerHTML;
             
@@ -1119,7 +1257,7 @@ router.get('/', async (req: Request, res: Response) => {
             try {
                 const response = await fetch(API_BASE + '/admin/send-email-to-all', {
                     method: 'POST',
-                    headers: getAuthHeaders(),
+                    headers: headers,
                     body: JSON.stringify({
                         subject: subject,
                         htmlContent: htmlContent,
@@ -1127,7 +1265,13 @@ router.get('/', async (req: Request, res: Response) => {
                     })
                 });
                 
-                if (!response.ok) throw new Error('Failed to send emails');
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        redirectToLogin('Session expired or access denied.');
+                        return;
+                    }
+                    throw new Error('Failed to send emails');
+                }
                 
                 const data = await response.json();
                 showMessage('Successfully sent email to ' + data.sentCount + ' users', 'success');
@@ -1145,10 +1289,6 @@ router.get('/', async (req: Request, res: Response) => {
                 btn.textContent = '📧 Send Email to All Users';
             }
         }
-
-        // Load data on page load
-        loadStats();
-        loadUsers();
     </script>
 </body>
 </html>
