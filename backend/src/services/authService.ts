@@ -327,20 +327,20 @@ export class AuthService {
         console.error('Failed to send password reset email:', emailError);
         return {
           success: false,
-          message: 'Failed to send password reset email. Please try again.'
+          message: '' // Let frontend handle the translated message
         };
       }
 
       return {
         success: true,
-        message: 'Password reset link sent to your email address.'
+        message: '' // Let frontend handle the translated message
       };
 
     } catch (error) {
       console.error('Password reset request error:', error);
       return {
         success: false,
-        message: 'Failed to process password reset request.'
+        message: '' // Let frontend handle the translated message
       };
     }
   }
@@ -416,73 +416,156 @@ export class AuthService {
         };
       }
 
-      // Generate change token
-      const changeToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      // Generate tokens for two-step verification
+      const oldEmailToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
       const expiresAt = Math.floor(Date.now() / 1000) + this.VERIFICATION_DURATION;
 
-      // Store email change token
-      await this.storeEmailChangeToken(userId, newEmail, changeToken, expiresAt);
+      // Store email change request (Step 1 - only old email token)
+      await this.storeEmailChangeRequest(userId, user.email, newEmail, oldEmailToken, expiresAt);
 
-      // Send confirmation email to new address
+      // Send verification email to CURRENT email address (Step 1)
       try {
-        await emailService.sendEmailChangeConfirmation(user, newEmail, changeToken);
+        await emailService.sendOldEmailVerification(user, newEmail, oldEmailToken);
       } catch (emailError) {
-        console.error('Failed to send email change confirmation:', emailError);
+        console.error('Failed to send old email verification:', emailError);
         return {
-          success: false,
-          message: 'Failed to send email change confirmation. Please try again.'
-        };
+        success: false,
+        message: '' // Let frontend handle the translated message
+      };
       }
 
       return {
         success: true,
-        message: 'Email change confirmation sent to your new email address.'
+        message: '' // Let frontend handle the translated message
       };
 
     } catch (error) {
       console.error('Email change request error:', error);
       return {
         success: false,
-        message: 'Failed to process email change request.'
+        message: '' // Let frontend handle the translated message
       };
     }
   }
 
-  async confirmEmailChange(token: string): Promise<AuthResponse> {
+  async confirmOldEmail(token: string): Promise<AuthResponse> {
     try {
-      const changeToken = await this.getEmailChangeToken(token);
+      const changeRequest = await this.getEmailChangeByOldToken(token);
       
-      if (!changeToken) {
+      if (!changeRequest) {
         return {
           success: false,
-          message: 'Invalid email change token.'
+          message: '' // Let frontend handle the translated message
         };
       }
 
-      if (this.isTokenExpired(changeToken.expires_at)) {
-        await this.removeEmailChangeToken(token);
+      if (this.isTokenExpired(changeRequest.expires_at)) {
+        await this.removeEmailChangeRequest(changeRequest.id);
         return {
           success: false,
-          message: 'Email change token has expired.'
+          message: '' // Let frontend handle the translated message
         };
       }
 
-      // Update user email
-      await this.updateUserEmail(changeToken.user_id, changeToken.new_email);
+      if (changeRequest.old_email_verified) {
+        return {
+          success: false,
+          message: '' // Let frontend handle the translated message
+        };
+      }
+
+      // Generate token for new email verification (Step 2)
+      const newEmailToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
       
-      // Remove used token
-      await this.removeEmailChangeToken(token);
+      // Mark old email as verified and store new email token
+      await this.markOldEmailVerified(changeRequest.id, newEmailToken);
+
+      // Get user details for email
+      const user = await this.getUserById(changeRequest.user_id);
+      if (!user) {
+        return {
+          success: false,
+          message: 'User not found.'
+        };
+      }
+
+      // Send verification email to NEW email address (Step 2)
+      try {
+        await emailService.sendNewEmailVerification(user, changeRequest.new_email, newEmailToken);
+      } catch (emailError) {
+        console.error('Failed to send new email verification:', emailError);
+        return {
+          success: false,
+          message: '' // Let frontend handle the translated message
+        };
+      }
 
       return {
         success: true,
-        message: 'Email address updated successfully.'
+        message: '' // Let frontend handle the translated message
       };
 
     } catch (error) {
-      console.error('Email change confirmation error:', error);
+      console.error('Old email confirmation error:', error);
       return {
         success: false,
-        message: 'Failed to change email address.'
+        message: '' // Let frontend handle the translated message
+      };
+    }
+  }
+
+  async confirmNewEmail(token: string): Promise<AuthResponse> {
+    try {
+      const changeRequest = await this.getEmailChangeByNewToken(token);
+      
+      if (!changeRequest) {
+        return {
+          success: false,
+          message: '' // Let frontend handle the translated message
+        };
+      }
+
+      if (this.isTokenExpired(changeRequest.expires_at)) {
+        await this.removeEmailChangeRequest(changeRequest.id);
+        return {
+          success: false,
+          message: '' // Let frontend handle the translated message
+        };
+      }
+
+      if (!changeRequest.old_email_verified) {
+        return {
+          success: false,
+          message: '' // Let frontend handle the translated message
+        };
+      }
+
+      if (changeRequest.new_email_verified) {
+        return {
+          success: false,
+          message: '' // Let frontend handle the translated message
+        };
+      }
+
+      // Update user email address
+      await this.updateUserEmail(changeRequest.user_id, changeRequest.new_email);
+      
+      // Mark new email as verified
+      await this.markNewEmailVerified(changeRequest.id);
+
+      // Remove used token after successful verification
+      await this.removeEmailChangeRequest(changeRequest.id);
+
+      return {
+        success: true,
+        message: '' // Let frontend handle the translated message
+      };
+
+    } catch (error) {
+      console.error('New email confirmation error:', error);
+      return {
+        success: false,
+        message: '' // Let frontend handle the translated message
       };
     }
   }
@@ -613,20 +696,20 @@ export class AuthService {
 
   private async storePasswordResetToken(userId: number, token: string, expiresAt: number): Promise<void> {
     const query = `
-      INSERT INTO password_reset_tokens (user_id, token, created_at, expires_at)
+      INSERT INTO password_reset_tokens (user_id, reset_token, created_at, expires_at)
       VALUES ($1, $2, $3, $4)
     `;
     await this.db.query(query, [userId, token, Math.floor(Date.now() / 1000), expiresAt]);
   }
 
   private async getPasswordResetToken(token: string): Promise<PasswordResetToken | null> {
-    const query = `SELECT * FROM password_reset_tokens WHERE token = $1`;
+    const query = `SELECT * FROM password_reset_tokens WHERE reset_token = $1`;
     const result = await this.db.query(query, [token]);
     return result.rows[0] || null;
   }
 
   private async removePasswordResetToken(token: string): Promise<void> {
-    const query = `DELETE FROM password_reset_tokens WHERE token = $1`;
+    const query = `DELETE FROM password_reset_tokens WHERE reset_token = $1`;
     await this.db.query(query, [token]);
   }
 
@@ -641,23 +724,47 @@ export class AuthService {
     await this.db.query(query, [userId]);
   }
 
-  private async storeEmailChangeToken(userId: number, newEmail: string, token: string, expiresAt: number): Promise<void> {
+  private async storeEmailChangeRequest(userId: number, oldEmail: string, newEmail: string, oldEmailToken: string, expiresAt: number): Promise<void> {
     const query = `
-      INSERT INTO email_change_tokens (user_id, new_email, token, created_at, expires_at)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO email_change_tokens (user_id, old_email, new_email, old_email_token, created_at, expires_at)
+      VALUES ($1, $2, $3, $4, $5, $6)
     `;
-    await this.db.query(query, [userId, newEmail, token, Math.floor(Date.now() / 1000), expiresAt]);
+    await this.db.query(query, [userId, oldEmail, newEmail, oldEmailToken, Math.floor(Date.now() / 1000), expiresAt]);
   }
 
-  private async getEmailChangeToken(token: string): Promise<any | null> {
-    const query = `SELECT * FROM email_change_tokens WHERE token = $1`;
+  private async getEmailChangeByOldToken(token: string): Promise<any | null> {
+    const query = `SELECT * FROM email_change_tokens WHERE old_email_token = $1`;
     const result = await this.db.query(query, [token]);
     return result.rows[0] || null;
   }
 
-  private async removeEmailChangeToken(token: string): Promise<void> {
-    const query = `DELETE FROM email_change_tokens WHERE token = $1`;
-    await this.db.query(query, [token]);
+  private async getEmailChangeByNewToken(token: string): Promise<any | null> {
+    const query = `SELECT * FROM email_change_tokens WHERE new_email_token = $1`;
+    const result = await this.db.query(query, [token]);
+    return result.rows[0] || null;
+  }
+
+  private async markOldEmailVerified(requestId: number, newEmailToken: string): Promise<void> {
+    const query = `
+      UPDATE email_change_tokens 
+      SET old_email_verified = true, new_email_token = $1
+      WHERE id = $2
+    `;
+    await this.db.query(query, [newEmailToken, requestId]);
+  }
+
+  private async markNewEmailVerified(requestId: number): Promise<void> {
+    const query = `
+      UPDATE email_change_tokens 
+      SET new_email_verified = true
+      WHERE id = $1
+    `;
+    await this.db.query(query, [requestId]);
+  }
+
+  private async removeEmailChangeRequest(requestId: number): Promise<void> {
+    const query = `DELETE FROM email_change_tokens WHERE id = $1`;
+    await this.db.query(query, [requestId]);
   }
 
   private async updateUserEmail(userId: number, newEmail: string): Promise<void> {

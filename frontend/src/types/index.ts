@@ -127,5 +127,6 @@ export interface AuthContextType {
   logout: () => Promise<void>;
   register: (data: RegisterRequest) => Promise<AuthResponse>;
   updateProfile: (data: ProfileUpdateRequest) => Promise<AuthResponse>;
+  requestEmailChange: (newEmail: string, currentPassword: string) => Promise<AuthResponse>;
   isAuthenticated: boolean;
 }

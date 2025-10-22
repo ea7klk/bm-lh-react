@@ -40,10 +40,10 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
         setSuccess(t('passwordResetSent'));
         setError('');
       } else {
-        setError(result.message || 'Failed to send reset email');
+        setError(result.message || t('passwordResetFailed'));
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to send reset email');
+      setError(err instanceof Error ? err.message : t('passwordResetFailed'));
     } finally {
       setIsLoading(false);
     }

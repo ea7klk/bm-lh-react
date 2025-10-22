@@ -362,6 +362,7 @@ export const en = {
   emailPlaceholder: "Enter your email address",
   passwordPlaceholder: "Enter your password",
   confirmPasswordPlaceholder: "Confirm your password",
+  currentPasswordPlaceholder: "Enter your current password",
   emailOrCallsign: "Email or Callsign",
   emailOrCallsignPlaceholder: "Enter email or callsign",
   
@@ -380,8 +381,40 @@ export const en = {
   emailVerificationSent: "Verification email sent. Please check your inbox.",
   emailVerified: "Email verified successfully! You can now log in.",
   passwordResetSent: "Password reset link sent to your email.",
+  passwordResetFailed: "Failed to send password reset email. Please try again.",
+  passwordResetSuccess: "Password reset successfully. Please log in with your new password.",
+  passwordResetConfirmFailed: "Failed to reset password. Please try again or request a new reset link.",
+  passwordResetConfirmPrompt: "Enter your new password below.",
+  passwordResetError: "Password Reset Error",
+  invalidTokenMessage: "This password reset link is invalid or has expired. Please request a new password reset from the login page.",
+  confirmPasswordReset: "Reset Password",
+  redirectingToLogin: "You will be redirected to the login page in a few seconds.",
+  passwordRequirements: "Password must be at least 8 characters long.",
   passwordChanged: "Password changed successfully.",
   emailChanged: "Email address updated successfully.",
+  emailChangeRequestSent: "Please check your current email address for a verification link to confirm this email change request.",
+  emailChangeRequestFailed: "Failed to process email change request.",
+  
+  // Email change specific
+  currentEmail: "Current Email",
+  newEmailPlaceholder: "Enter your new email address",
+  changeEmailPrompt: "Enter your new email address and current password to request an email change.",
+  emailChangeConfirmationPrompt: "Please check your current email address for the verification link.",
+  emailChangeNote: "This is a secure two-step process. First, we will send a verification link to your current email address. After you confirm, we will then send a final verification link to your new email address.",
+  newEmailSameAsCurrent: "New email must be different from current email",
+  checkYourEmail: "Check Your Email",
+  emailChangeInstructions: "We have sent a verification link to your current email address ({{email}}). Please check your inbox and click the link to proceed with the email change process.",
+  done: "Done",
+  
+  // Email change result pages
+  emailChangeSuccess: "Email Change Successful",
+  emailChangeError: "Email Change Error", 
+  emailChangeStep1Complete: "Step 1 Complete",
+  emailChangeStep1Success: "Email change request confirmed. Please check your new email address for the final verification link.",
+  returnToHome: "Return to Home",
+  tryAgain: "Try Again",
+  verifyCurrentEmail: "Verify Current Email",
+  verifyNewEmail: "Verify New Email",
   
   // Auth errors
   invalidCredentials: "Invalid email/callsign or password.",

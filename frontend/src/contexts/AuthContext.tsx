@@ -40,6 +40,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return result;
   };
 
+  const requestEmailChange = async (newEmail: string, currentPassword: string) => {
+    const result = await authService.requestEmailChange({ newEmail, password: currentPassword });
+    return result;
+  };
+
   const isAuthenticated = !!user;
 
   // Check if user is already logged in on app start
@@ -73,6 +78,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     register,
     updateProfile,
+    requestEmailChange,
     isAuthenticated,
   };
 
