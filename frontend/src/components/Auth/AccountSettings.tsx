@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UserProfile as UserProfileType, ProfileUpdateRequest } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
+import ChangePassword from './ChangePassword';
 import './Auth.css';
 
 interface AccountSettingsProps {
@@ -16,6 +17,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ isOpen, onClose, user
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
+  const [showChangePassword, setShowChangePassword] = useState(false);
   
   const [formData, setFormData] = useState<ProfileUpdateRequest>({
     name: user.name,
@@ -194,8 +196,28 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ isOpen, onClose, user
             <div className="readonly-field">
               <span>{user.email}</span>
               <small className="field-note">
-                {t('changeEmail')} option available separately
+                {t('changeEmail')} {t('optionAvailableSeparately')}
               </small>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>{t('password')}</label>
+            <div className="readonly-field">
+              <span>••••••••</span>
+              <button
+                type="button"
+                className="btn btn-link"
+                onClick={() => setShowChangePassword(true)}
+                style={{ 
+                  padding: '0',
+                  fontSize: '14px',
+                  textDecoration: 'underline',
+                  color: '#007bff'
+                }}
+              >
+                {t('changePassword')}
+              </button>
             </div>
           </div>
 
@@ -219,6 +241,11 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ isOpen, onClose, user
           </div>
         </form>
       </div>
+
+      <ChangePassword
+        isOpen={showChangePassword}
+        onClose={() => setShowChangePassword(false)}
+      />
     </div>
   );
 };
