@@ -309,6 +309,16 @@ export const fr = {
   resetFilters: "Réinitialiser les Filtres",
   applyFilters: "Appliquer les Filtres",
   
+  // Advanced Dashboard
+  advancedMode: "Mode Avancé",
+  advancedDashboard: "Tableau de Bord Avancé",
+  standardDashboard: "Tableau de Bord Standard",
+  talkgroup: "Groupe de Discussion",
+  allTalkgroups: "Tous les Groupes",
+  searchTalkgroups: "Rechercher des groupes...",
+  allCallsigns: "Tous les Indicatifs",
+  searchCallsigns: "Rechercher des indicatifs...",
+  
   // Charts
   talkgroupActivity: "Activité du Groupe de Discussion",
   activityDuration: "Durée d'Activité",
@@ -340,6 +350,7 @@ export const fr = {
   createAccountPrompt: "Crée ton compte de radioamateur",
   noAccountYet: "Tu n'as pas encore de compte ?",
   resetPasswordPrompt: "Entre ton adresse e-mail et nous t'enverrons un lien pour réinitialiser ton mot de passe.",
+  changePasswordPrompt: "Entre ton mot de passe actuel et choisis un nouveau mot de passe.",
   callsign: "Indicatif",
   name: "Nom",
   email: "E-mail",
@@ -351,6 +362,7 @@ export const fr = {
   resetPassword: "Réinitialiser le Mot de Passe",
   changePassword: "Changer le Mot de Passe",
   changeEmail: "Changer l'E-mail",
+  optionAvailableSeparately: "option disponible séparément",
   newEmail: "Nouvel E-mail",
   verifyEmail: "Vérifier l'E-mail",
   emailVerification: "Vérification E-mail",
@@ -380,8 +392,42 @@ export const fr = {
   emailVerificationSent: "E-mail de vérification envoyé. Vérifie ta boîte de réception.",
   emailVerified: "E-mail vérifié avec succès ! Tu peux maintenant te connecter.",
   passwordResetSent: "Lien de réinitialisation envoyé à ton e-mail.",
+    passwordResetFailed: "Erreur lors de l'envoi de l'email de réinitialisation du mot de passe. Veuillez réessayer.",
+  passwordResetSuccess: "Mot de passe réinitialisé avec succès. Veuillez vous connecter avec votre nouveau mot de passe.",
+  passwordResetConfirmFailed: "Erreur lors de la réinitialisation du mot de passe. Veuillez réessayer ou demander un nouveau lien de réinitialisation.",
+  passwordResetConfirmPrompt: "Entrez votre nouveau mot de passe ci-dessous.",
+  passwordResetError: "Erreur de Réinitialisation du Mot de Passe",
+  invalidTokenMessage: "Ce lien de réinitialisation du mot de passe est invalide ou a expiré. Veuillez demander une nouvelle réinitialisation depuis la page de connexion.",
+  confirmPasswordReset: "Réinitialiser le Mot de Passe",
+  redirectingToLogin: "Vous serez redirigé vers la page de connexion dans quelques secondes.",
+  passwordRequirements: "Le mot de passe doit contenir au moins 8 caractères.",
   passwordChanged: "Mot de passe changé avec succès.",
   emailChanged: "Adresse e-mail mise à jour avec succès.",
+  emailChangeRequestSent: "Vérifie ton adresse e-mail actuelle pour un lien de vérification afin de confirmer cette demande de changement d'e-mail.",
+  emailChangeRequestFailed: "Échec du traitement de la demande de changement d'e-mail.",
+  
+  // Email change specific
+  currentEmail: "E-mail Actuel",
+  newEmailPlaceholder: "Entre ta nouvelle adresse e-mail",
+  currentPasswordPlaceholder: "Entre ton mot de passe actuel",
+  newPasswordPlaceholder: "Entre ton nouveau mot de passe",
+  changeEmailPrompt: "Entre ta nouvelle adresse e-mail et ton mot de passe actuel pour demander un changement d'e-mail.",
+  emailChangeConfirmationPrompt: "Vérifie ton adresse e-mail actuelle pour le lien de vérification.",
+  emailChangeNote: "Il s'agit d'un processus sécurisé en deux étapes. D'abord, nous t'enverrons un lien de vérification à ton adresse e-mail actuelle. Après confirmation, nous t'enverrons ensuite un lien de vérification final à ta nouvelle adresse e-mail.",
+  newEmailSameAsCurrent: "Le nouvel e-mail doit être différent de l'e-mail actuel",
+  checkYourEmail: "Vérifie ton E-mail",
+  emailChangeInstructions: "Nous avons envoyé un lien de vérification à ton adresse e-mail actuelle ({{email}}). Vérifie ta boîte de réception et clique sur le lien pour procéder au changement d'e-mail.",
+  done: "Terminé",
+  
+  // Email change result pages
+  emailChangeSuccess: "Changement d'E-mail Réussi",
+  emailChangeError: "Erreur de Changement d'E-mail", 
+  emailChangeStep1Complete: "Étape 1 Terminée",
+  emailChangeStep1Success: "Demande de changement d'e-mail confirmée. Vérifie ta nouvelle adresse e-mail pour le lien de vérification final.",
+  returnToHome: "Retour à l'Accueil",
+  tryAgain: "Réessayer",
+  verifyCurrentEmail: "Vérifier l'E-mail Actuel",
+  verifyNewEmail: "Vérifier le Nouvel E-mail",
   
   // Auth errors
   invalidCredentials: "E-mail/indicatif ou mot de passe invalide.",
@@ -437,4 +483,18 @@ export const fr = {
   accountVerificationRequired: "Vérification du Compte Requise",
   checkEmailForVerification: "Vérifie ton e-mail et clique sur le lien de vérification pour activer ton compte.",
   verificationLinkExpired: "Lien de vérification expiré. Demande-en un nouveau.",
+  
+  // Footer
+  footer: {
+    providedBy: "Ce site web est fourni par Volker Kerkhoff,",
+    contactInfo: "41089 Dos Hermanas (Espagne).",
+    cookieNotice: "Nous utilisons un cookie propre pour sauvegarder vos dernières préférences pendant 15 jours.",
+    sourceCodePrefix: "Le",
+    sourceCodeLink: "code source complet est disponible sur GitHub",
+    sourceCodeSuffix: "et est sous licence MIT.",
+    contactPrefix: "Veuillez me contacter via",
+    githubIssues: "les issues GitHub",
+    contactOr: "ou le",
+    telegramGroup: "groupe Telegram"
+  }
 };

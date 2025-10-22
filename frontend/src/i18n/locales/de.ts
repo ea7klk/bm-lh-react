@@ -309,6 +309,16 @@ export const de = {
   resetFilters: "Filter Zurücksetzen",
   applyFilters: "Filter Anwenden",
   
+  // Advanced Dashboard
+  advancedMode: "Erweitert Modus",
+  advancedDashboard: "Erweiterte Übersicht",
+  standardDashboard: "Standard Übersicht",
+  talkgroup: "Gesprächsgruppe",
+  allTalkgroups: "Alle Gruppen",
+  searchTalkgroups: "Gruppen suchen...",
+  allCallsigns: "Alle Rufzeichen",
+  searchCallsigns: "Rufzeichen suchen...",
+  
   // Charts
   talkgroupActivity: "Gesprächsgruppen-Aktivität",
   activityDuration: "Aktivitätsdauer",
@@ -340,6 +350,7 @@ export const de = {
   createAccountPrompt: "Erstelle dein Amateurfunk-Konto",
   noAccountYet: "Noch kein Konto?",
   resetPasswordPrompt: "Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum Zurücksetzen deines Passworts.",
+  changePasswordPrompt: "Gib dein aktuelles Passwort ein und wähle ein neues Passwort.",
   callsign: "Rufzeichen",
   name: "Name",
   email: "E-Mail",
@@ -351,6 +362,7 @@ export const de = {
   resetPassword: "Passwort Zurücksetzen",
   changePassword: "Passwort Ändern",
   changeEmail: "E-Mail Ändern",
+  optionAvailableSeparately: "Option separat verfügbar",
   newEmail: "Neue E-Mail",
   verifyEmail: "E-Mail Verifizieren",
   emailVerification: "E-Mail Verifizierung",
@@ -380,8 +392,42 @@ export const de = {
   emailVerificationSent: "Bestätigungs-E-Mail gesendet. Überprüfe deinen Posteingang.",
   emailVerified: "E-Mail erfolgreich bestätigt! Du kannst dich jetzt anmelden.",
   passwordResetSent: "Passwort-Reset-Link an deine E-Mail gesendet.",
+  passwordResetFailed: "Fehler beim Senden der Passwort-Reset-E-Mail. Bitte versuche es erneut.",
+  passwordResetSuccess: "Passwort erfolgreich zurückgesetzt. Bitte melde dich mit deinem neuen Passwort an.",
+  passwordResetConfirmFailed: "Fehler beim Zurücksetzen des Passworts. Bitte versuche es erneut oder fordere einen neuen Reset-Link an.",
+  passwordResetConfirmPrompt: "Gib dein neues Passwort unten ein.",
+  passwordResetError: "Passwort-Reset Fehler",
+  invalidTokenMessage: "Dieser Passwort-Reset-Link ist ungültig oder abgelaufen. Bitte fordere einen neuen Passwort-Reset von der Anmeldeseite an.",
+  confirmPasswordReset: "Passwort Zurücksetzen",
+  redirectingToLogin: "Du wirst in wenigen Sekunden zur Anmeldeseite weitergeleitet.",
+  passwordRequirements: "Das Passwort muss mindestens 8 Zeichen lang sein.",
   passwordChanged: "Passwort erfolgreich geändert.",
   emailChanged: "E-Mail-Adresse erfolgreich aktualisiert.",
+  emailChangeRequestSent: "Bitte überprüfe deine aktuelle E-Mail-Adresse auf einen Bestätigungslink für diese E-Mail-Änderungsanfrage.",
+  emailChangeRequestFailed: "Fehler beim Bearbeiten der E-Mail-Änderungsanfrage.",
+  
+  // Email change specific
+  currentEmail: "Aktuelle E-Mail",
+  newEmailPlaceholder: "Gib deine neue E-Mail-Adresse ein",
+  currentPasswordPlaceholder: "Gib dein aktuelles Passwort ein",
+  newPasswordPlaceholder: "Gib dein neues Passwort ein",
+  changeEmailPrompt: "Gib deine neue E-Mail-Adresse und dein aktuelles Passwort ein, um eine E-Mail-Änderung anzufordern.",
+  emailChangeConfirmationPrompt: "Bitte überprüfe deine aktuelle E-Mail-Adresse auf den Bestätigungslink.",
+  emailChangeNote: "Dies ist ein sicherer zweistufiger Prozess. Zuerst senden wir einen Bestätigungslink an deine aktuelle E-Mail-Adresse. Nach der Bestätigung senden wir dir dann einen finalen Bestätigungslink an deine neue E-Mail-Adresse.",
+  newEmailSameAsCurrent: "Neue E-Mail muss sich von der aktuellen E-Mail unterscheiden",
+  checkYourEmail: "Überprüfe deine E-Mail",
+  emailChangeInstructions: "Wir haben einen Bestätigungslink an deine aktuelle E-Mail-Adresse ({{email}}) gesendet. Bitte überprüfe deinen Posteingang und klicke auf den Link, um mit dem E-Mail-Änderungsverfahren fortzufahren.",
+  done: "Fertig",
+  
+  // Email change result pages
+  emailChangeSuccess: "E-Mail-Änderung erfolgreich",
+  emailChangeError: "E-Mail-Änderung Fehler", 
+  emailChangeStep1Complete: "Schritt 1 abgeschlossen",
+  emailChangeStep1Success: "E-Mail-Änderungsanfrage bestätigt. Bitte überprüfe deine neue E-Mail-Adresse auf den finalen Bestätigungslink.",
+  returnToHome: "Zurück zur Startseite",
+  tryAgain: "Nochmal versuchen",
+  verifyCurrentEmail: "Aktuelle E-Mail bestätigen",
+  verifyNewEmail: "Neue E-Mail bestätigen",
   
   // Auth errors
   invalidCredentials: "Ungültige E-Mail/Rufzeichen oder Passwort.",
@@ -437,4 +483,18 @@ export const de = {
   accountVerificationRequired: "Kontobestätigung Erforderlich",
   checkEmailForVerification: "Überprüfen Sie Ihre E-Mail und klicken Sie auf den Bestätigungslink zur Kontoaktivierung.",
   verificationLinkExpired: "Bestätigungslink abgelaufen. Bitte fordern Sie einen neuen an.",
+  
+  // Footer
+  footer: {
+    providedBy: "Diese Website wird bereitgestellt von Volker Kerkhoff,",
+    contactInfo: "41089 Dos Hermanas (Spanien).",
+    cookieNotice: "Wir verwenden ein eigenes Cookie, um Ihre letzten Einstellungen 15 Tage zu speichern.",
+    sourceCodePrefix: "Der komplette",
+    sourceCodeLink: "Quellcode ist auf GitHub verfügbar",
+    sourceCodeSuffix: "und steht unter MIT-Lizenz.",
+    contactPrefix: "Bitte kontaktieren Sie mich über",
+    githubIssues: "GitHub Issues",
+    contactOr: "oder die",
+    telegramGroup: "Telegram-Gruppe"
+  }
 };

@@ -309,6 +309,16 @@ export const en = {
   resetFilters: "Reset Filters",
   applyFilters: "Apply Filters",
   
+  // Advanced Dashboard
+  advancedMode: "Advanced Mode",
+  advancedDashboard: "Advanced Dashboard",
+  standardDashboard: "Standard Dashboard",
+  talkgroup: "Talkgroup",
+  allTalkgroups: "All Talkgroups",
+  searchTalkgroups: "Search talkgroups...",
+  allCallsigns: "All Callsigns", 
+  searchCallsigns: "Search callsigns...",
+  
   // Charts
   talkgroupActivity: "Talkgroup Activity",
   activityDuration: "Activity Duration",
@@ -340,6 +350,7 @@ export const en = {
   createAccountPrompt: "Create your ham radio account",
   noAccountYet: "Don't have an account?",
   resetPasswordPrompt: "Enter your email address and we'll send you a link to reset your password.",
+  changePasswordPrompt: "Enter your current password and choose a new password.",
   callsign: "Callsign",
   name: "Name",
   email: "Email",
@@ -351,6 +362,7 @@ export const en = {
   resetPassword: "Reset Password",
   changePassword: "Change Password",
   changeEmail: "Change Email",
+  optionAvailableSeparately: "option available separately",
   newEmail: "New Email",
   verifyEmail: "Verify Email",
   emailVerification: "Email Verification",
@@ -362,6 +374,8 @@ export const en = {
   emailPlaceholder: "Enter your email address",
   passwordPlaceholder: "Enter your password",
   confirmPasswordPlaceholder: "Confirm your password",
+  currentPasswordPlaceholder: "Enter your current password",
+  newPasswordPlaceholder: "Enter your new password",
   emailOrCallsign: "Email or Callsign",
   emailOrCallsignPlaceholder: "Enter email or callsign",
   
@@ -380,8 +394,40 @@ export const en = {
   emailVerificationSent: "Verification email sent. Please check your inbox.",
   emailVerified: "Email verified successfully! You can now log in.",
   passwordResetSent: "Password reset link sent to your email.",
+  passwordResetFailed: "Failed to send password reset email. Please try again.",
+  passwordResetSuccess: "Password reset successfully. Please log in with your new password.",
+  passwordResetConfirmFailed: "Failed to reset password. Please try again or request a new reset link.",
+  passwordResetConfirmPrompt: "Enter your new password below.",
+  passwordResetError: "Password Reset Error",
+  invalidTokenMessage: "This password reset link is invalid or has expired. Please request a new password reset from the login page.",
+  confirmPasswordReset: "Reset Password",
+  redirectingToLogin: "You will be redirected to the login page in a few seconds.",
+  passwordRequirements: "Password must be at least 8 characters long.",
   passwordChanged: "Password changed successfully.",
   emailChanged: "Email address updated successfully.",
+  emailChangeRequestSent: "Please check your current email address for a verification link to confirm this email change request.",
+  emailChangeRequestFailed: "Failed to process email change request.",
+  
+  // Email change specific
+  currentEmail: "Current Email",
+  newEmailPlaceholder: "Enter your new email address",
+  changeEmailPrompt: "Enter your new email address and current password to request an email change.",
+  emailChangeConfirmationPrompt: "Please check your current email address for the verification link.",
+  emailChangeNote: "This is a secure two-step process. First, we will send a verification link to your current email address. After you confirm, we will then send a final verification link to your new email address.",
+  newEmailSameAsCurrent: "New email must be different from current email",
+  checkYourEmail: "Check Your Email",
+  emailChangeInstructions: "We have sent a verification link to your current email address ({{email}}). Please check your inbox and click the link to proceed with the email change process.",
+  done: "Done",
+  
+  // Email change result pages
+  emailChangeSuccess: "Email Change Successful",
+  emailChangeError: "Email Change Error", 
+  emailChangeStep1Complete: "Step 1 Complete",
+  emailChangeStep1Success: "Email change request confirmed. Please check your new email address for the final verification link.",
+  returnToHome: "Return to Home",
+  tryAgain: "Try Again",
+  verifyCurrentEmail: "Verify Current Email",
+  verifyNewEmail: "Verify New Email",
   
   // Auth errors
   invalidCredentials: "Invalid email/callsign or password.",
@@ -437,4 +483,18 @@ export const en = {
   accountVerificationRequired: "Account Verification Required",
   checkEmailForVerification: "Please check your email and click the verification link to activate your account.",
   verificationLinkExpired: "Verification link expired. Please request a new one.",
+  
+  // Footer
+  footer: {
+    providedBy: "This website is provided by Volker Kerkhoff,",
+    contactInfo: "41089 Dos Hermanas (Spain).",
+    cookieNotice: "We use one own cookie to store your last preferences for 15 days.",
+    sourceCodePrefix: "The complete",
+    sourceCodeLink: "source code is available on GitHub",
+    sourceCodeSuffix: "and is under MIT license.",
+    contactPrefix: "Please contact me via",
+    githubIssues: "GitHub issues",
+    contactOr: "or the",
+    telegramGroup: "Telegram group"
+  }
 };

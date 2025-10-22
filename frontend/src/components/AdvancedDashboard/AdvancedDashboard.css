@@ -1,0 +1,29 @@
+/* Advanced Dashboard specific styles */
+.advanced-dashboard {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.advanced-dashboard .main-content {
+  padding: 20px;
+}
+
+.advanced-dashboard .controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .advanced-dashboard .controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+}

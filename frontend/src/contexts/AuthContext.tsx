@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { AuthContextType, UserProfile, LoginRequest, RegisterRequest, ProfileUpdateRequest } from '../types';
+import { AuthContextType, UserProfile, LoginRequest, RegisterRequest, ProfileUpdateRequest, PasswordChangeRequest } from '../types';
 import { authService } from '../services/authService';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,6 +40,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return result;
   };
 
+  const changePassword = async (data: PasswordChangeRequest) => {
+    const result = await authService.changePassword(data);
+    return result;
+  };
+
+  const requestEmailChange = async (newEmail: string, currentPassword: string) => {
+    const result = await authService.requestEmailChange({ newEmail, password: currentPassword });
+    return result;
+  };
+
   const isAuthenticated = !!user;
 
   // Check if user is already logged in on app start
@@ -73,6 +83,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     register,
     updateProfile,
+    changePassword,
+    requestEmailChange,
     isAuthenticated,
   };
 

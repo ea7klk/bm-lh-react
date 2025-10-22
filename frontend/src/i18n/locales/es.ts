@@ -309,6 +309,16 @@ export const es = {
   resetFilters: "Restablecer Filtros",
   applyFilters: "Aplicar Filtros",
   
+  // Advanced Dashboard
+  advancedMode: "Modo Avanzado",
+  advancedDashboard: "Panel Avanzado",
+  standardDashboard: "Panel Estándar",
+  talkgroup: "Grupo de Conversación",
+  allTalkgroups: "Todos los Grupos",
+  searchTalkgroups: "Buscar grupos...",
+  allCallsigns: "Todos los Indicativos",
+  searchCallsigns: "Buscar indicativos...",
+  
   // Charts
   talkgroupActivity: "Actividad del Grupo de Conversación",
   activityDuration: "Duración de Actividad",
@@ -340,6 +350,7 @@ export const es = {
   createAccountPrompt: "Crea tu cuenta de radioaficionado",
   noAccountYet: "¿No tienes una cuenta?",
   resetPasswordPrompt: "Introduce tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
+  changePasswordPrompt: "Introduce tu contraseña actual y elige una nueva contraseña.",
   callsign: "Indicativo",
   name: "Nombre",
   email: "Correo Electrónico",
@@ -351,6 +362,7 @@ export const es = {
   resetPassword: "Restablecer Contraseña",
   changePassword: "Cambiar Contraseña",
   changeEmail: "Cambiar Correo",
+  optionAvailableSeparately: "opción disponible por separado",
   newEmail: "Nuevo Correo",
   verifyEmail: "Verificar Correo",
   emailVerification: "Verificación de Correo",
@@ -380,8 +392,42 @@ export const es = {
   emailVerificationSent: "Correo de verificación enviado. Revisa tu bandeja de entrada.",
   emailVerified: "¡Correo verificado exitosamente! Ya puedes iniciar sesión.",
   passwordResetSent: "Enlace de restablecimiento enviado a tu correo.",
+  passwordResetFailed: "Error al enviar el correo de restablecimiento de contraseña. Por favor intenta de nuevo.",
+  passwordResetSuccess: "Contraseña restablecida exitosamente. Por favor inicia sesión con tu nueva contraseña.",
+  passwordResetConfirmFailed: "Error al restablecer la contraseña. Por favor intenta de nuevo o solicita un nuevo enlace de restablecimiento.",
+  passwordResetConfirmPrompt: "Ingresa tu nueva contraseña a continuación.",
+  passwordResetError: "Error de Restablecimiento de Contraseña",
+  invalidTokenMessage: "Este enlace de restablecimiento de contraseña es inválido o ha expirado. Por favor solicita un nuevo restablecimiento desde la página de inicio de sesión.",
+  confirmPasswordReset: "Restablecer Contraseña",
+  redirectingToLogin: "Serás redirigido a la página de inicio de sesión en unos segundos.",
+  passwordRequirements: "La contraseña debe tener al menos 8 caracteres.",
   passwordChanged: "Contraseña cambiada exitosamente.",
   emailChanged: "Dirección de correo actualizada exitosamente.",
+  emailChangeRequestSent: "Por favor revisa tu dirección de correo actual para obtener un enlace de verificación para confirmar esta solicitud de cambio de correo.",
+  emailChangeRequestFailed: "Error al procesar la solicitud de cambio de correo.",
+  
+  // Email change specific
+  currentEmail: "Correo Actual",
+  newEmailPlaceholder: "Ingresa tu nueva dirección de correo",
+  currentPasswordPlaceholder: "Ingresa tu contraseña actual",
+  newPasswordPlaceholder: "Ingresa tu nueva contraseña",
+  changeEmailPrompt: "Ingresa tu nueva dirección de correo y tu contraseña actual para solicitar un cambio de correo.",
+  emailChangeConfirmationPrompt: "Por favor revisa tu dirección de correo actual para obtener el enlace de verificación.",
+  emailChangeNote: "Este es un proceso seguro de dos pasos. Primero, te enviaremos un enlace de verificación a tu dirección de correo actual. Después de confirmar, te enviaremos un enlace de verificación final a tu nueva dirección de correo.",
+  newEmailSameAsCurrent: "El nuevo correo debe ser diferente del correo actual",
+  checkYourEmail: "Revisa tu Correo",
+  emailChangeInstructions: "Hemos enviado un enlace de verificación a tu dirección de correo actual ({{email}}). Por favor revisa tu bandeja de entrada y haz clic en el enlace para proceder con el proceso de cambio de correo.",
+  done: "Listo",
+  
+  // Email change result pages
+  emailChangeSuccess: "Cambio de Correo Exitoso",
+  emailChangeError: "Error en Cambio de Correo", 
+  emailChangeStep1Complete: "Paso 1 Completado",
+  emailChangeStep1Success: "Solicitud de cambio de correo confirmada. Por favor revisa tu nueva dirección de correo para obtener el enlace de verificación final.",
+  returnToHome: "Volver al Inicio",
+  tryAgain: "Intentar de Nuevo",
+  verifyCurrentEmail: "Verificar Correo Actual",
+  verifyNewEmail: "Verificar Nuevo Correo",
   
   // Auth errors
   invalidCredentials: "Correo/indicativo o contraseña inválidos.",
@@ -437,4 +483,18 @@ export const es = {
   accountVerificationRequired: "Verificación de Cuenta Requerida",
   checkEmailForVerification: "Revise su correo y haga clic en el enlace de verificación para activar su cuenta.",
   verificationLinkExpired: "Enlace de verificación expirado. Solicite uno nuevo.",
+  
+  // Footer
+  footer: {
+    providedBy: "Este sitio web es proporcionado por Volker Kerkhoff,",
+    contactInfo: "41089 Dos Hermanas (España).",
+    cookieNotice: "Utilizamos una cookie propia para guardar sus últimas preferencias durante 15 días.",
+    sourceCodePrefix: "El completo",
+    sourceCodeLink: "código fuente está disponible en GitHub",
+    sourceCodeSuffix: "y está bajo licencia MIT.",
+    contactPrefix: "Por favor contácteme vía",
+    githubIssues: "issues de GitHub",
+    contactOr: "o el",
+    telegramGroup: "grupo de Telegram"
+  }
 };

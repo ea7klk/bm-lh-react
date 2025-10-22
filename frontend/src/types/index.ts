@@ -36,6 +36,11 @@ export interface FilterOptions {
   maxEntries: string;
 }
 
+export interface AdvancedFilterOptions extends FilterOptions {
+  talkgroup: string;
+  callsign: string;
+}
+
 export interface TalkgroupStats {
   talkgroup_id: number;
   name: string;
@@ -52,6 +57,20 @@ export interface TalkgroupDurationStats {
   continent?: string;
   country?: string;
   full_country_name?: string;
+}
+
+export interface Talkgroup {
+  id: number;
+  name: string;
+  continent?: string;
+  country?: string;
+}
+
+export interface CallsignInfo {
+  callsign: string;
+  name?: string;
+  count: number;
+  total_duration: number;
 }
 
 // User authentication types
@@ -93,7 +112,6 @@ export interface PasswordResetConfirmRequest {
 export interface PasswordChangeRequest {
   currentPassword: string;
   newPassword: string;
-  confirmPassword: string;
 }
 
 export interface EmailChangeRequest {
@@ -127,5 +145,7 @@ export interface AuthContextType {
   logout: () => Promise<void>;
   register: (data: RegisterRequest) => Promise<AuthResponse>;
   updateProfile: (data: ProfileUpdateRequest) => Promise<AuthResponse>;
+  changePassword: (data: PasswordChangeRequest) => Promise<AuthResponse>;
+  requestEmailChange: (newEmail: string, currentPassword: string) => Promise<AuthResponse>;
   isAuthenticated: boolean;
 }

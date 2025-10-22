@@ -185,6 +185,7 @@ SMTP_FROM=noreply@yourdomain.com
 - `GET /api/auth/verify/:token` - Email verification
 - `POST /api/auth/password-reset` - Request password reset
 - `POST /api/auth/password-reset/confirm` - Confirm password reset
+- `POST /api/auth/password-change` - Change user password (authenticated)
 - `POST /api/auth/email-change` - Request email change
 - `POST /api/auth/email-change/confirm/:token` - Confirm email change
 - `GET /api/auth/profile` - Get user profile

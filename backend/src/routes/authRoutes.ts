@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { AuthService } from '../services/authService';
-import { RegisterRequest, LoginRequest, PasswordResetRequest, PasswordResetConfirmRequest, EmailChangeRequest, ProfileUpdateRequest } from '../models/User';
+import { RegisterRequest, LoginRequest, PasswordResetRequest, PasswordResetConfirmRequest, PasswordChangeRequest, EmailChangeRequest, ProfileUpdateRequest } from '../models/User';
 
 const router = Router();
 const authService = new AuthService();
@@ -332,6 +332,44 @@ router.post('/password-reset/confirm', async (req: Request, res: Response) => {
   }
 });
 
+// Change password
+router.post('/password-change', authenticateSession, async (req: Request, res: Response) => {
+  try {
+    const passwordChangeData: PasswordChangeRequest = req.body;
+    const user = (req as any).user;
+    
+    if (!passwordChangeData.currentPassword || !passwordChangeData.newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Current password and new password are required'
+      });
+    }
+
+    // Validate new password strength
+    if (passwordChangeData.newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: 'New password must be at least 8 characters long'
+      });
+    }
+
+    const result = await authService.changePassword(user.id, passwordChangeData);
+    
+    if (result.success) {
+      res.status(200).json(result);
+    } else {
+      res.status(400).json(result);
+    }
+    
+  } catch (error) {
+    console.error('Password change route error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+});
+
 // Request email change
 router.post('/email-change', authenticateSession, async (req: Request, res: Response) => {
   try {
@@ -371,33 +409,96 @@ router.post('/email-change', authenticateSession, async (req: Request, res: Resp
   }
 });
 
-// Confirm email change
-router.post('/email-change/confirm/:token', async (req: Request, res: Response) => {
+// Confirm old email for email change (Step 1)
+router.get('/confirm-old-email/:token', async (req: Request, res: Response) => {
   try {
     const { token } = req.params;
     
     if (!token) {
       return res.status(400).json({
         success: false,
-        message: 'Email change token is required'
+        message: 'Verification token is required'
       });
     }
 
-    const result = await authService.confirmEmailChange(token);
+    const result = await authService.confirmOldEmail(token);
     
     if (result.success) {
-      res.status(200).json(result);
+      // Redirect to success page with message
+      res.redirect(`${process.env.FRONTEND_URL}/email-change-step1-success?message=${encodeURIComponent(result.message)}`);
     } else {
-      res.status(400).json(result);
+      // Redirect to error page with message
+      res.redirect(`${process.env.FRONTEND_URL}/email-change-error?message=${encodeURIComponent(result.message)}`);
     }
     
   } catch (error) {
-    console.error('Email change confirmation route error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
+    console.error('Old email confirmation route error:', error);
+    res.redirect(`${process.env.FRONTEND_URL}/email-change-error?message=${encodeURIComponent('Internal server error')}`);
   }
 });
+
+// Confirm new email for email change (Step 2)
+router.get('/confirm-new-email/:token', async (req: Request, res: Response) => {
+  try {
+    const { token } = req.params;
+    
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Verification token is required'
+      });
+    }
+
+    const result = await authService.confirmNewEmail(token);
+    
+    if (result.success) {
+      // Redirect to success page with message
+      res.redirect(`${process.env.FRONTEND_URL}/email-change-success?message=${encodeURIComponent(result.message)}`);
+    } else {
+      // Redirect to error page with message  
+      res.redirect(`${process.env.FRONTEND_URL}/email-change-error?message=${encodeURIComponent(result.message)}`);
+    }
+    
+  } catch (error) {
+    console.error('New email confirmation route error:', error);
+    res.redirect(`${process.env.FRONTEND_URL}/email-change-error?message=${encodeURIComponent('Internal server error')}`);
+  }
+});
+
+// Test endpoint for token cleanup (development only)
+if (process.env.NODE_ENV !== 'production') {
+  router.get('/test/token-stats', async (req: Request, res: Response) => {
+    try {
+      const { cleanupService } = await import('../services/cleanupService');
+      const stats = await cleanupService.getTokenStatistics();
+      const details = await cleanupService.getTokenDetails();
+      
+      res.json({
+        success: true,
+        stats,
+        details,
+        currentTimestamp: Math.floor(Date.now() / 1000)
+      });
+    } catch (error) {
+      console.error('Token stats error:', error);
+      res.status(500).json({ success: false, message: 'Failed to get token statistics' });
+    }
+  });
+
+  router.post('/test/cleanup-tokens', async (req: Request, res: Response) => {
+    try {
+      const { cleanupService } = await import('../services/cleanupService');
+      const result = await cleanupService.cleanupExpiredTokens();
+      
+      res.json({
+        success: true,
+        result
+      });
+    } catch (error) {
+      console.error('Token cleanup error:', error);
+      res.status(500).json({ success: false, message: 'Failed to cleanup tokens' });
+    }
+  });
+}
 
 export default router;
