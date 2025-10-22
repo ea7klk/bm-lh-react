@@ -309,6 +309,16 @@ export const de = {
   resetFilters: "Filter Zurücksetzen",
   applyFilters: "Filter Anwenden",
   
+  // Advanced Dashboard
+  advancedMode: "Erweitert Modus",
+  advancedDashboard: "Erweiterte Übersicht",
+  standardDashboard: "Standard Übersicht",
+  talkgroup: "Gesprächsgruppe",
+  allTalkgroups: "Alle Gruppen",
+  searchTalkgroups: "Gruppen suchen...",
+  allCallsigns: "Alle Rufzeichen",
+  searchCallsigns: "Rufzeichen suchen...",
+  
   // Charts
   talkgroupActivity: "Gesprächsgruppen-Aktivität",
   activityDuration: "Aktivitätsdauer",
@@ -473,4 +483,18 @@ export const de = {
   accountVerificationRequired: "Kontobestätigung Erforderlich",
   checkEmailForVerification: "Überprüfen Sie Ihre E-Mail und klicken Sie auf den Bestätigungslink zur Kontoaktivierung.",
   verificationLinkExpired: "Bestätigungslink abgelaufen. Bitte fordern Sie einen neuen an.",
+  
+  // Footer
+  footer: {
+    providedBy: "Diese Website wird bereitgestellt von Volker Kerkhoff,",
+    contactInfo: "41089 Dos Hermanas (Spanien).",
+    cookieNotice: "Wir verwenden ein eigenes Cookie, um Ihre letzten Einstellungen 15 Tage zu speichern.",
+    sourceCodePrefix: "Der komplette",
+    sourceCodeLink: "Quellcode ist auf GitHub verfügbar",
+    sourceCodeSuffix: "und steht unter MIT-Lizenz.",
+    contactPrefix: "Bitte kontaktieren Sie mich über",
+    githubIssues: "GitHub Issues",
+    contactOr: "oder die",
+    telegramGroup: "Telegram-Gruppe"
+  }
 };

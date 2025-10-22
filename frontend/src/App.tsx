@@ -7,8 +7,10 @@ import TalkgroupDurationChart from './components/TalkgroupDurationChart/Talkgrou
 import TalkgroupTable from './components/TalkgroupTable/TalkgroupTable';
 import FilterPanel from './components/FilterPanel/FilterPanel';
 import LanguageSelector from './components/LanguageSelector/LanguageSelector';
+import Footer from './components/Footer/Footer';
 import { AuthModal, UserMenu, UserProfile, AccountSettings, EmailChangeModal, EmailChangeSuccess, EmailChangeError, EmailChangeStep1Success, PasswordResetForm, PasswordResetHandler } from './components/Auth';
 import AdminPanel from './components/Admin/AdminPanel';
+import AdvancedDashboard from './components/AdvancedDashboard/AdvancedDashboard';
 import { lastHeardService } from './services/api';
 import { TalkgroupStats, TalkgroupDurationStats, FilterOptions } from './types';
 import { loadFiltersFromStorage, saveFiltersToStorage } from './utils/filterStorage';
@@ -52,6 +54,10 @@ function MainDashboard() {
 
   const handleAdmin = () => {
     navigate('/admin');
+  };
+
+  const handleAdvancedDashboard = () => {
+    navigate('/advanced');
   };
 
   const fetchData = async (currentFilters?: FilterOptions) => {
@@ -186,6 +192,7 @@ function MainDashboard() {
                 onSettings={handleAccountSettings}
                 onChangeEmail={handleChangeEmail}
                 onAdmin={handleAdmin}
+                onAdvancedDashboard={handleAdvancedDashboard}
                 isAdmin={user?.callsign === 'EA7KLK'}
               />
             ) : (
@@ -233,6 +240,8 @@ function MainDashboard() {
           loading={loading} 
         />
       </main>
+      
+      <Footer />
       
       {/* Authentication Modal */}
       <AuthModal 
@@ -284,6 +293,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<MainDashboard />} />
+        <Route path="/advanced" element={<AdvancedDashboard />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/email-change-success" element={<EmailChangeSuccess />} />
         <Route path="/email-change-error" element={<EmailChangeError />} />

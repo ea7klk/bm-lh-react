@@ -76,12 +76,33 @@
 }
 
 .filter-status {
-  font-size: 0.8rem;
-  color: #764ba2;
+  color: #27ae60;
+  font-size: 0.9em;
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 4px;
+}
+
+/* Advanced filter styles */
+.searchable-select {
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #d1d9e6;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-bottom: 4px;
+  box-sizing: border-box;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
 .clear-button {

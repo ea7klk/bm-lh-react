@@ -309,6 +309,16 @@ export const es = {
   resetFilters: "Restablecer Filtros",
   applyFilters: "Aplicar Filtros",
   
+  // Advanced Dashboard
+  advancedMode: "Modo Avanzado",
+  advancedDashboard: "Panel Avanzado",
+  standardDashboard: "Panel Estándar",
+  talkgroup: "Grupo de Conversación",
+  allTalkgroups: "Todos los Grupos",
+  searchTalkgroups: "Buscar grupos...",
+  allCallsigns: "Todos los Indicativos",
+  searchCallsigns: "Buscar indicativos...",
+  
   // Charts
   talkgroupActivity: "Actividad del Grupo de Conversación",
   activityDuration: "Duración de Actividad",
@@ -473,4 +483,18 @@ export const es = {
   accountVerificationRequired: "Verificación de Cuenta Requerida",
   checkEmailForVerification: "Revise su correo y haga clic en el enlace de verificación para activar su cuenta.",
   verificationLinkExpired: "Enlace de verificación expirado. Solicite uno nuevo.",
+  
+  // Footer
+  footer: {
+    providedBy: "Este sitio web es proporcionado por Volker Kerkhoff,",
+    contactInfo: "41089 Dos Hermanas (España).",
+    cookieNotice: "Utilizamos una cookie propia para guardar sus últimas preferencias durante 15 días.",
+    sourceCodePrefix: "El completo",
+    sourceCodeLink: "código fuente está disponible en GitHub",
+    sourceCodeSuffix: "y está bajo licencia MIT.",
+    contactPrefix: "Por favor contácteme vía",
+    githubIssues: "issues de GitHub",
+    contactOr: "o el",
+    telegramGroup: "grupo de Telegram"
+  }
 };

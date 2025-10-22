@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
 import './AdminPanel.css';
 
 interface DatabaseStats {
@@ -647,6 +648,8 @@ const AdminPanel: React.FC = () => {
         />
       )}
       </div>
+      
+      <Footer />
     </div>
   );
 };
