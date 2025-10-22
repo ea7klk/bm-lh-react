@@ -327,20 +327,20 @@ export class AuthService {
         console.error('Failed to send password reset email:', emailError);
         return {
           success: false,
-          message: 'Failed to send password reset email. Please try again.'
+          message: '' // Let frontend handle the translated message
         };
       }
 
       return {
         success: true,
-        message: 'Password reset link sent to your email address.'
+        message: '' // Let frontend handle the translated message
       };
 
     } catch (error) {
       console.error('Password reset request error:', error);
       return {
         success: false,
-        message: 'Failed to process password reset request.'
+        message: '' // Let frontend handle the translated message
       };
     }
   }
@@ -429,21 +429,21 @@ export class AuthService {
       } catch (emailError) {
         console.error('Failed to send old email verification:', emailError);
         return {
-          success: false,
-          message: 'Failed to send verification email to your current email address. Please try again.'
-        };
+        success: false,
+        message: '' // Let frontend handle the translated message
+      };
       }
 
       return {
         success: true,
-        message: 'Please check your current email address for a verification link to confirm this email change request.'
+        message: '' // Let frontend handle the translated message
       };
 
     } catch (error) {
       console.error('Email change request error:', error);
       return {
         success: false,
-        message: 'Failed to process email change request.'
+        message: '' // Let frontend handle the translated message
       };
     }
   }
@@ -455,7 +455,7 @@ export class AuthService {
       if (!changeRequest) {
         return {
           success: false,
-          message: 'Invalid or expired verification token.'
+          message: '' // Let frontend handle the translated message
         };
       }
 
@@ -463,14 +463,14 @@ export class AuthService {
         await this.removeEmailChangeRequest(changeRequest.id);
         return {
           success: false,
-          message: 'Verification token has expired.'
+          message: '' // Let frontend handle the translated message
         };
       }
 
       if (changeRequest.old_email_verified) {
         return {
           success: false,
-          message: 'This verification link has already been used.'
+          message: '' // Let frontend handle the translated message
         };
       }
 
@@ -496,20 +496,20 @@ export class AuthService {
         console.error('Failed to send new email verification:', emailError);
         return {
           success: false,
-          message: 'Failed to send verification email to your new email address. Please try again.'
+          message: '' // Let frontend handle the translated message
         };
       }
 
       return {
         success: true,
-        message: 'Email change request confirmed. Please check your new email address for the final verification link.'
+        message: '' // Let frontend handle the translated message
       };
 
     } catch (error) {
       console.error('Old email confirmation error:', error);
       return {
         success: false,
-        message: 'Failed to process email verification.'
+        message: '' // Let frontend handle the translated message
       };
     }
   }
@@ -521,7 +521,7 @@ export class AuthService {
       if (!changeRequest) {
         return {
           success: false,
-          message: 'Invalid or expired verification token.'
+          message: '' // Let frontend handle the translated message
         };
       }
 
@@ -529,21 +529,21 @@ export class AuthService {
         await this.removeEmailChangeRequest(changeRequest.id);
         return {
           success: false,
-          message: 'Verification token has expired.'
+          message: '' // Let frontend handle the translated message
         };
       }
 
       if (!changeRequest.old_email_verified) {
         return {
           success: false,
-          message: 'Please verify your current email address first.'
+          message: '' // Let frontend handle the translated message
         };
       }
 
       if (changeRequest.new_email_verified) {
         return {
           success: false,
-          message: 'This verification link has already been used.'
+          message: '' // Let frontend handle the translated message
         };
       }
 
@@ -558,14 +558,14 @@ export class AuthService {
 
       return {
         success: true,
-        message: 'Email address updated successfully.'
+        message: '' // Let frontend handle the translated message
       };
 
     } catch (error) {
       console.error('New email confirmation error:', error);
       return {
         success: false,
-        message: 'Failed to change email address.'
+        message: '' // Let frontend handle the translated message
       };
     }
   }
@@ -696,20 +696,20 @@ export class AuthService {
 
   private async storePasswordResetToken(userId: number, token: string, expiresAt: number): Promise<void> {
     const query = `
-      INSERT INTO password_reset_tokens (user_id, token, created_at, expires_at)
+      INSERT INTO password_reset_tokens (user_id, reset_token, created_at, expires_at)
       VALUES ($1, $2, $3, $4)
     `;
     await this.db.query(query, [userId, token, Math.floor(Date.now() / 1000), expiresAt]);
   }
 
   private async getPasswordResetToken(token: string): Promise<PasswordResetToken | null> {
-    const query = `SELECT * FROM password_reset_tokens WHERE token = $1`;
+    const query = `SELECT * FROM password_reset_tokens WHERE reset_token = $1`;
     const result = await this.db.query(query, [token]);
     return result.rows[0] || null;
   }
 
   private async removePasswordResetToken(token: string): Promise<void> {
-    const query = `DELETE FROM password_reset_tokens WHERE token = $1`;
+    const query = `DELETE FROM password_reset_tokens WHERE reset_token = $1`;
     await this.db.query(query, [token]);
   }
 

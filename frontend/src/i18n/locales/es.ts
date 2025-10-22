@@ -380,8 +380,33 @@ export const es = {
   emailVerificationSent: "Correo de verificación enviado. Revisa tu bandeja de entrada.",
   emailVerified: "¡Correo verificado exitosamente! Ya puedes iniciar sesión.",
   passwordResetSent: "Enlace de restablecimiento enviado a tu correo.",
+  passwordResetFailed: "Error al enviar el correo de restablecimiento de contraseña. Por favor intenta de nuevo.",
   passwordChanged: "Contraseña cambiada exitosamente.",
   emailChanged: "Dirección de correo actualizada exitosamente.",
+  emailChangeRequestSent: "Por favor revisa tu dirección de correo actual para obtener un enlace de verificación para confirmar esta solicitud de cambio de correo.",
+  emailChangeRequestFailed: "Error al procesar la solicitud de cambio de correo.",
+  
+  // Email change specific
+  currentEmail: "Correo Actual",
+  newEmailPlaceholder: "Ingresa tu nueva dirección de correo",
+  currentPasswordPlaceholder: "Ingresa tu contraseña actual",
+  changeEmailPrompt: "Ingresa tu nueva dirección de correo y tu contraseña actual para solicitar un cambio de correo.",
+  emailChangeConfirmationPrompt: "Por favor revisa tu dirección de correo actual para obtener el enlace de verificación.",
+  emailChangeNote: "Este es un proceso seguro de dos pasos. Primero, te enviaremos un enlace de verificación a tu dirección de correo actual. Después de confirmar, te enviaremos un enlace de verificación final a tu nueva dirección de correo.",
+  newEmailSameAsCurrent: "El nuevo correo debe ser diferente del correo actual",
+  checkYourEmail: "Revisa tu Correo",
+  emailChangeInstructions: "Hemos enviado un enlace de verificación a tu dirección de correo actual ({{email}}). Por favor revisa tu bandeja de entrada y haz clic en el enlace para proceder con el proceso de cambio de correo.",
+  done: "Listo",
+  
+  // Email change result pages
+  emailChangeSuccess: "Cambio de Correo Exitoso",
+  emailChangeError: "Error en Cambio de Correo", 
+  emailChangeStep1Complete: "Paso 1 Completado",
+  emailChangeStep1Success: "Solicitud de cambio de correo confirmada. Por favor revisa tu nueva dirección de correo para obtener el enlace de verificación final.",
+  returnToHome: "Volver al Inicio",
+  tryAgain: "Intentar de Nuevo",
+  verifyCurrentEmail: "Verificar Correo Actual",
+  verifyNewEmail: "Verificar Nuevo Correo",
   
   // Auth errors
   invalidCredentials: "Correo/indicativo o contraseña inválidos.",

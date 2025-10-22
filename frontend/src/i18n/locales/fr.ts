@@ -380,8 +380,33 @@ export const fr = {
   emailVerificationSent: "E-mail de vérification envoyé. Vérifie ta boîte de réception.",
   emailVerified: "E-mail vérifié avec succès ! Tu peux maintenant te connecter.",
   passwordResetSent: "Lien de réinitialisation envoyé à ton e-mail.",
+  passwordResetFailed: "Échec de l'envoi de l'e-mail de réinitialisation du mot de passe. Réessaie.",
   passwordChanged: "Mot de passe changé avec succès.",
   emailChanged: "Adresse e-mail mise à jour avec succès.",
+  emailChangeRequestSent: "Vérifie ton adresse e-mail actuelle pour un lien de vérification afin de confirmer cette demande de changement d'e-mail.",
+  emailChangeRequestFailed: "Échec du traitement de la demande de changement d'e-mail.",
+  
+  // Email change specific
+  currentEmail: "E-mail Actuel",
+  newEmailPlaceholder: "Entre ta nouvelle adresse e-mail",
+  currentPasswordPlaceholder: "Entre ton mot de passe actuel",
+  changeEmailPrompt: "Entre ta nouvelle adresse e-mail et ton mot de passe actuel pour demander un changement d'e-mail.",
+  emailChangeConfirmationPrompt: "Vérifie ton adresse e-mail actuelle pour le lien de vérification.",
+  emailChangeNote: "Il s'agit d'un processus sécurisé en deux étapes. D'abord, nous t'enverrons un lien de vérification à ton adresse e-mail actuelle. Après confirmation, nous t'enverrons ensuite un lien de vérification final à ta nouvelle adresse e-mail.",
+  newEmailSameAsCurrent: "Le nouvel e-mail doit être différent de l'e-mail actuel",
+  checkYourEmail: "Vérifie ton E-mail",
+  emailChangeInstructions: "Nous avons envoyé un lien de vérification à ton adresse e-mail actuelle ({{email}}). Vérifie ta boîte de réception et clique sur le lien pour procéder au changement d'e-mail.",
+  done: "Terminé",
+  
+  // Email change result pages
+  emailChangeSuccess: "Changement d'E-mail Réussi",
+  emailChangeError: "Erreur de Changement d'E-mail", 
+  emailChangeStep1Complete: "Étape 1 Terminée",
+  emailChangeStep1Success: "Demande de changement d'e-mail confirmée. Vérifie ta nouvelle adresse e-mail pour le lien de vérification final.",
+  returnToHome: "Retour à l'Accueil",
+  tryAgain: "Réessayer",
+  verifyCurrentEmail: "Vérifier l'E-mail Actuel",
+  verifyNewEmail: "Vérifier le Nouvel E-mail",
   
   // Auth errors
   invalidCredentials: "E-mail/indicatif ou mot de passe invalide.",

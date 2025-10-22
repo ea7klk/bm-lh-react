@@ -381,6 +381,7 @@ export const en = {
   emailVerificationSent: "Verification email sent. Please check your inbox.",
   emailVerified: "Email verified successfully! You can now log in.",
   passwordResetSent: "Password reset link sent to your email.",
+  passwordResetFailed: "Failed to send password reset email. Please try again.",
   passwordChanged: "Password changed successfully.",
   emailChanged: "Email address updated successfully.",
   emailChangeRequestSent: "Please check your current email address for a verification link to confirm this email change request.",

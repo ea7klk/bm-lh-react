@@ -380,8 +380,33 @@ export const de = {
   emailVerificationSent: "Bestätigungs-E-Mail gesendet. Überprüfe deinen Posteingang.",
   emailVerified: "E-Mail erfolgreich bestätigt! Du kannst dich jetzt anmelden.",
   passwordResetSent: "Passwort-Reset-Link an deine E-Mail gesendet.",
+  passwordResetFailed: "Fehler beim Senden der Passwort-Reset-E-Mail. Bitte versuche es erneut.",
   passwordChanged: "Passwort erfolgreich geändert.",
   emailChanged: "E-Mail-Adresse erfolgreich aktualisiert.",
+  emailChangeRequestSent: "Bitte überprüfe deine aktuelle E-Mail-Adresse auf einen Bestätigungslink für diese E-Mail-Änderungsanfrage.",
+  emailChangeRequestFailed: "Fehler beim Bearbeiten der E-Mail-Änderungsanfrage.",
+  
+  // Email change specific
+  currentEmail: "Aktuelle E-Mail",
+  newEmailPlaceholder: "Gib deine neue E-Mail-Adresse ein",
+  currentPasswordPlaceholder: "Gib dein aktuelles Passwort ein",
+  changeEmailPrompt: "Gib deine neue E-Mail-Adresse und dein aktuelles Passwort ein, um eine E-Mail-Änderung anzufordern.",
+  emailChangeConfirmationPrompt: "Bitte überprüfe deine aktuelle E-Mail-Adresse auf den Bestätigungslink.",
+  emailChangeNote: "Dies ist ein sicherer zweistufiger Prozess. Zuerst senden wir einen Bestätigungslink an deine aktuelle E-Mail-Adresse. Nach der Bestätigung senden wir dir dann einen finalen Bestätigungslink an deine neue E-Mail-Adresse.",
+  newEmailSameAsCurrent: "Neue E-Mail muss sich von der aktuellen E-Mail unterscheiden",
+  checkYourEmail: "Überprüfe deine E-Mail",
+  emailChangeInstructions: "Wir haben einen Bestätigungslink an deine aktuelle E-Mail-Adresse ({{email}}) gesendet. Bitte überprüfe deinen Posteingang und klicke auf den Link, um mit dem E-Mail-Änderungsverfahren fortzufahren.",
+  done: "Fertig",
+  
+  // Email change result pages
+  emailChangeSuccess: "E-Mail-Änderung erfolgreich",
+  emailChangeError: "E-Mail-Änderung Fehler", 
+  emailChangeStep1Complete: "Schritt 1 abgeschlossen",
+  emailChangeStep1Success: "E-Mail-Änderungsanfrage bestätigt. Bitte überprüfe deine neue E-Mail-Adresse auf den finalen Bestätigungslink.",
+  returnToHome: "Zurück zur Startseite",
+  tryAgain: "Nochmal versuchen",
+  verifyCurrentEmail: "Aktuelle E-Mail bestätigen",
+  verifyNewEmail: "Neue E-Mail bestätigen",
   
   // Auth errors
   invalidCredentials: "Ungültige E-Mail/Rufzeichen oder Passwort.",
