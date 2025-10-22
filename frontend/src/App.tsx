@@ -7,7 +7,7 @@ import TalkgroupDurationChart from './components/TalkgroupDurationChart/Talkgrou
 import TalkgroupTable from './components/TalkgroupTable/TalkgroupTable';
 import FilterPanel from './components/FilterPanel/FilterPanel';
 import LanguageSelector from './components/LanguageSelector/LanguageSelector';
-import { AuthModal, UserMenu, UserProfile, AccountSettings, EmailChangeModal, EmailChangeSuccess, EmailChangeError, EmailChangeStep1Success } from './components/Auth';
+import { AuthModal, UserMenu, UserProfile, AccountSettings, EmailChangeModal, EmailChangeSuccess, EmailChangeError, EmailChangeStep1Success, PasswordResetForm, PasswordResetHandler } from './components/Auth';
 import AdminPanel from './components/Admin/AdminPanel';
 import { lastHeardService } from './services/api';
 import { TalkgroupStats, TalkgroupDurationStats, FilterOptions } from './types';
@@ -139,6 +139,8 @@ function MainDashboard() {
     }
   }, []);
 
+
+
   // Start/stop polling based on isPolling state
   useEffect(() => {
     startPolling();
@@ -264,11 +266,20 @@ function MainDashboard() {
           currentEmail={user.email}
         />
       )}
+
     </div>
   );
 }
 
 function App() {
+  const [passwordResetModalOpen, setPasswordResetModalOpen] = useState<boolean>(false);
+  const [passwordResetToken, setPasswordResetToken] = useState<string>('');
+
+  const handlePasswordResetToken = (token: string) => {
+    setPasswordResetToken(token);
+    setPasswordResetModalOpen(true);
+  };
+
   return (
     <Router>
       <Routes>
@@ -277,7 +288,19 @@ function App() {
         <Route path="/email-change-success" element={<EmailChangeSuccess />} />
         <Route path="/email-change-error" element={<EmailChangeError />} />
         <Route path="/email-change-step1-success" element={<EmailChangeStep1Success />} />
+        <Route path="/reset-password/:token" element={<PasswordResetHandler onPasswordResetToken={handlePasswordResetToken} />} />
       </Routes>
+      
+      {/* Password Reset Modal */}
+      {passwordResetModalOpen && passwordResetToken && (
+        <PasswordResetForm 
+          token={passwordResetToken}
+          onClose={() => {
+            setPasswordResetModalOpen(false);
+            setPasswordResetToken('');
+          }}
+        />
+      )}
     </Router>
   );
 }
