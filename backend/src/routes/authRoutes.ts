@@ -427,4 +427,40 @@ router.get('/confirm-new-email/:token', async (req: Request, res: Response) => {
   }
 });
 
+// Test endpoint for token cleanup (development only)
+if (process.env.NODE_ENV !== 'production') {
+  router.get('/test/token-stats', async (req: Request, res: Response) => {
+    try {
+      const { cleanupService } = await import('../services/cleanupService');
+      const stats = await cleanupService.getTokenStatistics();
+      const details = await cleanupService.getTokenDetails();
+      
+      res.json({
+        success: true,
+        stats,
+        details,
+        currentTimestamp: Math.floor(Date.now() / 1000)
+      });
+    } catch (error) {
+      console.error('Token stats error:', error);
+      res.status(500).json({ success: false, message: 'Failed to get token statistics' });
+    }
+  });
+
+  router.post('/test/cleanup-tokens', async (req: Request, res: Response) => {
+    try {
+      const { cleanupService } = await import('../services/cleanupService');
+      const result = await cleanupService.cleanupExpiredTokens();
+      
+      res.json({
+        success: true,
+        result
+      });
+    } catch (error) {
+      console.error('Token cleanup error:', error);
+      res.status(500).json({ success: false, message: 'Failed to cleanup tokens' });
+    }
+  });
+}
+
 export default router;

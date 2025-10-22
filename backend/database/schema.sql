@@ -158,8 +158,10 @@ CREATE INDEX IF NOT EXISTS idx_user_callsign ON users(callsign);
 CREATE INDEX IF NOT EXISTS idx_user_verification_token ON user_verifications(verification_token);
 CREATE INDEX IF NOT EXISTS idx_session_token ON user_sessions(session_token);
 CREATE INDEX IF NOT EXISTS idx_reset_token ON password_reset_tokens(reset_token);
+CREATE INDEX IF NOT EXISTS idx_password_reset_expires ON password_reset_tokens(expires_at);
 CREATE INDEX IF NOT EXISTS idx_old_email_token ON email_change_tokens(old_email_token);
 CREATE INDEX IF NOT EXISTS idx_new_email_token ON email_change_tokens(new_email_token);
+CREATE INDEX IF NOT EXISTS idx_email_change_expires ON email_change_tokens(expires_at);
 
 -- Comments for documentation
 COMMENT ON TABLE lastheard_hourly_summary IS 'Hourly aggregated summary of LastHeard data by talkgroup and callsign';
