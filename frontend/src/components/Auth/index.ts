@@ -6,3 +6,6 @@ export { default as UserMenu } from './UserMenu';
 export { default as UserProfile } from './UserProfile';
 export { default as AccountSettings } from './AccountSettings';
 export { default as EmailChangeModal } from './EmailChangeModal';
+export { default as EmailChangeSuccess } from './EmailChangeSuccess';
+export { default as EmailChangeError } from './EmailChangeError';
+export { default as EmailChangeStep1Success } from './EmailChangeStep1Success';

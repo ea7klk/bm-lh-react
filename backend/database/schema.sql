@@ -164,6 +164,7 @@ CREATE INDEX IF NOT EXISTS idx_new_email_token ON email_change_tokens(new_email_
 -- Comments for documentation
 COMMENT ON TABLE lastheard_hourly_summary IS 'Hourly aggregated summary of LastHeard data by talkgroup and callsign';
 COMMENT ON TABLE summary_processing_log IS 'Log of summary processing runs for incremental updates';
+COMMENT ON TABLE email_change_tokens IS 'Two-step email change verification tokens for secure email address changes';
 
 COMMENT ON COLUMN lastheard_hourly_summary.hour_start IS 'Unix timestamp of hour start (rounded down to hour boundary)';
 COMMENT ON COLUMN lastheard_hourly_summary.hour_end IS 'Unix timestamp of hour end (hour_start + 3599 seconds)';
@@ -172,5 +173,10 @@ COMMENT ON COLUMN lastheard_hourly_summary.total_duration IS 'Total duration in 
 COMMENT ON COLUMN lastheard_hourly_summary.avg_duration IS 'Average duration of calls in this hour';
 COMMENT ON COLUMN lastheard_hourly_summary.first_call_start IS 'Timestamp of the first call in this hour';
 COMMENT ON COLUMN lastheard_hourly_summary.last_call_start IS 'Timestamp of the last call in this hour';
+
+COMMENT ON COLUMN email_change_tokens.old_email_token IS 'Token sent to current email address for verification (Step 1)';
+COMMENT ON COLUMN email_change_tokens.new_email_token IS 'Token sent to new email address for final confirmation (Step 2)';
+COMMENT ON COLUMN email_change_tokens.old_email_verified IS 'Whether the current email address has been verified';
+COMMENT ON COLUMN email_change_tokens.new_email_verified IS 'Whether the new email address has been verified';
 
 

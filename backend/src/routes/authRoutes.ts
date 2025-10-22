@@ -371,32 +371,59 @@ router.post('/email-change', authenticateSession, async (req: Request, res: Resp
   }
 });
 
-// Confirm email change
-router.post('/email-change/confirm/:token', async (req: Request, res: Response) => {
+// Confirm old email for email change (Step 1)
+router.get('/confirm-old-email/:token', async (req: Request, res: Response) => {
   try {
     const { token } = req.params;
     
     if (!token) {
       return res.status(400).json({
         success: false,
-        message: 'Email change token is required'
+        message: 'Verification token is required'
       });
     }
 
-    const result = await authService.confirmEmailChange(token);
+    const result = await authService.confirmOldEmail(token);
     
     if (result.success) {
-      res.status(200).json(result);
+      // Redirect to success page with message
+      res.redirect(`${process.env.FRONTEND_URL}/email-change-step1-success?message=${encodeURIComponent(result.message)}`);
     } else {
-      res.status(400).json(result);
+      // Redirect to error page with message
+      res.redirect(`${process.env.FRONTEND_URL}/email-change-error?message=${encodeURIComponent(result.message)}`);
     }
     
   } catch (error) {
-    console.error('Email change confirmation route error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error'
-    });
+    console.error('Old email confirmation route error:', error);
+    res.redirect(`${process.env.FRONTEND_URL}/email-change-error?message=${encodeURIComponent('Internal server error')}`);
+  }
+});
+
+// Confirm new email for email change (Step 2)
+router.get('/confirm-new-email/:token', async (req: Request, res: Response) => {
+  try {
+    const { token } = req.params;
+    
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Verification token is required'
+      });
+    }
+
+    const result = await authService.confirmNewEmail(token);
+    
+    if (result.success) {
+      // Redirect to success page with message
+      res.redirect(`${process.env.FRONTEND_URL}/email-change-success?message=${encodeURIComponent(result.message)}`);
+    } else {
+      // Redirect to error page with message  
+      res.redirect(`${process.env.FRONTEND_URL}/email-change-error?message=${encodeURIComponent(result.message)}`);
+    }
+    
+  } catch (error) {
+    console.error('New email confirmation route error:', error);
+    res.redirect(`${process.env.FRONTEND_URL}/email-change-error?message=${encodeURIComponent('Internal server error')}`);
   }
 });
 

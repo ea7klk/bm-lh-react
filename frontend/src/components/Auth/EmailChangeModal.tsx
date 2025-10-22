@@ -115,7 +115,7 @@ const EmailChangeModal: React.FC<EmailChangeModalProps> = ({ isOpen, onClose, cu
           {step === 'form' ? (
             <p>{t('changeEmailPrompt', 'Enter your new email address and current password to request an email change.')}</p>
           ) : (
-            <p>{t('emailChangeConfirmationPrompt', 'Please check your new email address for the confirmation link.')}</p>
+            <p>{t('emailChangeConfirmationPrompt', 'Please check your current email address for the verification link.')}</p>
           )}
         </div>
 
@@ -170,7 +170,7 @@ const EmailChangeModal: React.FC<EmailChangeModalProps> = ({ isOpen, onClose, cu
 
             <div className="form-group info-note">
               <small>
-                {t('emailChangeNote', 'You will receive a confirmation email at your new email address. You must click the link in that email to complete the change.')}
+                {t('emailChangeNote', 'This is a secure two-step process. First, we will send a verification link to your current email address. After you confirm, we will then send a final verification link to your new email address.')}
               </small>
             </div>
 
@@ -208,12 +208,12 @@ const EmailChangeModal: React.FC<EmailChangeModalProps> = ({ isOpen, onClose, cu
               <h3>{t('checkYourEmail', 'Check Your Email')}</h3>
               <p>
                 {t('emailChangeInstructions', {
-                  email: formData.newEmail,
-                  defaultValue: 'We have sent a confirmation link to {{email}}. Please check your inbox and click the link to complete your email address change.'
+                  email: currentEmail,
+                  defaultValue: 'We have sent a verification link to your current email address ({{email}}). Please check your inbox and click the link to proceed with the email change process.'
                 })}
               </p>
               <div className="email-info">
-                <strong>{formData.newEmail}</strong>
+                <strong>{currentEmail}</strong>
               </div>
             </div>
 

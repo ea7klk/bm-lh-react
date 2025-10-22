@@ -314,6 +314,182 @@ class EmailService {
     return { subject, html, text };
   }
 
+  private generateOldEmailVerificationTemplate(user: User, newEmail: string, token: string): EmailTemplate {
+    const confirmUrl = `${this.config.appUrl}/api/auth/confirm-old-email/${token}`;
+    
+    const subject = `${this.config.appName} - Verify Email Address Change Request`;
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verify Email Change Request</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+          .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px; }
+          .button { display: inline-block; background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0; }
+          .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+          .warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 6px; margin: 20px 0; }
+          .security { background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 6px; margin: 20px 0; color: #721c24; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>${this.config.appName}</h1>
+            <p>Email Address Change Request</p>
+          </div>
+          <div class="content">
+            <h2>Email Change Request Verification</h2>
+            <p>Hello ${user.name} (${user.callsign}),</p>
+            <p>We received a request to change the email address for your ${this.config.appName} account from:</p>
+            
+            <div style="background: #e9ecef; padding: 15px; border-radius: 6px; margin: 20px 0;">
+              <p><strong>Current email:</strong> ${user.email}</p>
+              <p><strong>Requested new email:</strong> ${newEmail}</p>
+            </div>
+            
+            <p><strong>If you made this request</strong>, please click the button below to confirm and proceed with the email change:</p>
+            
+            <div style="text-align: center;">
+              <a href="${confirmUrl}" class="button">Yes, I Requested This Change</a>
+            </div>
+            
+            <p>After confirming, we'll send a verification link to your new email address (${newEmail}) to complete the process.</p>
+            
+            <div class="security">
+              <strong>Security Notice:</strong> If you did NOT request this email change, please ignore this email. Your email address will remain unchanged, and no further action is required. Do not click the confirmation button above.
+            </div>
+            
+            <p>If the button doesn't work, you can also copy and paste this link into your browser:</p>
+            <p style="word-break: break-all; background: #e9ecef; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px;">${confirmUrl}</p>
+            
+            <div class="warning">
+              <strong>Important:</strong> This verification link will expire in 24 hours for security reasons.
+            </div>
+            
+            <p>73,<br>The ${this.config.appName} Team</p>
+          </div>
+          <div class="footer">
+            <p>© 2025 ${this.config.appName}. This email was sent to ${user.email}</p>
+            <p>This is an automated security notification for your account.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const text = `
+      ${this.config.appName} - Email Address Change Request
+      
+      Hello ${user.name} (${user.callsign}),
+      
+      We received a request to change your email address from:
+      Current: ${user.email}
+      New: ${newEmail}
+      
+      If you made this request, please visit the following link to confirm:
+      ${confirmUrl}
+      
+      If you did NOT request this change, please ignore this email.
+      
+      This verification link will expire in 24 hours.
+      
+      73,
+      The ${this.config.appName} Team
+    `;
+
+    return { subject, html, text };
+  }
+
+  private generateNewEmailVerificationTemplate(user: User, newEmail: string, token: string): EmailTemplate {
+    const confirmUrl = `${this.config.appUrl}/api/auth/confirm-new-email/${token}`;
+    
+    const subject = `${this.config.appName} - Complete Your Email Address Change`;
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Complete Email Address Change</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+          .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px; }
+          .button { display: inline-block; background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0; }
+          .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+          .success { background: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 6px; margin: 20px 0; color: #155724; }
+          .info { background: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; border-radius: 6px; margin: 20px 0; color: #0c5460; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>${this.config.appName}</h1>
+            <p>Complete Email Address Change</p>
+          </div>
+          <div class="content">
+            <h2>Final Step: Confirm Your New Email</h2>
+            <p>Hello ${user.name} (${user.callsign}),</p>
+            
+            <div class="success">
+              <strong>Great!</strong> You've successfully verified your current email address for the email change request.
+            </div>
+            
+            <p>Now, to complete the email address change process, please click the button below to confirm that you have access to this new email address:</p>
+            
+            <div style="text-align: center;">
+              <a href="${confirmUrl}" class="button">Confirm New Email Address</a>
+            </div>
+            
+            <p>If the button doesn't work, you can also copy and paste this link into your browser:</p>
+            <p style="word-break: break-all; background: #e9ecef; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 12px;">${confirmUrl}</p>
+            
+            <div class="info">
+              <strong>What happens next:</strong> After clicking the confirmation link above, your ${this.config.appName} account email will be permanently changed to ${newEmail}, and all future communications will be sent to this address.
+            </div>
+            
+            <p><strong>Security Note:</strong> This verification link will expire in 24 hours. If you don't complete this step, your email address will remain unchanged.</p>
+            
+            <p>73,<br>The ${this.config.appName} Team</p>
+          </div>
+          <div class="footer">
+            <p>© 2025 ${this.config.appName}. This email was sent to ${newEmail}</p>
+            <p>This is the final step in your email address change process.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const text = `
+      ${this.config.appName} - Complete Your Email Address Change
+      
+      Hello ${user.name} (${user.callsign}),
+      
+      You've successfully verified your current email address for the email change request.
+      
+      To complete the process, please click the link below to confirm your new email:
+      ${confirmUrl}
+      
+      After confirmation, your account email will be changed to: ${newEmail}
+      
+      This verification link will expire in 24 hours.
+      
+      73,
+      The ${this.config.appName} Team
+    `;
+
+    return { subject, html, text };
+  }
+
   async sendEmail(to: string, template: EmailTemplate): Promise<boolean> {
     if (!this.enabled || !this.transporter) {
       console.log('Email service disabled or not configured. Email would be sent to:', to);
@@ -374,6 +550,16 @@ class EmailService {
   async sendPasswordReset(user: User, token: string): Promise<boolean> {
     const template = this.generatePasswordResetTemplate(user, token);
     return await this.sendEmail(user.email, template);
+  }
+
+  async sendOldEmailVerification(user: User, newEmail: string, token: string): Promise<boolean> {
+    const template = this.generateOldEmailVerificationTemplate(user, newEmail, token);
+    return await this.sendEmail(user.email, template);
+  }
+
+  async sendNewEmailVerification(user: User, newEmail: string, token: string): Promise<boolean> {
+    const template = this.generateNewEmailVerificationTemplate(user, newEmail, token);
+    return await this.sendEmail(newEmail, template);
   }
 
   async sendEmailChangeConfirmation(user: User, newEmail: string, token: string): Promise<boolean> {

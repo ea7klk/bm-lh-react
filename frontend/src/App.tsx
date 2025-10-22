@@ -7,7 +7,7 @@ import TalkgroupDurationChart from './components/TalkgroupDurationChart/Talkgrou
 import TalkgroupTable from './components/TalkgroupTable/TalkgroupTable';
 import FilterPanel from './components/FilterPanel/FilterPanel';
 import LanguageSelector from './components/LanguageSelector/LanguageSelector';
-import { AuthModal, UserMenu, UserProfile, AccountSettings, EmailChangeModal } from './components/Auth';
+import { AuthModal, UserMenu, UserProfile, AccountSettings, EmailChangeModal, EmailChangeSuccess, EmailChangeError, EmailChangeStep1Success } from './components/Auth';
 import AdminPanel from './components/Admin/AdminPanel';
 import { lastHeardService } from './services/api';
 import { TalkgroupStats, TalkgroupDurationStats, FilterOptions } from './types';
@@ -274,6 +274,9 @@ function App() {
       <Routes>
         <Route path="/" element={<MainDashboard />} />
         <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/email-change-success" element={<EmailChangeSuccess />} />
+        <Route path="/email-change-error" element={<EmailChangeError />} />
+        <Route path="/email-change-step1-success" element={<EmailChangeStep1Success />} />
       </Routes>
     </Router>
   );
