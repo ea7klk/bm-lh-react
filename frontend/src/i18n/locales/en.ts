@@ -362,6 +362,7 @@ export const en = {
   emailPlaceholder: "Enter your email address",
   passwordPlaceholder: "Enter your password",
   confirmPasswordPlaceholder: "Confirm your password",
+  currentPasswordPlaceholder: "Enter your current password",
   emailOrCallsign: "Email or Callsign",
   emailOrCallsignPlaceholder: "Enter email or callsign",
   
@@ -382,6 +383,19 @@ export const en = {
   passwordResetSent: "Password reset link sent to your email.",
   passwordChanged: "Password changed successfully.",
   emailChanged: "Email address updated successfully.",
+  emailChangeRequestSent: "Email change confirmation sent to your new email address.",
+  emailChangeRequestFailed: "Failed to process email change request.",
+  
+  // Email change specific
+  currentEmail: "Current Email",
+  newEmailPlaceholder: "Enter your new email address",
+  changeEmailPrompt: "Enter your new email address and current password to request an email change.",
+  emailChangeConfirmationPrompt: "Please check your new email address for the confirmation link.",
+  emailChangeNote: "You will receive a confirmation email at your new email address. You must click the link in that email to complete the change.",
+  newEmailSameAsCurrent: "New email must be different from current email",
+  checkYourEmail: "Check Your Email",
+  emailChangeInstructions: "We have sent a confirmation link to {{email}}. Please check your inbox and click the link to complete your email address change.",
+  done: "Done",
   
   // Auth errors
   invalidCredentials: "Invalid email/callsign or password.",

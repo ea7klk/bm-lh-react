@@ -7,7 +7,7 @@ import TalkgroupDurationChart from './components/TalkgroupDurationChart/Talkgrou
 import TalkgroupTable from './components/TalkgroupTable/TalkgroupTable';
 import FilterPanel from './components/FilterPanel/FilterPanel';
 import LanguageSelector from './components/LanguageSelector/LanguageSelector';
-import { AuthModal, UserMenu, UserProfile, AccountSettings } from './components/Auth';
+import { AuthModal, UserMenu, UserProfile, AccountSettings, EmailChangeModal } from './components/Auth';
 import AdminPanel from './components/Admin/AdminPanel';
 import { lastHeardService } from './services/api';
 import { TalkgroupStats, TalkgroupDurationStats, FilterOptions } from './types';
@@ -28,6 +28,7 @@ function MainDashboard() {
   const [authModalOpen, setAuthModalOpen] = useState<boolean>(false);
   const [profileModalOpen, setProfileModalOpen] = useState<boolean>(false);
   const [settingsModalOpen, setSettingsModalOpen] = useState<boolean>(false);
+  const [emailChangeModalOpen, setEmailChangeModalOpen] = useState<boolean>(false);
   const [verificationMessage, setVerificationMessage] = useState<string>('');
   const [verificationSuccess, setVerificationSuccess] = useState<boolean | null>(null);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -46,8 +47,7 @@ function MainDashboard() {
   };
 
   const handleChangeEmail = () => {
-    // TODO: Implement email change functionality
-    alert(`${t('changeEmail')} functionality coming soon!`);
+    setEmailChangeModalOpen(true);
   };
 
   const handleAdmin = () => {
@@ -253,6 +253,15 @@ function MainDashboard() {
           isOpen={settingsModalOpen}
           onClose={() => setSettingsModalOpen(false)}
           user={user}
+        />
+      )}
+
+      {/* Email Change Modal */}
+      {isAuthenticated && user && (
+        <EmailChangeModal 
+          isOpen={emailChangeModalOpen}
+          onClose={() => setEmailChangeModalOpen(false)}
+          currentEmail={user.email}
         />
       )}
     </div>

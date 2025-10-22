@@ -570,3 +570,97 @@
     width: 100%;
   }
 }
+
+/* Email Change Modal Styles */
+.email-change-modal {
+  max-width: 500px;
+}
+
+.email-change-form {
+  padding: 20px 30px 30px 30px;
+}
+
+.email-change-confirmation {
+  padding: 30px;
+  text-align: center;
+}
+
+.confirmation-content {
+  margin-bottom: 30px;
+}
+
+.confirmation-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.confirmation-content h3 {
+  color: #343a40;
+  margin-bottom: 15px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.confirmation-content p {
+  color: #6c757d;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.email-info {
+  background: #e3f2fd;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+  word-break: break-all;
+}
+
+.email-info strong {
+  color: #1976d2;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.confirmation-actions {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.info-note {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+  margin: 20px 0;
+}
+
+.info-note small {
+  color: #6c757d;
+  line-height: 1.5;
+  display: block;
+}
+
+/* Responsive design for email change modal */
+@media (max-width: 768px) {
+  .email-change-modal {
+    max-width: 95vw;
+    margin: 10px;
+  }
+  
+  .email-change-form,
+  .email-change-confirmation {
+    padding: 15px 20px 20px 20px;
+  }
+  
+  .confirmation-content h3 {
+    font-size: 20px;
+  }
+  
+  .confirmation-icon {
+    font-size: 36px;
+  }
+}
