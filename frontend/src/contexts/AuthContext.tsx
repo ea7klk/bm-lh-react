@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { AuthContextType, UserProfile, LoginRequest, RegisterRequest, ProfileUpdateRequest } from '../types';
+import { AuthContextType, UserProfile, LoginRequest, RegisterRequest, ProfileUpdateRequest, PasswordChangeRequest } from '../types';
 import { authService } from '../services/authService';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -37,6 +37,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (result.success && result.user) {
       setUser(result.user);
     }
+    return result;
+  };
+
+  const changePassword = async (data: PasswordChangeRequest) => {
+    const result = await authService.changePassword(data);
     return result;
   };
 
@@ -78,6 +83,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     register,
     updateProfile,
+    changePassword,
     requestEmailChange,
     isAuthenticated,
   };

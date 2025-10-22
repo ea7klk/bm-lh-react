@@ -340,6 +340,7 @@ export const en = {
   createAccountPrompt: "Create your ham radio account",
   noAccountYet: "Don't have an account?",
   resetPasswordPrompt: "Enter your email address and we'll send you a link to reset your password.",
+  changePasswordPrompt: "Enter your current password and choose a new password.",
   callsign: "Callsign",
   name: "Name",
   email: "Email",
@@ -351,6 +352,7 @@ export const en = {
   resetPassword: "Reset Password",
   changePassword: "Change Password",
   changeEmail: "Change Email",
+  optionAvailableSeparately: "option available separately",
   newEmail: "New Email",
   verifyEmail: "Verify Email",
   emailVerification: "Email Verification",
@@ -363,6 +365,7 @@ export const en = {
   passwordPlaceholder: "Enter your password",
   confirmPasswordPlaceholder: "Confirm your password",
   currentPasswordPlaceholder: "Enter your current password",
+  newPasswordPlaceholder: "Enter your new password",
   emailOrCallsign: "Email or Callsign",
   emailOrCallsignPlaceholder: "Enter email or callsign",
   

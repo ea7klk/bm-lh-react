@@ -8,6 +8,7 @@ import {
   PasswordResetToken,
   RegisterRequest,
   LoginRequest,
+  PasswordChangeRequest,
   ProfileUpdateRequest,
   UserProfile,
   AuthResponse
@@ -383,6 +384,56 @@ export class AuthService {
       return {
         success: false,
         message: 'Failed to reset password.'
+      };
+    }
+  }
+
+  async changePassword(userId: number, passwordChangeData: PasswordChangeRequest): Promise<AuthResponse> {
+    try {
+      const user = await this.getUserById(userId);
+      
+      if (!user) {
+        return {
+          success: false,
+          message: 'User not found.'
+        };
+      }
+
+      // Verify current password
+      const passwordValid = await this.verifyPassword(passwordChangeData.currentPassword, user.password_hash);
+      if (!passwordValid) {
+        return {
+          success: false,
+          message: 'Current password is incorrect.'
+        };
+      }
+
+      // Validate new password
+      if (passwordChangeData.newPassword.length < 8) {
+        return {
+          success: false,
+          message: 'New password must be at least 8 characters long.'
+        };
+      }
+
+      // Update password
+      await this.updateUserPassword(userId, passwordChangeData.newPassword);
+      
+      // Invalidate all user sessions for security (except current one)
+      // Note: For better UX, we might want to keep the current session active
+      // but invalidate all other sessions
+      await this.removeAllUserSessions(userId);
+
+      return {
+        success: true,
+        message: 'Password changed successfully.'
+      };
+
+    } catch (error) {
+      console.error('Password change error:', error);
+      return {
+        success: false,
+        message: 'Failed to change password.'
       };
     }
   }

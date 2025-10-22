@@ -93,7 +93,6 @@ export interface PasswordResetConfirmRequest {
 export interface PasswordChangeRequest {
   currentPassword: string;
   newPassword: string;
-  confirmPassword: string;
 }
 
 export interface EmailChangeRequest {
@@ -127,6 +126,7 @@ export interface AuthContextType {
   logout: () => Promise<void>;
   register: (data: RegisterRequest) => Promise<AuthResponse>;
   updateProfile: (data: ProfileUpdateRequest) => Promise<AuthResponse>;
+  changePassword: (data: PasswordChangeRequest) => Promise<AuthResponse>;
   requestEmailChange: (newEmail: string, currentPassword: string) => Promise<AuthResponse>;
   isAuthenticated: boolean;
 }

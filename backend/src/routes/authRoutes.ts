@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { AuthService } from '../services/authService';
-import { RegisterRequest, LoginRequest, PasswordResetRequest, PasswordResetConfirmRequest, EmailChangeRequest, ProfileUpdateRequest } from '../models/User';
+import { RegisterRequest, LoginRequest, PasswordResetRequest, PasswordResetConfirmRequest, PasswordChangeRequest, EmailChangeRequest, ProfileUpdateRequest } from '../models/User';
 
 const router = Router();
 const authService = new AuthService();
@@ -325,6 +325,44 @@ router.post('/password-reset/confirm', async (req: Request, res: Response) => {
     
   } catch (error) {
     console.error('Password reset confirmation route error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+});
+
+// Change password
+router.post('/password-change', authenticateSession, async (req: Request, res: Response) => {
+  try {
+    const passwordChangeData: PasswordChangeRequest = req.body;
+    const user = (req as any).user;
+    
+    if (!passwordChangeData.currentPassword || !passwordChangeData.newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Current password and new password are required'
+      });
+    }
+
+    // Validate new password strength
+    if (passwordChangeData.newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: 'New password must be at least 8 characters long'
+      });
+    }
+
+    const result = await authService.changePassword(user.id, passwordChangeData);
+    
+    if (result.success) {
+      res.status(200).json(result);
+    } else {
+      res.status(400).json(result);
+    }
+    
+  } catch (error) {
+    console.error('Password change route error:', error);
     res.status(500).json({
       success: false,
       message: 'Internal server error'
