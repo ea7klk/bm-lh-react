@@ -483,4 +483,18 @@ export const en = {
   accountVerificationRequired: "Account Verification Required",
   checkEmailForVerification: "Please check your email and click the verification link to activate your account.",
   verificationLinkExpired: "Verification link expired. Please request a new one.",
+  
+  // Footer
+  footer: {
+    providedBy: "This website is provided by Volker Kerkhoff,",
+    contactInfo: "41089 Dos Hermanas (Spain).",
+    cookieNotice: "We use one own cookie to store your last preferences for 15 days.",
+    sourceCodePrefix: "The complete",
+    sourceCodeLink: "source code is available on GitHub",
+    sourceCodeSuffix: "and is under MIT license.",
+    contactPrefix: "Please contact me via",
+    githubIssues: "GitHub issues",
+    contactOr: "or the",
+    telegramGroup: "Telegram group"
+  }
 };

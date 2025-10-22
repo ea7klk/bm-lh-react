@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import Footer from '../Footer/Footer';
 import './EmailChangeResult.css';
 
 const EmailChangeStep1Success: React.FC = () => {
@@ -47,6 +48,7 @@ const EmailChangeStep1Success: React.FC = () => {
           </button>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

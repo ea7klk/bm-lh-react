@@ -7,6 +7,7 @@ import TalkgroupDurationChart from './components/TalkgroupDurationChart/Talkgrou
 import TalkgroupTable from './components/TalkgroupTable/TalkgroupTable';
 import FilterPanel from './components/FilterPanel/FilterPanel';
 import LanguageSelector from './components/LanguageSelector/LanguageSelector';
+import Footer from './components/Footer/Footer';
 import { AuthModal, UserMenu, UserProfile, AccountSettings, EmailChangeModal, EmailChangeSuccess, EmailChangeError, EmailChangeStep1Success, PasswordResetForm, PasswordResetHandler } from './components/Auth';
 import AdminPanel from './components/Admin/AdminPanel';
 import AdvancedDashboard from './components/AdvancedDashboard/AdvancedDashboard';
@@ -239,6 +240,8 @@ function MainDashboard() {
           loading={loading} 
         />
       </main>
+      
+      <Footer />
       
       {/* Authentication Modal */}
       <AuthModal 

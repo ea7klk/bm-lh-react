@@ -7,6 +7,7 @@ import TalkgroupDurationChart from '../TalkgroupDurationChart/TalkgroupDurationC
 import TalkgroupTable from '../TalkgroupTable/TalkgroupTable';
 import AdvancedFilterPanel from '../FilterPanel/AdvancedFilterPanel';
 import LanguageSelector from '../LanguageSelector/LanguageSelector';
+import Footer from '../Footer/Footer';
 import { UserMenu, UserProfile, AccountSettings, EmailChangeModal } from '../Auth';
 import { lastHeardService } from '../../services/api';
 import { TalkgroupStats, TalkgroupDurationStats, AdvancedFilterOptions } from '../../types';
@@ -244,6 +245,8 @@ const AdvancedDashboard: React.FC = () => {
           loading={loading} 
         />
       </main>
+      
+      <Footer />
       
       {/* User Profile Modal */}
       {isAuthenticated && user && (
