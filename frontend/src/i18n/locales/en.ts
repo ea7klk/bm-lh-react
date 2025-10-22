@@ -309,6 +309,16 @@ export const en = {
   resetFilters: "Reset Filters",
   applyFilters: "Apply Filters",
   
+  // Advanced Dashboard
+  advancedMode: "Advanced Mode",
+  advancedDashboard: "Advanced Dashboard",
+  standardDashboard: "Standard Dashboard",
+  talkgroup: "Talkgroup",
+  allTalkgroups: "All Talkgroups",
+  searchTalkgroups: "Search talkgroups...",
+  allCallsigns: "All Callsigns", 
+  searchCallsigns: "Search callsigns...",
+  
   // Charts
   talkgroupActivity: "Talkgroup Activity",
   activityDuration: "Activity Duration",

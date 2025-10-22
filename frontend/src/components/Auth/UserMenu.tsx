@@ -10,6 +10,8 @@ interface UserMenuProps {
   onSettings?: () => void;
   onChangeEmail?: () => void;
   onAdmin?: () => void;
+  onStandardDashboard?: () => void;
+  onAdvancedDashboard?: () => void;
   isAdmin?: boolean;
 }
 
@@ -20,6 +22,8 @@ const UserMenu: React.FC<UserMenuProps> = ({
   onSettings,
   onChangeEmail,
   onAdmin,
+  onStandardDashboard,
+  onAdvancedDashboard,
   isAdmin = false
 }) => {
   const { t } = useTranslation();
@@ -64,6 +68,16 @@ const UserMenu: React.FC<UserMenuProps> = ({
     if (onAdmin) onAdmin();
   };
 
+  const handleStandardDashboard = () => {
+    setIsOpen(false);
+    if (onStandardDashboard) onStandardDashboard();
+  };
+
+  const handleAdvancedDashboard = () => {
+    setIsOpen(false);
+    if (onAdvancedDashboard) onAdvancedDashboard();
+  };
+
 
 
   return (
@@ -103,6 +117,20 @@ const UserMenu: React.FC<UserMenuProps> = ({
             <button className="user-menu-item" onClick={handleSettings}>
               <span>⚙️</span>
               {t('accountSettings')}
+            </button>
+          )}
+
+          {onStandardDashboard && (
+            <button className="user-menu-item" onClick={handleStandardDashboard}>
+              <span>📊</span>
+              {t('standardDashboard')}
+            </button>
+          )}
+
+          {onAdvancedDashboard && (
+            <button className="user-menu-item" onClick={handleAdvancedDashboard}>
+              <span>📈</span>
+              {t('advancedDashboard')}
             </button>
           )}
 

@@ -309,6 +309,16 @@ export const es = {
   resetFilters: "Restablecer Filtros",
   applyFilters: "Aplicar Filtros",
   
+  // Advanced Dashboard
+  advancedMode: "Modo Avanzado",
+  advancedDashboard: "Panel Avanzado",
+  standardDashboard: "Panel Estándar",
+  talkgroup: "Grupo de Conversación",
+  allTalkgroups: "Todos los Grupos",
+  searchTalkgroups: "Buscar grupos...",
+  allCallsigns: "Todos los Indicativos",
+  searchCallsigns: "Buscar indicativos...",
+  
   // Charts
   talkgroupActivity: "Actividad del Grupo de Conversación",
   activityDuration: "Duración de Actividad",

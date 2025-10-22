@@ -309,6 +309,16 @@ export const fr = {
   resetFilters: "Réinitialiser les Filtres",
   applyFilters: "Appliquer les Filtres",
   
+  // Advanced Dashboard
+  advancedMode: "Mode Avancé",
+  advancedDashboard: "Tableau de Bord Avancé",
+  standardDashboard: "Tableau de Bord Standard",
+  talkgroup: "Groupe de Discussion",
+  allTalkgroups: "Tous les Groupes",
+  searchTalkgroups: "Rechercher des groupes...",
+  allCallsigns: "Tous les Indicatifs",
+  searchCallsigns: "Rechercher des indicatifs...",
+  
   // Charts
   talkgroupActivity: "Activité du Groupe de Discussion",
   activityDuration: "Durée d'Activité",

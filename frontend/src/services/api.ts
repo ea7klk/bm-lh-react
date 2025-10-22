@@ -1,4 +1,4 @@
-import { LastHeardEntry, ApiResponse, Country, FilterOptions, TalkgroupStats, TalkgroupDurationStats } from '../types';
+import { LastHeardEntry, ApiResponse, Country, FilterOptions, TalkgroupStats, TalkgroupDurationStats, AdvancedFilterOptions, Talkgroup, CallsignInfo } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
 
@@ -206,6 +206,64 @@ export const lastHeardService = {
       return result.data;
     } catch (error) {
       console.error('Error fetching talkgroup duration stats:', error);
+      throw error;
+    }
+  },
+
+  async getTalkgroupsByFilters(
+    continent?: string, 
+    country?: string
+  ): Promise<{ success: boolean; data: any[] }> {
+    try {
+      let url = `${API_BASE_URL}/talkgroups`;
+      
+      if (continent && continent !== 'all' && continent !== 'global' && continent !== 'others') {
+        if (country && country !== 'all') {
+          url = `${API_BASE_URL}/talkgroups/country/${country}`;
+        } else {
+          url = `${API_BASE_URL}/talkgroups/continent/${continent}`;
+        }
+      }
+
+      const response = await fetch(url);
+      const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to fetch talkgroups');
+      }
+      
+      return { success: true, data: result.data || result };
+    } catch (error) {
+      console.error('Error fetching talkgroups:', error);
+      throw error;
+    }
+  },
+
+  async getCallsignsByTalkgroup(
+    talkgroupId: number,
+    timeFilter?: string
+  ): Promise<{ success: boolean; data: any }> {
+    try {
+      const params = new URLSearchParams();
+      
+      if (timeFilter && timeFilter !== 'all') {
+        const minutes = parseInt(timeFilter);
+        const endTime = Math.floor(Date.now() / 1000);
+        const startTime = endTime - (minutes * 60);
+        params.append('startTime', startTime.toString());
+        params.append('endTime', endTime.toString());
+      }
+
+      const response = await fetch(`${API_BASE_URL}/summary/talkgroup/${talkgroupId}/callsigns?${params}`);
+      const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to fetch callsigns');
+      }
+      
+      return { success: true, data: result };
+    } catch (error) {
+      console.error('Error fetching callsigns by talkgroup:', error);
       throw error;
     }
   },
